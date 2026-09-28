@@ -1,0 +1,32 @@
+---
+// Espelho dourado (do manual de marca) + palavra DREAMS / ACADEMY em texto, para funcionar em fundo claro e escuro.
+interface Props { size?: 'header' | 'footer' }
+const { size = 'header' } = Astro.props;
+---
+<span class:list={['logo', `logo-${size}`]}>
+  <picture>
+    <source srcset="/images/espelho.webp" type="image/webp" />
+    <img src="/images/espelho.png" alt="" width="658" height="858" decoding="async" />
+  </picture>
+  <span class="logo-word">
+    <span class="logo-dreams">Dreams</span>
+    <span class="logo-academy">Academy</span>
+  </span>
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: .7rem; line-height: 1; }
+  .logo img { height: 100%; width: auto; }
+  .logo picture { display: block; height: 100%; }
+  .logo-header { height: 58px; }
+  .logo-footer { height: 96px; }
+  .logo-word { display: grid; justify-items: center; font-family: var(--font-logo); text-transform: uppercase; }
+  .logo-dreams {
+    font-size: 1.55rem; letter-spacing: .04em; font-weight: 500;
+    background: var(--gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .logo-academy { font-size: .62rem; letter-spacing: .32em; color: var(--gold); margin-top: .25rem; padding-left: .32em; }
+  .logo-footer .logo-dreams { font-size: 2.1rem; }
+  .logo-footer .logo-academy { font-size: .8rem; }
+  @media (max-width: 560px) { .logo-header { height: 48px; } .logo-header .logo-dreams { font-size: 1.3rem; } }
+</style>

@@ -1,0 +1,18 @@
+---
+import SectionHead from './SectionHead.astro';
+interface Props { eyebrow: string; title: string; items: { q: string; a: string }[] }
+const { eyebrow, title, items } = Astro.props;
+---
+<section class="section">
+  <div class="wrap narrow">
+    <SectionHead eyebrow={eyebrow} title={title} center />
+    <div class="faq">
+      {items.map((item) => (
+        <details class="reveal">
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

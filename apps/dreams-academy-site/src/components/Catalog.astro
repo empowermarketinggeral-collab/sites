@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from './Button.astro';
+import SectionHead from './SectionHead.astro';
+import ProgramCta from './ProgramCta.astro';
+
+// Página de um pilar (Técnica ou Marketing & Negócio): hero + produtos + "em breve" + Programa.
+interface Product { type: string; name: string; hook: string; items: string[]; cta: { label: string; href: string } }
+interface Props {
+  page: {
+    meta: { title: string; description: string };
+    hero: { eyebrow: string; title: string; accent: string; text: string };
+    products: { eyebrow: string; title: string; items: Product[] };
+    soon?: { title: string; items: string[]; cta: { label: string; href: string } };
+  };
+}
+const { meta, hero, products, soon } = Astro.props.page;
+---
+<Base title={meta.title} description={meta.description}>
+  <section class="page-hero">
+    <div class="hero-fabric" aria-hidden="true"></div>
+    <div class="wrap page-hero-inner">
+      <p class="eyebrow reveal">{hero.eyebrow}</p>
+      <h1 class="display page-title reveal">{hero.title}<br /><em class="accent">{hero.accent}</em></h1>
+      <p class="lead reveal">{hero.text}</p>
+    </div>
+  </section>
+
+  <section class="section section-light">
+    <div class="wrap">
+      <SectionHead eyebrow={products.eyebrow} title={products.title} />
+      <div class="products">
+        {products.items.map((p) => (
+          <article class="product reveal">
+            <p class="badge">{p.type}</p>
+            <h3 class="display product-name">{p.name}</h3>
+            <p class="product-hook">{p.hook}</p>
+            <ul class="checks">{p.items.map((i) => <li>{i}</li>)}</ul>
+            <Button href={p.cta.href} variant="navy">{p.cta.label}</Button>
+          </article>
+        ))}
+        {soon && (
+          <article class="product product-soon reveal">
+            <p class="badge">{soon.title}</p>
+            <ul class="soon-list">{soon.items.map((i) => <li class="display">{i}</li>)}</ul>
+            <Button href={soon.cta.href} variant="outline-dark" track="lead">{soon.cta.label}</Button>
+          </article>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <ProgramCta />
+</Base>

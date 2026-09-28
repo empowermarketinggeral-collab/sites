@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "Técnica Profissional — Dreams Academy",
+    "description": "Técnica é decisão, não tentativa. Aprende quando, porquê e como executar com segurança: diagnóstico capilar, brushing com memória e muito mais."
+  },
+  "hero": {
+    "eyebrow": "Pilar I · Técnica Profissional",
+    "title": "Técnica é decisão,",
+    "accent": "não tentativa.",
+    "text": "Aqui não aprendes só “como fazer”. Aprendes quando, porquê e como executar com segurança."
+  },
+  "products": {
+    "eyebrow": "Produtos disponíveis",
+    "title": "Escolhe por onde começar.",
+    "items": [
+      {
+        "type": "E-book",
+        "name": "Guia Anti-Erros",
+        "hook": "Antes de tocar no cabelo, tens de saber o que estás a fazer.",
+        "items": ["Diagnóstico correto", "Evitar erros invisíveis", "Trabalhar sem risco"],
+        "cta": { "label": "Quero trabalhar com segurança", "href": "/ebook-guia-anti-erros" }
+      },
+      {
+        "type": "Masterclass",
+        "name": "Ondas que Fidelizam",
+        "hook": "Brushing bonito não fideliza. Resultado que dura, sim.",
+        "items": ["Execução detalhada", "Técnica com método", "Resultado que faz clientes voltar"],
+        "cta": { "label": "Quero dominar esta técnica", "href": "/ondas-que-fidelizam" }
+      }
+    ]
+  },
+  "soon": {
+    "title": "Em breve",
+    "items": ["Coloração avançada", "Corte com estrutura", "Formação técnica completa"],
+    "cta": { "label": "Quero ser avisada", "href": "avisar" }
+  }
+}

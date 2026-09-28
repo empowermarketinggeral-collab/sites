@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "title": "E-book Invisível → Inesquecível — Dreams Academy",
+    "description": "Deixa de ser ignorada e começa a ser escolhida. Um e-book estratégico para profissionais da beleza se posicionarem com clareza e atraírem clientes premium."
+  },
+  "trainer": "beatriz",
+  "hero": {
+    "eyebrow": "E-book exclusivo • Dreams Academy",
+    "title": "Deixa de ser ignorada",
+    "accent": "e começa a ser escolhida, sem depender da sorte.",
+    "text": "Os segredos que ninguém te contou para saíres da invisibilidade e te tornares a profissional mais procurada da tua região.",
+    "extra": "Um e-book estratégico para profissionais da beleza que querem posicionar-se com clareza, atrair clientes premium e construir uma marca impossível de ignorar.",
+    "cta": { "label": "Quero o meu e-book agora", "href": "#oferta" },
+    "note": "Compra 100% segura"
+  },
+  "problem": {
+    "eyebrow": "O problema",
+    "title": "Se tens um negócio e sentes que:",
+    "items": [
+      "Publicas… mas ninguém se lembra de ti",
+      "Vês concorrentes com menos qualidade a atrair melhores clientes",
+      "Tens de baixar preços para ter procura",
+      "Sabes que és boa… mas o mercado não vê isso"
+    ],
+    "closing": "O problema não é o teu trabalho. É a forma como estás posicionada."
+  },
+  "solution": {
+    "eyebrow": "A solução",
+    "title": "E-book Invisível → Inesquecível.",
+    "text": "No Do Invisível ao Inesquecível, vais aplicar a Raiz Estratégica Framework em 3 passos simples:",
+    "steps": [
+      { "title": "Definir a tua missão e promessa de marca" },
+      { "title": "Criar uma presença clara e coerente" },
+      { "title": "Posicionar-te como autoridade na mente do cliente" }
+    ]
+  },
+  "bonuses": {
+    "eyebrow": "Bónus exclusivo",
+    "items": [
+      { "label": "Bónus", "title": "Checklist de Bio Magnética", "text": "Para as tuas redes sociais." }
+    ]
+  },
+  "offer": {
+    "eyebrow": "A oportunidade",
+    "title": "Quanto vale para ti deixares de competir por preço e começares a ser escolhida pelo valor?",
+    "text": "Não vais aprender o que “postar”. Vais perceber como ser percebida.",
+    "was": "97€",
+    "price": "27€",
+    "note": "Pagamento único • Acesso imediato",
+    "includes": [
+      "E-book completo com aplicação prática",
+      "Exercícios para definires a tua marca",
+      "Bónus: Checklist de Bio Magnética para redes sociais",
+      "Acesso imediato após pagamento"
+    ],
+    "cta": { "label": "Quero garantir acesso", "href": "https://pay.hotmart.com/X102169471J?checkoutMode=10&bid=1774016580719" }
+  },
+  "guarantee": {
+    "title": "15 dias para aplicar.",
+    "accent": "100% do teu dinheiro de volta.",
+    "quote": "O nosso único interesse é a tua transformação profissional."
+  },
+  "final": {
+    "title": "Este é o primeiro passo para deixares de improvisar e começares a construir uma marca com direção.",
+    "cta": { "label": "Garantir o meu acesso agora", "href": "https://pay.hotmart.com/X102169471J?checkoutMode=10&bid=1774016580719" }
+  }
+}

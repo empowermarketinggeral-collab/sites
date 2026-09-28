@@ -1,0 +1,20 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+interface Props { id: string }
+const page = await getEntry('legal', Astro.props.id);
+if (!page) throw new Error(`Página legal em falta: ${Astro.props.id}`);
+const { Content } = await render(page);
+---
+<Base title={`${page.data.title} — Dreams Academy`} description={`${page.data.title} da Dreams Academy.`}>
+  <article class="article">
+    <header class="wrap narrow article-head">
+      <p class="eyebrow">Informação legal</p>
+      <h1 class="display page-title">{page.data.title}</h1>
+      <p class="muted">Última atualização: {page.data.updated}</p>
+    </header>
+    <div class="wrap narrow prose">
+      <Content />
+    </div>
+  </article>
+</Base>

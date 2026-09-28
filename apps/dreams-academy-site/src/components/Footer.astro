@@ -1,0 +1,32 @@
+---
+import Logo from './Logo.astro';
+import site from '../data/site.json';
+import { linkAttrs } from '../lib/links';
+const { newsletter, footer } = site;
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <Logo size="footer" />
+      <p class="footer-tag">{footer.tagline}</p>
+      <ul class="footer-social">
+        <li><a {...linkAttrs('instagram')} data-track="instagram">Instagram</a></li>
+        <li><a {...linkAttrs('email')} data-track="contacto">Enviar e-mail</a></li>
+      </ul>
+    </div>
+    <div class="footer-news">
+      <p class="footer-title">{newsletter.title}</p>
+      <p class="muted">{newsletter.text}</p>
+      <a class="btn btn-gold" {...linkAttrs('newsletter')} data-track="lead">{newsletter.button}</a>
+    </div>
+    <div>
+      <p class="footer-title">Info</p>
+      <ul class="footer-links">
+        {footer.legal.map((l) => <li><a {...linkAttrs(l.href)}>{l.label}</a></li>)}
+        <li><button type="button" class="linklike" data-cookie-settings>Definições de cookies</button></li>
+      </ul>
+    </div>
+  </div>
+  <p class="wrap copy">{footer.copyright.replace('{year}', String(year))}</p>
+</footer>

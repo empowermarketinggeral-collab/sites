@@ -1,0 +1,195 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Trainer from '../components/Trainer.astro';
+import Faq from '../components/Faq.astro';
+
+// Páginas de venda: uma por ficheiro em src/content/produtos/ (o nome do ficheiro é o endereço).
+export async function getStaticPaths() {
+  const produtos = await getCollection('produtos');
+  return produtos.map((p) => ({ params: { produto: p.id }, props: { p: p.data } }));
+}
+
+const { p } = Astro.props;
+const { hero, problem, solution, modules, bonuses, testimonials, offer, guarantee, faq, final } = p;
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+// Os botões para o checkout (Hotmart) contam como "compra" na app central; os que levam à oferta não contam.
+const trackFor = (href: string) => (/^https?:\/\//.test(href) ? 'compra' : undefined);
+---
+<Base title={p.meta.title} description={p.meta.description} landing>
+  {p.urgency && <p class="urgency">{p.urgency}</p>}
+
+  <section class="page-hero sales-hero">
+    <div class="hero-fabric" aria-hidden="true"></div>
+    <div class="wrap page-hero-inner">
+      <p class="eyebrow reveal">{hero.eyebrow}</p>
+      <h1 class="display page-title reveal">{hero.title}{hero.accent && <> <em class="accent">{hero.accent}</em></>}</h1>
+      {hero.subtitle && <p class="display hero-subtitle reveal">{hero.subtitle}</p>}
+      <p class="lead reveal">{hero.text}</p>
+      {hero.extra && <p class="hero-extra reveal">{hero.extra}</p>}
+      {hero.highlights.length > 0 && <ul class="chips reveal">{hero.highlights.map((h) => <li>{h}</li>)}</ul>}
+      <div class="actions reveal"><Button href={hero.cta.href} size="lg" track={trackFor(hero.cta.href)}>{hero.cta.label}</Button></div>
+      {hero.note && <p class="hero-note reveal">{hero.note}</p>}
+    </div>
+  </section>
+
+  {problem && (
+    <section class="section section-light">
+      <div class="wrap">
+        <SectionHead eyebrow={problem.eyebrow} title={problem.title} accent={problem.accent} text={problem.text} />
+        {problem.items.every((i) => typeof i === 'string')
+          ? <ul class="pain-grid">{problem.items.map((i) => <li class="reveal">{i as string}</li>)}</ul>
+          : (
+            <div class="cards">
+              {problem.items.map((i) => typeof i !== 'string' && (
+                <article class="card reveal">
+                  {i.label && <span class="display card-n">{i.label}</span>}
+                  <h3 class="card-title">{i.title}</h3>
+                  {i.text && <p>{i.text}</p>}
+                  {i.items && <ul class="dots">{i.items.map((x) => <li>{x}</li>)}</ul>}
+                </article>
+              ))}
+            </div>
+          )}
+        {problem.question && <blockquote class="quote quote-dark reveal">“{problem.question}”</blockquote>}
+        {problem.stats.length > 0 && (
+          <ul class="stats stats-dark">
+            {problem.stats.map((s) => <li class="reveal"><span class="display">{s.value}</span>{s.label}</li>)}
+          </ul>
+        )}
+        {problem.closing && <p class="display statement reveal">{problem.closing}</p>}
+      </div>
+    </section>
+  )}
+
+  {solution && (
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow={solution.eyebrow} title={solution.title} text={solution.text} />
+        {solution.points.length > 0 && <ul class="checks checks-light checks-lg">{solution.points.map((i) => <li class="reveal">{i}</li>)}</ul>}
+        {solution.steps.length > 0 && (
+          <ol class="steps">
+            {solution.steps.map((s, i) => (
+              <li class="step reveal">
+                <span class="display step-n">{pad(i)}</span>
+                <h3 class="card-title">{s.title}</h3>
+                {s.text && <p>{s.text}</p>}
+              </li>
+            ))}
+          </ol>
+        )}
+        {solution.stats.length > 0 && (
+          <ul class="stats">
+            {solution.stats.map((s) => <li class="reveal"><span class="display">{s.value}</span>{s.label}</li>)}
+          </ul>
+        )}
+      </div>
+    </section>
+  )}
+
+  <Trainer id={p.trainer} />
+
+  {modules && (
+    <section class="section section-light">
+      <div class="wrap">
+        <SectionHead eyebrow={modules.eyebrow} title={modules.title} />
+        <ol class="modules">
+          {modules.items.map((m, i) => (
+            <li class="module reveal">
+              <span class="display step-n">{pad(i)}</span>
+              <div>
+                <h3 class="card-title">{m.title}</h3>
+                {m.text && <p>{m.text}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {bonuses && (
+    <section class:list={['section', { 'section-light': !modules }]}>
+      <div class="wrap">
+        <SectionHead eyebrow={bonuses.eyebrow} title={bonuses.title ?? 'Oferecido com o teu acesso.'} />
+        <div class="bonuses">
+          {bonuses.items.map((b) => (
+            <article class="bonus reveal">
+              {b.label && <p class="badge">{b.label}</p>}
+              <h3 class="card-title">{b.title}</h3>
+              {b.text && <p>{b.text}</p>}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {testimonials && (
+    <section class="section section-light">
+      <div class="wrap">
+        <SectionHead eyebrow={testimonials.eyebrow} title={testimonials.title} />
+        <div class="testimonials">
+          {testimonials.items.map((t) => (
+            <figure class="testimonial reveal">
+              <p class="stars" aria-label="5 estrelas">★★★★★</p>
+              <blockquote>“{t.quote}”</blockquote>
+              <figcaption><strong>{t.name}</strong><span>{t.role}</span></figcaption>
+              {t.result && <p class="badge">{t.result}</p>}
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section offer-section" id="oferta">
+    <div class="wrap">
+      <SectionHead eyebrow={offer.eyebrow} title={offer.title} text={offer.text} center />
+      <article class="offer reveal">
+        {offer.badge && <p class="offer-badge">{offer.badge}</p>}
+        <p class="offer-was">Valor real: <s>{offer.was}</s></p>
+        <p class="display offer-price">{offer.price}</p>
+        <p class="offer-note">{offer.note}</p>
+        <ul class="checks">{offer.includes.map((i) => <li>{i}</li>)}</ul>
+        <Button href={offer.cta.href} variant="navy" size="lg" track={trackFor(offer.cta.href)}>{offer.cta.label}</Button>
+        <p class="secure"><span aria-hidden="true">🔒</span> {offer.secure}</p>
+      </article>
+      {offer.tiers.length > 0 && (
+        <ul class="tiers reveal">
+          {offer.tiers.map((t) => (
+            <li class:list={{ active: t.active }}>
+              <span class="tier-label">{t.label}</span>
+              <span class="display tier-price">{t.price}</span>
+              <span class="tier-note">{t.note}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <section class="section section-light guarantee">
+    <div class="wrap narrow center">
+      <p class="seal reveal" aria-hidden="true"><span class="display">15</span>dias</p>
+      <p class="eyebrow reveal">Garantia incondicional</p>
+      <h2 class="display section-title reveal">{guarantee.title}<br /><em class="accent">{guarantee.accent}</em></h2>
+      {guarantee.text && <p class="body-lg reveal" style="margin-inline:auto">{guarantee.text}</p>}
+      <blockquote class="quote quote-dark reveal">“{guarantee.quote}”</blockquote>
+    </div>
+  </section>
+
+  {faq && <Faq eyebrow={faq.eyebrow} title={faq.title} items={faq.items} />}
+
+  <section class="section closing">
+    <div class="wrap narrow center">
+      <p class="eyebrow reveal">{final.eyebrow}</p>
+      <h2 class="display section-title reveal">{final.title}</h2>
+      {final.text && <p class="body-lg reveal" style="margin-inline:auto">{final.text}</p>}
+      <p class="reveal"><Button href={final.cta.href} size="lg" track={trackFor(final.cta.href)}>{final.cta.label}</Button></p>
+      {final.badges.length > 0 && <ul class="chips chips-center reveal">{final.badges.map((b) => <li>{b}</li>)}</ul>}
+    </div>
+  </section>
+</Base>

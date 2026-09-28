@@ -1,0 +1,19 @@
+---
+import site from '../data/site.json';
+interface Props { id: 'patricia' | 'beatriz' }
+const t = site.trainers[Astro.props.id];
+---
+<section class="section trainer">
+  <div class="wrap trainer-inner">
+    <div class="trainer-mark reveal" aria-hidden="true">
+      <span class="display">{t.name.split(' ').map((w) => w[0]).join('')}</span>
+    </div>
+    <div>
+      <p class="eyebrow reveal">{t.eyebrow}</p>
+      <h2 class="display section-title reveal">{t.name}</h2>
+      <p class="trainer-role reveal">{t.role}</p>
+      <blockquote class="quote reveal">“{t.quote}”</blockquote>
+      <ul class="trainer-facts">{t.facts.map((f) => <li class="reveal">{f}</li>)}</ul>
+    </div>
+  </div>
+</section>

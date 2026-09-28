@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "title": "Mini-curso Do Click ao Compromisso — Dreams Academy",
+    "description": "Deixa de ter seguidores e começa a ter clientes. Mini-curso prático de 2 horas: escada de valor, produtos e funil para profissionais da beleza."
+  },
+  "trainer": "beatriz",
+  "hero": {
+    "eyebrow": "Curso Do Click ao Compromisso • Dreams Academy",
+    "title": "Deixa de ter seguidores…",
+    "accent": "e começa a ter clientes.",
+    "text": "Um mini-curso prático de 2 horas para profissionais da beleza que querem estruturar o seu negócio, criar uma escada de valor e transformar atenção em vendas reais.",
+    "cta": { "label": "Quero esta transformação", "href": "#oferta" },
+    "note": "Acesso imediato"
+  },
+  "problem": {
+    "eyebrow": "O problema",
+    "title": "Se tens um negócio e sentes que:",
+    "items": [
+      "Tens seguidores… mas ninguém compra",
+      "Publicas constantemente… sem retorno",
+      "Não sabes o que vender nem em que ordem",
+      "Dependes de promoções para conseguir clientes"
+    ],
+    "closing": "O problema não é a tua audiência. É a falta de estrutura no teu negócio."
+  },
+  "solution": {
+    "eyebrow": "A solução",
+    "title": "Mini-curso “Do Click ao Compromisso”.",
+    "text": "No Do Click ao Compromisso, vais aplicar a metodologia exclusiva Escada de Valor 5 Degraus para:",
+    "steps": [
+      { "title": "Organizar os teus produtos e serviços de forma estratégica" },
+      { "title": "Criar um caminho claro para o cliente, do primeiro contacto à compra" },
+      { "title": "Estruturar um funil simples e replicável" },
+      { "title": "Deixar de depender de descontos para vender" }
+    ]
+  },
+  "offer": {
+    "eyebrow": "A oportunidade",
+    "title": "Quanto vale para ti transformar atenção em faturação?",
+    "text": "Este não é mais um curso sobre redes sociais.",
+    "was": "130€",
+    "price": "37€",
+    "note": "Pagamento único • Acesso imediato",
+    "includes": [
+      "Mini-curso completo (2 horas, direto ao ponto)",
+      "Explicação da Escada de Valor 5 Degraus",
+      "Estrutura prática para aplicares no teu negócio",
+      "Acesso imediato após pagamento"
+    ],
+    "cta": { "label": "Quero garantir acesso", "href": "https://pay.hotmart.com/I102160710O?checkoutMode=10&bid=1774017662951" }
+  },
+  "guarantee": {
+    "title": "15 dias para aplicar.",
+    "accent": "100% do teu dinheiro de volta.",
+    "quote": "O nosso único interesse é a tua transformação profissional."
+  },
+  "final": {
+    "title": "Ter seguidores não é um negócio. Ter estrutura… é.",
+    "cta": { "label": "Garantir o meu acesso agora", "href": "https://pay.hotmart.com/I102160710O?checkoutMode=10&bid=1774017662951" }
+  }
+}

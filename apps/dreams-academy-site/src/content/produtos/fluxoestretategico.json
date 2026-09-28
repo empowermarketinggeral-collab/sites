@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "title": "Masterclass Fluxo Estratégico — Dreams Academy",
+    "description": "Publicar todos os dias sem vender é o novo burnout silencioso. Constrói os 4 Funis Perpétuos: um sistema de vendas que trabalha por ti 24 horas por dia."
+  },
+  "trainer": "beatriz",
+  "hero": {
+    "eyebrow": "Masterclass Fluxo Estratégico • Dreams Academy",
+    "title": "Publicar todos os dias sem vender",
+    "accent": "é o novo burnout silencioso.",
+    "text": "Uma masterclass prática para profissionais da beleza que querem parar de depender de conteúdo solto e construir um sistema de vendas automático.",
+    "cta": { "label": "Quero um sistema que vende", "href": "#oferta" },
+    "note": "Acesso imediato"
+  },
+  "problem": {
+    "eyebrow": "O problema",
+    "title": "Se tens um negócio e sentes que:",
+    "items": [
+      "Publicas constantemente… mas não vendes",
+      "Estás sempre a criar conteúdo sem retorno",
+      "Não tens previsibilidade no teu negócio",
+      "Sentes que estás sempre a começar do zero"
+    ],
+    "closing": "O problema não é a tua audiência. É a falta de estrutura no teu negócio."
+  },
+  "solution": {
+    "eyebrow": "A solução",
+    "title": "Masterclass Fluxo Estratégico.",
+    "text": "Na Masterclass Fluxo Estratégico, vais construir os 4 Funis Perpétuos. Um sistema que trabalha por ti 24 horas por dia.",
+    "steps": [
+      { "title": "Funil de Awareness", "text": "Atrai atenção e cria conexão imediata." },
+      { "title": "Funil de Entrada", "text": "Transforma desconhecidos em compradores." },
+      { "title": "Funil de Continuidade", "text": "Aumenta recorrência e retenção." },
+      { "title": "Funil Premium", "text": "Gera vendas de alto valor." }
+    ]
+  },
+  "offer": {
+    "eyebrow": "A oportunidade",
+    "title": "Um guia estratégico para construíres a base da tua marca, com clareza, direção e intenção.",
+    "text": "Esta não é mais uma aula sobre marketing. Vais:",
+    "was": "160€",
+    "price": "47€",
+    "note": "Pagamento único • Acesso imediato",
+    "includes": [
+      "Parar de depender de conteúdo diário",
+      "Criar previsibilidade no teu negócio",
+      "Aumentar faturação sem aumentar esforço",
+      "Escalar com estrutura (não com sorte)"
+    ],
+    "cta": { "label": "Quero garantir acesso", "href": "https://pay.hotmart.com/L102169562L?checkoutMode=10&bid=1774019359860" }
+  },
+  "guarantee": {
+    "title": "15 dias para aplicar.",
+    "accent": "100% do teu dinheiro de volta.",
+    "quote": "O nosso único interesse é a tua transformação profissional."
+  },
+  "final": {
+    "title": "Conteúdo sem sistema não escala. Sistema… muda o jogo.",
+    "cta": { "label": "Garantir o meu acesso agora", "href": "https://pay.hotmart.com/L102169562L?checkoutMode=10&bid=1774019359860" }
+  }
+}

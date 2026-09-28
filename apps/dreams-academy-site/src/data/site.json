@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "title": "Dreams Academy — Academia de formação para profissionais de beleza",
+    "description": "Transforma o teu talento em negócio. Técnica, estratégia e clientes para profissionais de beleza que querem viver tranquilamente do seu ofício.",
+    "url": "https://dreamsacademy.pt",
+    "locale": "pt_PT"
+  },
+  "nav": [
+    {
+      "label": "Técnica",
+      "href": "/tecnicadecabelos"
+    },
+    {
+      "label": "Marketing & Negócio",
+      "href": "/tmarketingenegocios"
+    },
+    {
+      "label": "Programa 90 dias",
+      "href": "/programa_dreams_academy"
+    }
+  ],
+  "links": {
+    "programa": "/programa_dreams_academy",
+    "candidatura": "https://api.leadconnectorhq.com/widget/quiz/42VOtnCJsHrLPuSZA8kM",
+    "checklist": "https://api.leadconnectorhq.com/widget/quiz/IIgJyf3S5wghBsKemyAv",
+    "instagram": "https://www.instagram.com/dreamsacademy.pt",
+    "email": "mailto:empowermarketing.geral@gmail.com?subject=Dreams%20Academy",
+    "newsletter": "mailto:empowermarketing.geral@gmail.com?subject=Quero%20subscrever%20a%20newsletter%20Dreams%20Academy",
+    "avisar": "mailto:empowermarketing.geral@gmail.com?subject=Quero%20ser%20avisada%20dos%20novos%20cursos%20t%C3%A9cnicos"
+  },
+  "company": {
+    "name": "Dreams Academy",
+    "email": "empowermarketing.geral@gmail.com"
+  },
+  "trainers": {
+    "patricia": {
+      "eyebrow": "A formadora",
+      "name": "Patrícia Melo",
+      "role": "Fundadora • Dreams Academy • Dreams Studio",
+      "quote": "Não sou mais uma formadora. Sou uma profissional que desafia padrões com técnica, experiência e coragem.",
+      "facts": [
+        "30+ anos em styling",
+        "Especialista em transformações",
+        "Formadora internacional",
+        "+500 profissionais formadas"
+      ]
+    },
+    "beatriz": {
+      "eyebrow": "A formadora",
+      "name": "Beatriz Melo",
+      "role": "Fundadora • Dreams Academy • Empower Marketing",
+      "quote": "Não sou mais uma mentora. Sou uma estratega que constrói negócios com estrutura, direção e resultado.",
+      "facts": [
+        "+3 negócios construídos do zero",
+        "Especialista em marketing para moda e beleza",
+        "Estratégia aplicada no terreno (não teoria)",
+        "Sistemas reais de vendas e posicionamento"
+      ]
+    }
+  },
+  "newsletter": {
+    "title": "Queres parar de andar perdida?",
+    "text": "Recebe estratégia, novidades e oportunidades antes de toda a gente, sem conteúdo vazio.",
+    "button": "Subscrever"
+  },
+  "footer": {
+    "tagline": "Técnica com direção. Marca com intenção.",
+    "legal": [
+      {
+        "label": "Termos e Condições",
+        "href": "/termos_condicoes"
+      },
+      {
+        "label": "Política de Privacidade",
+        "href": "/politica_de_privacidade"
+      },
+      {
+        "label": "Política de Reembolso",
+        "href": "/politica_de_reembolso"
+      },
+      {
+        "label": "Livro de Reclamações",
+        "href": "https://www.livroreclamacoes.pt/inicio/"
+      }
+    ],
+    "copyright": "© Copyright {year}. Empower Marketing. Todos os direitos reservados."
+  },
+  "analytics": {
+    "hubUrl": "https://sites-fyz8.vercel.app",
+    "siteId": "dreams-academy"
+  },
+  "tracking": {
+    "googleAnalyticsId": "",
+    "googleAdsId": "",
+    "googleAdsLeadLabel": "",
+    "metaPixelId": ""
+  }
+}
