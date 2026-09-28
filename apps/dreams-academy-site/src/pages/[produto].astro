@@ -67,7 +67,7 @@ const trackFor = (href: string) => (/^https?:\/\//.test(href) ? 'compra' : undef
   {solution && (
     <section class="section">
       <div class="wrap">
-        <SectionHead eyebrow={solution.eyebrow} title={solution.title} text={solution.text} />
+        <SectionHead eyebrow={solution.eyebrow} title={solution.title} text={solution.text} oneLine />
         {solution.points.length > 0 && <ul class="checks checks-light checks-lg">{solution.points.map((i) => <li class="reveal">{i}</li>)}</ul>}
         {solution.steps.length > 0 && (
           <ol class="steps">
@@ -172,11 +172,11 @@ const trackFor = (href: string) => (/^https?:\/\//.test(href) ? 'compra' : undef
   </section>
 
   <section class="section section-light guarantee">
-    <div class="wrap narrow center">
+    <div class="wrap center">
       <p class="seal reveal" aria-hidden="true"><span class="display">15</span>dias</p>
       <p class="eyebrow reveal">Garantia incondicional</p>
-      <h2 class="display section-title reveal">{guarantee.title}<br /><em class="accent">{guarantee.accent}</em></h2>
-      {guarantee.text && <p class="body-lg reveal" style="margin-inline:auto">{guarantee.text}</p>}
+      <h2 class="display section-title title-line reveal">{guarantee.title}<br /><em class="accent">{guarantee.accent}</em></h2>
+      {guarantee.text && <p class="body-lg reveal" style="margin-inline:auto;max-width:44rem">{guarantee.text}</p>}
       <blockquote class="quote quote-dark reveal">“{guarantee.quote}”</blockquote>
     </div>
   </section>

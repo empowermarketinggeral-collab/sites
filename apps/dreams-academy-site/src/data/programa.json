@@ -16,7 +16,10 @@
     "text": "Se continuas perdida, não é falta de talento. É falta de direção. E é exatamente isso que vais construir nos próximos 90 dias.",
     "badge": "Vagas limitadas · Entrada por seleção",
     "note": "Próxima turma com inscrições abertas. Selecionamos por candidatura para garantir acompanhamento direto.",
-    "cta": { "label": "Quero entrar no programa", "href": "candidatura" }
+    "cta": {
+      "label": "Quero entrar no programa",
+      "href": "candidatura"
+    }
   },
   "problem": {
     "eyebrow": "O problema real",
@@ -29,28 +32,79 @@
     ],
     "text": "E não, o problema não és tu. É não teres um plano claro. A maioria das profissionais falha por um destes motivos:",
     "scenarios": [
-      { "label": "Cenário A", "text": "Domina a técnica… mas não sabe vender." },
-      { "label": "Cenário B", "text": "Tenta vender… sem base técnica sólida." }
+      {
+        "label": "Cenário A",
+        "text": "Domina a técnica… mas não sabe vender."
+      },
+      {
+        "label": "Cenário B",
+        "text": "Tenta vender… sem base técnica sólida."
+      }
     ],
     "closing": "Sem os dois, não há crescimento consistente."
   },
   "includes": {
     "eyebrow": "O que inclui",
     "title": "Estrutura completa.",
-    "items": [
-      "Formação técnica certificada essencial de cabeleireiro",
-      "Construção de marca e posicionamento",
-      "Estratégia de conteúdo e vendas",
-      "Acompanhamento ao longo do programa",
-      "Acesso aos materiais base"
+    "text": "90 dias com as duas peças que faltam à maioria das profissionais: técnica segura e um negócio que atrai clientes.",
+    "groups": [
+      {
+        "title": "Formação técnica certificada",
+        "text": "O essencial de cabeleireiro, do corte à coloração.",
+        "items": [
+          "Diagnóstico capilar antes de qualquer serviço",
+          "Corte com estrutura, adaptado a cada cliente",
+          "Coloração e descoloração seguras",
+          "Brushing e finalização com resultado que dura",
+          "Certificado Dreams Academy"
+        ]
+      },
+      {
+        "title": "Marca e posicionamento",
+        "text": "Para saberes a quem vendes e porque te escolhem.",
+        "items": [
+          "Estudo de mercado: a tua zona, a tua concorrência e a tua cliente ideal",
+          "Mensagem e identidade da tua marca",
+          "Preços que refletem o teu valor"
+        ]
+      },
+      {
+        "title": "Conteúdo e redes sociais",
+        "text": "Para mostrares o teu trabalho como ele merece.",
+        "items": [
+          "Páginas de redes sociais profissionais, que convertem",
+          "Como gravar e captar conteúdo com o telemóvel",
+          "Como editar de forma simples e rápida",
+          "O que publicar e com que frequência"
+        ]
+      },
+      {
+        "title": "Promoção e vendas",
+        "text": "Para transformares atenção em marcações.",
+        "items": [
+          "Como promover o teu trabalho e atrair clientes",
+          "Um sistema simples de atração de clientes",
+          "Como falar de preço e fechar marcações"
+        ]
+      },
+      {
+        "title": "Acompanhamento",
+        "text": "Não ficas sozinha nos 90 dias.",
+        "items": [
+          "Acompanhamento direto ao longo do programa",
+          "Acesso aos materiais base"
+        ]
+      }
     ]
   },
   "results": {
     "eyebrow": "O que vais construir",
     "title": "Resultado real.",
     "items": [
-      "Clareza total sobre o teu posicionamento",
-      "Técnica sólida e segura na área de cabeleireiro",
+      "Técnica sólida e segura, do corte à coloração",
+      "O teu estudo de mercado e clareza total sobre o teu posicionamento",
+      "Páginas de redes sociais profissionais e prontas a atrair clientes",
+      "Conteúdo gravado e editado por ti, com qualidade",
       "Um sistema simples de atração de clientes",
       "Confiança para cobrar e crescer"
     ],
@@ -64,9 +118,18 @@
     "eyebrow": "Questões frequentes",
     "title": "Antes de te candidatares",
     "items": [
-      { "q": "Preciso de ter experiência?", "a": "Não. Precisas de compromisso real e vontade de aprender." },
-      { "q": "E se eu ainda não tiver clientes?", "a": "Melhor ainda, vais aprender a construir tudo do zero." },
-      { "q": "Quanto tempo preciso?", "a": "Algumas horas por semana, sendo que podemos sempre ajustar à tua rotina." }
+      {
+        "q": "Preciso de ter experiência?",
+        "a": "Não. Precisas de compromisso real e vontade de aprender."
+      },
+      {
+        "q": "E se eu ainda não tiver clientes?",
+        "a": "Melhor ainda, vais aprender a construir tudo do zero."
+      },
+      {
+        "q": "Quanto tempo preciso?",
+        "a": "Algumas horas por semana, sendo que podemos sempre ajustar à tua rotina."
+      }
     ]
   }
 }
