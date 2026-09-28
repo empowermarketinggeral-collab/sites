@@ -1,0 +1,57 @@
+---
+import Hub from '../layouts/Hub.astro';
+import { handleCrud } from '../lib/crud';
+import { daysUntil, list, type Domain, type Site } from '../lib/db';
+
+const redirect = await handleCrud(Astro, 'domains');
+if (redirect) return redirect;
+
+const domains = list<Domain>('domains');
+const sites = list<Site>('sites');
+const editing = domains.find((d) => d.id === Astro.url.searchParams.get('edit'));
+const siteName = (id: string) => sites.find((s) => s.id === id)?.name ?? '—';
+const expiry = (days: number | null) => (days === null ? '' : days <= 14 ? 'bad' : days <= 60 ? 'warn' : 'good');
+---
+<Hub title="Domínios">
+  <div class="stack">
+    <form method="post" class="card edit">
+      <input type="hidden" name="id" value={editing?.id ?? ''} />
+      <label>Domínio <input name="name" required placeholder="exemplo.pt" value={editing?.name} /></label>
+      <label>Registrar <input name="registrar" value={editing?.registrar} /></label>
+      <label>Expira em <input name="expires_at" type="date" value={editing?.expires_at} /></label>
+      <label>Site
+        <select name="site_id">
+          <option value="">—</option>
+          {sites.map((s) => <option value={s.id} selected={editing?.site_id === s.id}>{s.name}</option>)}
+        </select>
+      </label>
+      <label>Notas (DNS, email…) <input name="notes" value={editing?.notes} /></label>
+      <button>{editing ? 'Guardar' : 'Adicionar domínio'}</button>
+    </form>
+
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Domínio</th><th>Registrar</th><th>Expira</th><th>Site</th><th>Notas</th><th></th></tr></thead>
+        <tbody>
+          {domains.length === 0 && <tr><td colspan="6" class="muted">Ainda sem domínios.</td></tr>}
+          {domains.map((d) => {
+            const days = daysUntil(d.expires_at);
+            return (
+              <tr>
+                <td>{d.name}</td>
+                <td>{d.registrar}</td>
+                <td>{d.expires_at ? <span class={`pill ${expiry(days)}`}>{d.expires_at} · {days! < 0 ? 'expirado' : `${days} dias`}</span> : <span class="muted">por definir</span>}</td>
+                <td>{siteName(d.site_id)}</td>
+                <td class="muted">{d.notes}</td>
+                <td>
+                  <a href={`?edit=${d.id}`}>Editar</a>
+                  <form method="post" style="display:inline"><input type="hidden" name="id" value={d.id} /><button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este domínio?')">Apagar</button></form>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Hub>

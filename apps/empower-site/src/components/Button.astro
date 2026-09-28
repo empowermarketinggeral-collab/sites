@@ -1,0 +1,6 @@
+---
+import { linkAttrs } from '../lib/links';
+interface Props { href: string; variant?: 'light' | 'purple' | 'outline'; track?: string }
+const { href, variant = 'light', track } = Astro.props;
+---
+<a class={`btn btn-${variant}`} {...linkAttrs(href)} data-track={track}><slot /></a>

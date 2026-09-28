@@ -1,0 +1,8 @@
+---
+interface Props { eyebrow?: string; title: string; subtitle?: string; center?: boolean }
+const { eyebrow, title, subtitle, center = false } = Astro.props;
+---
+<header class:list={['section-head', { center }]}>
+  {eyebrow && <p class="eyebrow reveal">{eyebrow}</p>}
+  <h2 class="display section-title reveal">{title}{subtitle && <><br /><span class="accent">{subtitle}</span></>}</h2>
+</header>

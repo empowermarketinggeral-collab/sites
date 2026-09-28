@@ -1,0 +1,31 @@
+---
+import type { BreakdownRow } from '../lib/analytics';
+import Delta from './Delta.astro';
+interface Props { rows: BreakdownRow[]; total: number; previousTotal: number }
+const { rows, total, previousTotal } = Astro.props;
+const ORDER = ['Desktop', 'Telemóvel', 'Tablet'];
+const sorted = ORDER.map((label) => rows.find((r) => r.label === label) ?? { label, current: 0, previous: 0 });
+const R = 70, C = 2 * Math.PI * R, GAP = 2;
+let acc = 0;
+const arcs = sorted.map((r, i) => {
+  const len = total ? (r.current / total) * C : 0;
+  const arc = { ...r, slot: i + 1, dash: Math.max(0, len - GAP), offset: -acc };
+  acc += len;
+  return arc;
+});
+---
+<div class="donut">
+  <svg viewBox="0 0 180 180" role="img" aria-label="Sessões por tipo de dispositivo">
+    <circle cx="90" cy="90" r={R} class="donut-track" />
+    {arcs.filter((a) => a.dash > 0).map((a) => (
+      <circle cx="90" cy="90" r={R} class={`donut-arc s${a.slot}`} stroke-dasharray={`${a.dash} ${C}`} stroke-dashoffset={a.offset} transform="rotate(-90 90 90)">
+        <title>{`${a.label}: ${a.current} (${total ? Math.round((a.current / total) * 100) : 0}%)`}</title>
+      </circle>
+    ))}
+    <text x="90" y="92" text-anchor="middle" class="donut-total">{total}</text>
+  </svg>
+  <div class="donut-delta"><Delta current={total} previous={previousTotal} /></div>
+  <ul class="legend">
+    {arcs.map((a) => <li><span class={`swatch s${a.slot}`}></span>{a.label} <b>{a.current}</b></li>)}
+  </ul>
+</div>

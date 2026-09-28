@@ -1,0 +1,142 @@
+---
+import site from '../data/site.json';
+
+// Google (Analytics/Ads) e Meta Pixel só carregam depois do consentimento, por categoria.
+const tracking = site.tracking;
+const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tracking.metaPixelId);
+---
+{enabled && (
+  <div class="consent" id="consent" role="dialog" aria-modal="false" aria-labelledby="consent-title" hidden>
+    <p id="consent-title" class="consent-title">Cookies</p>
+    <p>Usamos cookies de análise e de marketing (Google e Meta) para medir o site e as campanhas, apenas com a tua autorização. <a href="/politica-de-cookies">Política de Cookies</a></p>
+    <form class="consent-prefs" id="consent-prefs" hidden>
+      <label><input type="checkbox" checked disabled /> Essenciais <small>(sempre ativos)</small></label>
+      <label><input type="checkbox" name="analytics" /> Análise <small>(Google Analytics)</small></label>
+      <label><input type="checkbox" name="marketing" /> Marketing <small>(Google Ads, Meta Pixel)</small></label>
+    </form>
+    <div class="consent-actions">
+      <button type="button" class="btn btn-outline" data-consent="reject">Rejeitar</button>
+      <button type="button" class="btn btn-outline" data-consent="prefs">Preferências</button>
+      <button type="button" class="btn btn-outline" data-consent="save" hidden>Guardar escolhas</button>
+      <button type="button" class="btn btn-light" data-consent="accept">Aceitar todos</button>
+    </div>
+  </div>
+)}
+
+<script is:inline define:vars={{ tracking, enabled }}>
+  (function () {
+    var KEY = 'empower-consent';
+    var CONVERSIONS = { lead: 'Lead', agendamento: 'Schedule', contacto: 'Contact' };
+    var loaded = { google: false, meta: false };
+    var state = null;
+
+    function read() {
+      try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+    }
+    function write(value) {
+      try { localStorage.setItem(KEY, JSON.stringify(value)); } catch (e) {}
+    }
+    function inject(src) {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = src;
+      document.head.appendChild(s);
+    }
+
+    function loadGoogle(c) {
+      var ids = [];
+      if (c.analytics && tracking.googleAnalyticsId) ids.push(tracking.googleAnalyticsId);
+      if (c.marketing && tracking.googleAdsId) ids.push(tracking.googleAdsId);
+      if (!ids.length) return;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+      if (!loaded.google) {
+        gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied' });
+        inject('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ids[0]));
+        gtag('js', new Date());
+        loaded.google = true;
+      }
+      var ads = c.marketing ? 'granted' : 'denied';
+      gtag('consent', 'update', { ad_storage: ads, ad_user_data: ads, ad_personalization: ads, analytics_storage: c.analytics ? 'granted' : 'denied' });
+      ids.forEach(function (id) { gtag('config', id); });
+    }
+
+    function loadMeta() {
+      if (loaded.meta || !tracking.metaPixelId) return;
+      var n = (window.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); });
+      if (!window._fbq) window._fbq = n;
+      n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+      inject('https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', tracking.metaPixelId);
+      fbq('track', 'PageView');
+      loaded.meta = true;
+    }
+
+    function apply(c) {
+      state = c;
+      if (c.analytics || c.marketing) loadGoogle(c);
+      if (c.marketing) loadMeta();
+      if (!c.marketing && loaded.meta) fbq('consent', 'revoke');
+      if (loaded.google && !c.analytics && !c.marketing) {
+        gtag('consent', 'update', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied' });
+      }
+    }
+
+    // Eventos: data-track="lead" (e agendamento, contacto) conta como conversão no Google Ads e na Meta.
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest && e.target.closest('[data-track]');
+      if (!el || !state) return;
+      var name = el.getAttribute('data-track');
+      if (window.gtag && (state.analytics || state.marketing)) gtag('event', name);
+      if (CONVERSIONS[name] && state.marketing) {
+        if (window.gtag && tracking.googleAdsId && tracking.googleAdsLeadLabel) {
+          gtag('event', 'conversion', { send_to: tracking.googleAdsId + '/' + tracking.googleAdsLeadLabel });
+        }
+        if (window.fbq) fbq('track', CONVERSIONS[name]);
+      }
+    });
+
+    var box = document.getElementById('consent');
+    function open(showPrefs) {
+      if (!box) return;
+      var c = read() || { analytics: false, marketing: false };
+      var form = document.getElementById('consent-prefs');
+      form.analytics.checked = !!c.analytics;
+      form.marketing.checked = !!c.marketing;
+      form.hidden = !showPrefs;
+      box.querySelector('[data-consent="save"]').hidden = !showPrefs;
+      box.querySelector('[data-consent="prefs"]').hidden = showPrefs;
+      box.hidden = false;
+    }
+    function decide(c) {
+      var hadMarketing = state && state.marketing;
+      write({ v: 1, analytics: c.analytics, marketing: c.marketing, ts: Date.now() });
+      box.hidden = true;
+      // Retirar consentimento: recarrega para que os scripts de terceiros deixem de correr.
+      if ((loaded.google || loaded.meta) && (!c.analytics && !c.marketing || (hadMarketing && !c.marketing))) location.reload();
+      else apply(c);
+    }
+
+    if (box) {
+      box.addEventListener('click', function (e) {
+        var action = e.target.getAttribute && e.target.getAttribute('data-consent');
+        var form = document.getElementById('consent-prefs');
+        if (action === 'accept') decide({ analytics: true, marketing: true });
+        if (action === 'reject') decide({ analytics: false, marketing: false });
+        if (action === 'prefs') open(true);
+        if (action === 'save') decide({ analytics: form.analytics.checked, marketing: form.marketing.checked });
+      });
+    }
+    document.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('[data-cookie-settings]')) { e.preventDefault(); open(true); }
+    });
+
+    if (!enabled) {
+      document.querySelectorAll('[data-cookie-settings]').forEach(function (el) { el.hidden = true; });
+      return;
+    }
+    var saved = read();
+    if (saved) apply(saved);
+    else open(false);
+  })();
+</script>

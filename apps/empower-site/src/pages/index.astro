@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import FitLists from '../components/FitLists.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { linkAttrs } from '../lib/links';
+import home from '../data/home.json';
+
+const { hero, manifesto, method, audience, system, model } = home;
+---
+<Base>
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <p class="struck display reveal">{hero.struck}</p>
+      <h1 class="display hero-title reveal">{hero.title}</h1>
+      <p class="lead reveal">{hero.subtitle}</p>
+      <div class="actions reveal">
+        <Button href={hero.primaryCta.href} variant="light">{hero.primaryCta.label}</Button>
+        <Button href={hero.secondaryCta.href} variant="purple" track="agendamento">{hero.secondaryCta.label}</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section manifesto">
+    <div class="wrap">
+      <h2 class="display section-title center reveal">{manifesto.title} <span class="accent">{manifesto.accent}</span></h2>
+      <div class="manifesto-grid">
+        <p class="body-lg reveal">{manifesto.text}</p>
+        <div class="paper-card reveal">
+          <ul class="struck-list">{manifesto.struckList.map((line) => <li><s>{line}</s></li>)}</ul>
+          <p class="final-word">{manifesto.finalWord}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="metodo" class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={method.eyebrow} title={method.title} center />
+      <div class="compare-grid">
+        <article class="card card-lilac reveal">
+          <h3 class="card-title">{method.us.title}</h3>
+          <ul class="dots">{method.us.items.map((i) => <li>{i}</li>)}</ul>
+        </article>
+        <article class="card card-dark reveal">
+          <h3 class="card-title">{method.them.title}</h3>
+          <ul class="dots">{method.them.items.map((i) => <li>{i}</li>)}</ul>
+        </article>
+      </div>
+      <blockquote class="quote reveal">“{method.quote}”</blockquote>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={audience.eyebrow} title={audience.title} subtitle={audience.subtitle} />
+      <FitLists yes={audience.yes} no={audience.no} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={system.eyebrow} title={system.title} subtitle={system.subtitle} />
+      <ol class="steps">
+        {system.steps.map((s, i) => (
+          <li class="step reveal">
+            <span class="step-n display">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="card-title">{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="reveal"><a class="link-arrow" {...linkAttrs(system.cta.href)}>{system.cta.label} <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={model.eyebrow} title={model.title} subtitle={model.subtitle} />
+      <div class="tiles">
+        {model.cards.map((c, i) => (
+          <article class:list={['tile reveal', { 'tile-accent': i === model.cards.length - 1 }]}>
+            <p class="eyebrow">{c.label}</p>
+            <h3 class="card-title">{c.title}</h3>
+            <p>{c.text}</p>
+            {c.cta && <Button href={c.cta.href} variant="light" track="lead">{c.cta.label}</Button>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

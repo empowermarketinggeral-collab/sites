@@ -1,0 +1,10 @@
+---
+import Delta from './Delta.astro';
+interface Props { label: string; value: string; current: number; previous: number; invert?: boolean }
+const { label, value, current, previous, invert } = Astro.props;
+---
+<div class="card stat">
+  <span class="muted">{label}</span>
+  <b>{value}</b>
+  <Delta current={current} previous={previous} invert={invert} />
+</div>

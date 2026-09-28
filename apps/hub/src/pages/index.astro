@@ -1,0 +1,77 @@
+---
+import Hub from '../layouts/Hub.astro';
+import Delta from '../components/Delta.astro';
+import { daysUntil, list, type Client, type Domain, type Site } from '../lib/db';
+import { report } from '../lib/analytics';
+import { checkStatus } from '../lib/status';
+
+const sites = list<Site>('sites');
+const clients = list<Client>('clients');
+const domains = list<Domain>('domains');
+
+const cards = await Promise.all(
+  sites.map(async (site) => ({
+    site,
+    client: clients.find((c) => c.id === site.client_id),
+    status: await checkStatus(site.url),
+    kpis: report(site.id, 30).kpis,
+  })),
+);
+const total = report('all', 30).kpis;
+
+const expiring = domains
+  .map((d) => ({ ...d, days: daysUntil(d.expires_at) }))
+  .filter((d) => d.days !== null && d.days <= 60)
+  .sort((a, b) => (a.days ?? 0) - (b.days ?? 0));
+const nf = new Intl.NumberFormat('pt-PT');
+---
+<Hub title="Início">
+  <div class="stack">
+    <div class="grid-stats">
+      <div class="card stat"><span class="muted">Sessões (30 dias, todos os sites)</span><b>{nf.format(total.current.sessions)}</b><Delta current={total.current.sessions} previous={total.previous.sessions} /></div>
+      <div class="card stat"><span class="muted">Conversões (30 dias)</span><b>{nf.format(total.current.conversions)}</b><Delta current={total.current.conversions} previous={total.previous.conversions} /></div>
+      <a class="card stat" href="/sites" style="text-decoration:none;color:inherit"><span class="muted">Sites</span><b>{sites.length}</b></a>
+      <a class="card stat" href="/clients" style="text-decoration:none;color:inherit"><span class="muted">Clientes</span><b>{clients.length}</b></a>
+      <a class="card stat" href="/domains" style="text-decoration:none;color:inherit"><span class="muted">Domínios</span><b>{domains.length}</b></a>
+    </div>
+
+    {expiring.length > 0 && (
+      <section class="card">
+        <h2 class="card-title">Domínios a expirar nos próximos 60 dias</h2>
+        <ul>
+          {expiring.map((d) => (
+            <li><strong>{d.name}</strong> — <span class={`pill ${d.days! <= 14 ? 'bad' : 'warn'}`}>⚠ {d.days! < 0 ? `expirou há ${-d.days!} dias` : `${d.days} dias`}</span></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {sites.length === 0 && (
+      <section class="card">
+        <h2 class="card-title">Começa por aqui</h2>
+        <p>Adiciona o primeiro site em <a href="/sites">Sites</a>. Depois copia o código de tracking para o site e as métricas aparecem em <a href="/analytics">Análises</a>.</p>
+      </section>
+    )}
+
+    <div class="grid-3">
+      {cards.map(({ site, client, status, kpis }) => (
+        <section class="card">
+          <h2 class="card-title">{site.name}</h2>
+          <p style="margin:0 0 .6rem">
+            <span class={`pill ${status.up ? 'good' : 'bad'}`}>{status.up ? `● Online · ${status.ms} ms` : `○ Offline${status.status ? ` · ${status.status}` : ''}`}</span>
+            {client && <span class="muted"> · {client.name}</span>}
+          </p>
+          <a href={site.url} target="_blank" rel="noopener noreferrer">{site.domain || site.url}</a>
+          <table style="margin-top:.6rem">
+            <tbody>
+              <tr><td class="muted">Sessões (30d)</td><td class="num">{nf.format(kpis.current.sessions)}</td><td class="num"><Delta current={kpis.current.sessions} previous={kpis.previous.sessions} /></td></tr>
+              <tr><td class="muted">Visitantes</td><td class="num">{nf.format(kpis.current.visitors)}</td><td class="num"><Delta current={kpis.current.visitors} previous={kpis.previous.visitors} /></td></tr>
+              <tr><td class="muted">Conversões</td><td class="num">{nf.format(kpis.current.conversions)}</td><td class="num"><Delta current={kpis.current.conversions} previous={kpis.previous.conversions} /></td></tr>
+            </tbody>
+          </table>
+          <p style="margin:.6rem 0 0"><a href={`/analytics?site=${site.id}`}>Ver análises →</a></p>
+        </section>
+      ))}
+    </div>
+  </div>
+</Hub>

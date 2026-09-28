@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "title": "Empower Marketing — Consultoria de Crescimento Estratégico",
+    "description": "Enquanto o mercado empurra conteúdo, nós construímos posição. Consultoria estratégica para marcas que querem ser referência e não só +1 tendência.",
+    "url": "https://empowermarketing.online",
+    "locale": "pt_PT"
+  },
+  "nav": [
+    {
+      "label": "Mapa de Crescimento",
+      "href": "/mapadecrescimento"
+    },
+    {
+      "label": "Soluções",
+      "href": "/servicos"
+    },
+    {
+      "label": "Casos de Estudo",
+      "href": "/insights"
+    }
+  ],
+  "links": {
+    "booking": "https://big-boos.vercel.app/agendar/empowermarketing",
+    "whatsappMapa": "https://api.whatsapp.com/send/?phone=351910199278&text=quero+come%C3%A7ar+o+meu+mapa+de+crescimento&type=phone_number&app_absent=0",
+    "quiz": "https://api.leadconnectorhq.com/widget/quiz/de5lxON1nr0a5eWJfJRg"
+  },
+  "company": {
+    "name": "Empower Marketing",
+    "owner": "Beatriz Melo",
+    "nif": "274345369",
+    "location": "Porto, Portugal",
+    "phone": "+351 910 199 278",
+    "phoneNote": "chamada para a rede móvel nacional",
+    "email": "empowermarketing.geral@gmail.com",
+    "address": "Rua Manuel Pinho 125, 4350-107 Porto, Portugal"
+  },
+  "quiz": {
+    "eyebrow": "Diagnóstico gratuito",
+    "title": "Onde está a tua marca hoje?",
+    "text": "2 minutos. Descobre se estás num ponto cego de mercado, no teto do crescimento manual, autoridade em construção ou já no domínio total do teu nicho.",
+    "button": "Descobrir agora",
+    "note": "Quiz interativo • Resultado imediato"
+  },
+  "footer": {
+    "legal": [
+      {
+        "label": "Política de Privacidade",
+        "href": "/politica-de-privacidade"
+      },
+      {
+        "label": "Livro de Reclamações",
+        "href": "https://www.livroreclamacoes.pt/Inicio/"
+      },
+      {
+        "label": "Política de Cookies",
+        "href": "/politica-de-cookies"
+      },
+      {
+        "label": "Termos e Condições",
+        "href": "/termos-e-condicoes"
+      },
+      {
+        "label": "Blog",
+        "href": "/insights"
+      }
+    ],
+    "copyright": "© EMPOWER MARKETING {year}. Todos os direitos reservados."
+  },
+  "analytics": {
+    "hubUrl": "",
+    "siteId": "empower-marketing"
+  },
+  "tracking": {
+    "googleAnalyticsId": "G-T869W05XBB",
+    "googleAdsId": "AW-18144497407",
+    "googleAdsLeadLabel": "",
+    "metaPixelId": "1512353287105316"
+  }
+}

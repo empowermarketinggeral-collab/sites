@@ -1,0 +1,14 @@
+---
+import Button from './Button.astro';
+import site from '../data/site.json';
+const q = site.quiz;
+---
+<section class="quiz">
+  <div class="wrap quiz-inner reveal">
+    <p class="eyebrow">{q.eyebrow}</p>
+    <h2 class="display section-title">{q.title}</h2>
+    <p class="body-lg">{q.text}</p>
+    <Button href="quiz" variant="light" track="quiz_click">{q.button}</Button>
+    <p class="muted small">{q.note}</p>
+  </div>
+</section>

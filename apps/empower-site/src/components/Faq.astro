@@ -1,0 +1,18 @@
+---
+import SectionHead from './SectionHead.astro';
+import faq from '../data/faq.json';
+---
+<section class="section">
+  <div class="wrap narrow">
+    <SectionHead eyebrow={faq.eyebrow} title={faq.title} />
+    <div class="faq">
+      {faq.items.map((item) => (
+        <details class="reveal">
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+    <slot />
+  </div>
+</section>

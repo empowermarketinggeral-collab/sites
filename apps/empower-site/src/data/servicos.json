@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "title": "Soluções — A Arquitetura de Crescimento · Empower Marketing",
+    "description": "14 áreas de serviço, combinadas de forma estratégica em três blocos: Fundação Estratégica, Captação de Autoridade e Escala e Previsibilidade."
+  },
+  "hero": {
+    "eyebrow": "Soluções",
+    "title": "A Arquitetura de Crescimento",
+    "text": "14 áreas de serviço, combinadas de forma estratégica.",
+    "cta": { "label": "Começar pelo Mapa de Crescimento", "href": "whatsappMapa" }
+  },
+  "blocks": {
+    "eyebrow": "Os 3 blocos do sistema",
+    "title": "Três blocos. Uma arquitetura só.",
+    "items": [
+      {
+        "title": "Fundação Estratégica",
+        "text": "A base sobre a qual todo o ecossistema assenta. Sem posicionamento claro, tudo o resto é ruído caro.",
+        "services": [
+          { "name": "Estudo de Mercado e Posicionamento Estratégico" },
+          { "name": "Branding / Rebranding completo", "detail": "identidade verbal + visual + guidelines" }
+        ]
+      },
+      {
+        "title": "Captação de Autoridade",
+        "text": "Transformamos o impacto real que geras no mundo físico em desejo e autoridade visual.",
+        "services": [
+          { "name": "Redes Sociais & Conteúdo", "detail": "fotografia e vídeo profissional" },
+          { "name": "Landing Pages estratégicas" },
+          { "name": "Programas de Fidelização" },
+          { "name": "Infoprodutos" }
+        ]
+      },
+      {
+        "title": "Escala e Previsibilidade",
+        "text": "O motor que transforma autoridade em receita previsível, mês após mês.",
+        "services": [
+          { "name": "Tráfego Pago" },
+          { "name": "CRM", "detail": "implementação + automações + gestão" },
+          { "name": "Email Marketing" },
+          { "name": "Automações avançadas" },
+          { "name": "Captação de Leads", "detail": "estratégia + gestão de funil" },
+          { "name": "Consultoria Estratégica contínua" }
+        ]
+      }
+    ]
+  },
+  "formula": {
+    "eyebrow": "Como se constrói o teu projeto",
+    "parts": ["Projeto Final", "Base", "Soma dos Add-ons Selecionados"],
+    "text": "A Base financia a tua equipa dedicada e a coordenação estratégica. Os Add-ons variam com a complexidade real do teu negócio, nunca com o que \"está na moda\". O valor final é sempre fechado, definido depois do teu Mapa de Crescimento."
+  },
+  "process": {
+    "eyebrow": "Como trabalhamos",
+    "title": "Do diagnóstico à execução, sem hiato.",
+    "steps": [
+      { "title": "Mapa de Crescimento", "text": "Diagnosticamos a tua marca e desenhamos a arquitetura recomendada." },
+      { "title": "Desenho do Projeto", "text": "Selecionamos, contigo, a Base e os Add-ons certos para o teu objetivo, com preço fechado." },
+      { "title": "Execução de 6 ou 12 meses", "text": "Uma equipa dedicada implementa, mede e otimiza o ecossistema completo." }
+    ]
+  },
+  "closing": {
+    "cta": { "label": "Saber mais sobre o Mapa de Crescimento", "href": "/mapadecrescimento" }
+  }
+}

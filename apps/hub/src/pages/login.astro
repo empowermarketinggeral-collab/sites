@@ -1,0 +1,50 @@
+---
+import { SESSION_COOKIE, clearFailures, createSession, isLocked, recordFailure, verifyPassword } from '../lib/auth';
+
+let error = '';
+if (Astro.request.method === 'POST') {
+  const ip = Astro.clientAddress ?? 'unknown';
+  if (isLocked(ip)) {
+    error = 'Demasiadas tentativas. Tenta novamente daqui a 15 minutos.';
+  } else {
+    const form = await Astro.request.formData();
+    if (verifyPassword(String(form.get('password') ?? ''))) {
+      clearFailures(ip);
+      const { token, maxAge } = createSession();
+      Astro.cookies.set(SESSION_COOKIE, token, {
+        httpOnly: true, secure: !['localhost', '127.0.0.1'].includes(Astro.url.hostname), sameSite: 'strict', path: '/', maxAge,
+      });
+      return Astro.redirect('/');
+    }
+    recordFailure(ip);
+    error = 'Password incorreta.';
+  }
+}
+---
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Entrar · Empower Hub</title>
+  </head>
+  <body>
+    <form method="post">
+      <h1>✦ Empower Hub</h1>
+      <label>Password <input type="password" name="password" autocomplete="current-password" required autofocus /></label>
+      {error && <p class="err" role="alert">{error}</p>}
+      <button>Entrar</button>
+    </form>
+  </body>
+</html>
+
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(80% 80% at 50% 0%, #2a1540, #111114 70%); color: #f2eff5; font: 15px/1.5 system-ui, sans-serif; padding: 16px; }
+  form { width: 100%; max-width: 340px; display: grid; gap: 1rem; background: #1b1722; border: 1px solid #2e2838; border-radius: 16px; padding: 2rem; }
+  h1 { margin: 0; font-weight: 500; font-size: 1.4rem; }
+  label { display: grid; gap: .3rem; color: #a59fae; }
+  input { background: #0e0c12; color: #f2eff5; border: 1px solid #2e2838; border-radius: 8px; padding: .6rem; font: inherit; }
+  button { background: #3a1d5c; color: #f2eff5; border: 0; border-radius: 8px; padding: .65rem; font: inherit; cursor: pointer; }
+  .err { color: #f08a8a; margin: 0; }
+</style>

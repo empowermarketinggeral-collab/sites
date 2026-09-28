@@ -1,0 +1,53 @@
+---
+import Hub from '../layouts/Hub.astro';
+import { handleCrud } from '../lib/crud';
+import { list, type Client, type Site } from '../lib/db';
+
+const redirect = await handleCrud(Astro, 'sites');
+if (redirect) return redirect;
+
+const sites = list<Site>('sites');
+const clients = list<Client>('clients');
+const editing = sites.find((s) => s.id === Astro.url.searchParams.get('edit'));
+const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? '—';
+const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" data-site="${id}"></script>`;
+---
+<Hub title="Sites">
+  <div class="stack">
+    <form method="post" class="card edit">
+      <input type="hidden" name="id" value={editing?.id ?? ''} />
+      <label>Nome <input name="name" required value={editing?.name} /></label>
+      <label>URL <input name="url" type="url" required placeholder="https://" value={editing?.url} /></label>
+      <label>Domínio (para validar o tracking) <input name="domain" required placeholder="exemplo.pt" value={editing?.domain} /></label>
+      <label>Pasta no repositório <input name="repo" placeholder="apps/..." value={editing?.repo} /></label>
+      <label>Cliente
+        <select name="client_id">
+          <option value="">—</option>
+          {clients.map((c) => <option value={c.id} selected={editing?.client_id === c.id}>{c.name}</option>)}
+        </select>
+      </label>
+      <button>{editing ? 'Guardar' : 'Adicionar site'}</button>
+    </form>
+
+    {sites.map((s) => (
+      <section class="card">
+        <div class="head" style="margin:0">
+          <h2 class="card-title" style="margin:0">{s.name}</h2>
+          <div>
+            <a href={`/analytics?site=${s.id}`}>Análises</a> ·
+            <a href={`?edit=${s.id}`}>Editar</a>
+            <form method="post" style="display:inline"><input type="hidden" name="id" value={s.id} /><button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este site? As métricas ficam guardadas.')">Apagar</button></form>
+          </div>
+        </div>
+        <p class="muted" style="margin:.4rem 0">
+          <a href={s.url} target="_blank" rel="noopener noreferrer">{s.url}</a> · Cliente: {clientName(s.client_id)}{s.repo && ` · ${s.repo}`}
+        </p>
+        <details>
+          <summary>Código de tracking</summary>
+          <p class="muted">Cola antes de <code>&lt;/head&gt;</code>. Para medir conversões, junta <code>data-track="lead"</code> ao botão ou link de contacto.</p>
+          <pre>{snippet(s.id)}</pre>
+        </details>
+      </section>
+    ))}
+  </div>
+</Hub>

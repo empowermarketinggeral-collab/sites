@@ -1,0 +1,29 @@
+---
+import type { BreakdownRow } from '../lib/analytics';
+import Delta from './Delta.astro';
+interface Props { title: string; rows: BreakdownRow[]; empty?: string }
+const { title, rows, empty = 'Sem dados neste período.' } = Astro.props;
+const max = Math.max(1, ...rows.flatMap((r) => [r.current, r.previous]));
+const w = (v: number) => `${(v / max) * 100}%`;
+---
+<section class="card">
+  <h2 class="card-title">{title}</h2>
+  {rows.length === 0 ? <p class="muted">{empty}</p> : (
+    <ul class="barlist">
+      {rows.map((r) => (
+        <li>
+          <span class="bl-label" title={r.label}>{r.label}</span>
+          <div class="bl-row" title={`${r.label}: ${r.current} (período anterior: ${r.previous})`}>
+            <span class="track"><span class="bar cur" style={`width:${w(r.current)}`}></span></span>
+            <span class="bl-val">{r.current}</span>
+            <Delta current={r.current} previous={r.previous} />
+          </div>
+          <div class="bl-row prev" title={`Período anterior: ${r.previous}`}>
+            <span class="track"><span class="bar prev" style={`width:${w(r.previous)}`}></span></span>
+            <span class="bl-val muted">{r.previous}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
