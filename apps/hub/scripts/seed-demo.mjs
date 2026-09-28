@@ -2,20 +2,17 @@
 // Uso: npm run seed:demo   ·   Apagar: npm run seed:demo -- --clear
 import { createHash } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
-import { createClient } from '@libsql/client';
-import { SCHEMA } from '../src/lib/schema.mjs';
+import { connect, migrate } from '../src/lib/schema.mjs';
 
-// Usa o Turso se TURSO_DATABASE_URL estiver definido; senão, o ficheiro local.
+// Usa o Supabase se POSTGRES_URL estiver definido; senão, o Postgres local em ficheiro.
 mkdirSync('./data', { recursive: true });
-const db = createClient({
-  url: process.env.TURSO_DATABASE_URL ?? `file:${process.env.HUB_DB_FILE ?? './data/hub.db'}`,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
-await db.batch(SCHEMA, 'write');
-await db.batch(["DELETE FROM events WHERE site_id = 'demo'", "DELETE FROM sites WHERE id = 'demo'"], 'write');
-if (process.argv.includes('--clear')) { console.log('Dados demo apagados.'); process.exit(0); }
+const db = await connect({ url: process.env.POSTGRES_URL ?? process.env.DATABASE_URL, localDir: process.env.HUB_DB_DIR ?? './data/pglite' });
+await migrate(db);
+await db.query("DELETE FROM hub.events WHERE site_id = 'demo'");
+await db.query("DELETE FROM hub.sites WHERE id = 'demo'");
+if (process.argv.includes('--clear')) { console.log('Dados demo apagados.'); await db.close(); process.exit(0); }
 
-await db.execute("INSERT INTO sites (id, name, url, domain, repo) VALUES ('demo', 'Site Demo', 'https://example.com', 'example.com', '')");
+await db.query("INSERT INTO hub.sites (id, name, url, domain, repo) VALUES ('demo', 'Site Demo', 'https://example.com', 'example.com', '')");
 
 const pick = (list) => { const total = list.reduce((s, [, w]) => s + w, 0); let r = Math.random() * total; for (const [v, w] of list) if ((r -= w) < 0) return v; return list[0][0]; };
 const LOCATIONS = [[['PT', 'Lisboa'], 30], [['PT', 'Porto'], 20], [['PT', 'Almada'], 6], [['PT', ''], 12], [['BR', 'São Paulo'], 8], [['US', ''], 10], [['ES', 'Madrid'], 4], [['FR', 'Paris'], 3]];
@@ -23,10 +20,8 @@ const SOURCES = [[['Direto', 'direto'], 35], [['Pesquisa', 'google'], 25], [['So
 const PAGES = [['/', 50], ['/solucoes', 12], ['/mapa-de-crescimento', 10], ['/casos-de-estudo', 8], ['/blog/posicionamento-de-marca', 12], ['/contacto', 8]];
 const DEVICES = [['Telemóvel', 55], ['Desktop', 42], ['Tablet', 3]];
 
-const INSERT = `INSERT INTO events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device)
-  VALUES ('demo', ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?)`;
 const batch = [];
-const insert = { run: (...args) => batch.push({ sql: INSERT, args }) };
+const insert = { run: (...args) => batch.push(args) };
 const DAY = 86_400_000;
 const now = Date.now();
 let n = 0;
@@ -51,5 +46,11 @@ for (let d = 90; d >= 0; d--) {
     if (views > 1 && Math.random() < 0.08) { insert.run(Math.round(ts + 5000), 'lead', sid, vid, '/contacto', 0, channel, source, country, city, device); n++; }
   }
 }
-await db.batch(batch, 'write');
+// Insere em blocos de 200 linhas.
+for (let i = 0; i < batch.length; i += 200) {
+  const chunk = batch.slice(i, i + 200);
+  const rows = chunk.map(() => "('demo', ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?)").join(', ');
+  await db.query(`INSERT INTO hub.events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device) VALUES ${rows}`, chunk.flat());
+}
+await db.close();
 console.log(`Site demo criado com ${n} eventos.`);

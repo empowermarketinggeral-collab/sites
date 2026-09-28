@@ -13,8 +13,9 @@
   "dependencies": {
     "@astrojs/node": "^11.1.6",
     "@astrojs/vercel": "^11.0.11",
-    "@libsql/client": "^0.18.0",
-    "astro": "^7.3.5"
+    "@electric-sql/pglite": "^0.5.8",
+    "astro": "^7.3.5",
+    "postgres": "^3.4.9"
   },
   "engines": {
     "node": ">=20"

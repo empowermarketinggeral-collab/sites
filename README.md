@@ -21,7 +21,7 @@ Painel privado, no estilo das Análises da Shopify:
 ### Como funciona o tracking
 
 Cada site carrega um script leve (`/t.js`) do hub. **Não usa cookies**: o visitante é identificado por um hash diário (IP + browser + site) que muda todos os dias, por isso não é preciso banner de cookies para estas métricas.
-Os dados ficam no teu servidor (SQLite), não em serviços de terceiros.
+Os dados ficam na tua base de dados (Supabase), não em serviços de análise de terceiros.
 
 - Conversões: acrescenta `data-track="lead"` (ou `contacto`, `agendamento`, `compra`) a um botão ou link.
 - Outros eventos: `data-track="nome_do_evento"` ou `window.empowerTrack('nome_do_evento')`.
@@ -40,18 +40,19 @@ npm run seed:demo                               # opcional: cria o "Site Demo" c
 npm run dev                                     # http://localhost:4321
 ```
 
-Sem `TURSO_DATABASE_URL`, os dados ficam no ficheiro `data/hub.db`. `npm run seed:demo -- --clear` apaga os dados de demonstração.
+Sem `POSTGRES_URL`, os dados ficam num Postgres local em `data/pglite` (não precisa de instalar nada). `npm run seed:demo -- --clear` apaga os dados de demonstração.
 
 ### Publicar no Vercel
 
 1. Vercel → **Add New → Project** → repositório `sites` → **Root Directory:** `apps/hub` → **Deploy**
    (o primeiro deploy pode falhar por faltarem as variáveis; é normal).
-2. No projeto: **Storage → Create Database → Turso** → liga ao projeto. Isto cria `TURSO_DATABASE_URL` e `TURSO_AUTH_TOKEN`.
+2. No projeto: **Storage → Supabase** → liga ao teu projeto Supabase (ou cria um). Isto cria `POSTGRES_URL`.
+   As tabelas são criadas sozinhas no primeiro acesso, no schema privado `hub` (com RLS ativo, fora da API pública).
 3. **Settings → Environment Variables:** acrescenta `HUB_PASSWORD_HASH` e `HUB_SESSION_SECRET`.
 4. **Deployments → Redeploy.** Entra no endereço do hub com a tua password.
 5. (Opcional) **Settings → Domains:** `hub.empowermarketing.online`.
 
-No Vercel, país e cidade dos visitantes vêm automaticamente. Alternativa sem Vercel: há um `Dockerfile` (servidor Node com ficheiro SQLite em `/data`).
+No Vercel, país e cidade dos visitantes vêm automaticamente. Alternativa sem Vercel: há um `Dockerfile` (servidor Node; usa `POSTGRES_URL` ou um Postgres local em `/data`).
 
 ### Segurança
 

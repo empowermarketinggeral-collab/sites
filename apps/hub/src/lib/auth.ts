@@ -42,19 +42,19 @@ const MAX_ATTEMPTS = 5;
 const LOCK_MS = 15 * 60 * 1000;
 
 export async function isLocked(ip: string): Promise<boolean> {
-  const a = await get<{ count: number; until: number }>('SELECT count, until FROM login_attempts WHERE ip = ?', [ip]);
+  const a = await get<{ count: number; until: number }>('SELECT count, until FROM hub.login_attempts WHERE ip = ?', [ip]);
   return !!a && a.count >= MAX_ATTEMPTS && a.until > Date.now();
 }
 
 export async function recordFailure(ip: string): Promise<void> {
   const now = Date.now();
   await run(
-    `INSERT INTO login_attempts (ip, count, until) VALUES (?, 1, ?)
-     ON CONFLICT(ip) DO UPDATE SET count = CASE WHEN until < ? THEN 1 ELSE count + 1 END, until = excluded.until`,
+    `INSERT INTO hub.login_attempts AS la (ip, count, until) VALUES (?, 1, ?)
+     ON CONFLICT (ip) DO UPDATE SET count = CASE WHEN la.until < ? THEN 1 ELSE la.count + 1 END, until = excluded.until`,
     [ip, now + LOCK_MS, now],
   );
 }
 
 export async function clearFailures(ip: string): Promise<void> {
-  await run('DELETE FROM login_attempts WHERE ip = ?', [ip]);
+  await run('DELETE FROM hub.login_attempts WHERE ip = ?', [ip]);
 }

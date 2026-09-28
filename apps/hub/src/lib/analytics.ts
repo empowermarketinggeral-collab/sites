@@ -19,7 +19,7 @@ interface Row { session_id: string; visitor_id: string; ts: number; name: string
 function rows(siteId: string, r: Range): Promise<Row[]> {
   const where = siteId === 'all' ? '' : 'AND site_id = ?';
   const args = siteId === 'all' ? [r.from, r.to] : [r.from, r.to, siteId];
-  return all<Row>(`SELECT session_id, visitor_id, ts, name, path, entry, channel, source, country, city, device FROM events WHERE ts >= ? AND ts < ? ${where} ORDER BY ts`, args);
+  return all<Row>(`SELECT session_id, visitor_id, ts, name, path, entry, channel, source, country, city, device FROM hub.events WHERE ts >= ? AND ts < ? ${where} ORDER BY ts`, args);
 }
 
 interface Session { id: string; start: number; end: number; pageviews: number; events: string[]; landing: string; channel: string; source: string; country: string; city: string; device: string }

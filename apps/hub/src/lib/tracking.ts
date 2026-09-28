@@ -74,7 +74,7 @@ export async function record(input: TrackInput): Promise<boolean> {
   const visitor = visitorId(input.siteId, input.ip, input.ua);
 
   const last = await get<{ session_id: string; channel: string; source: string; utm_campaign: string }>(
-    'SELECT session_id, channel, source, utm_campaign FROM events WHERE visitor_id = ? AND site_id = ? AND ts > ? ORDER BY ts DESC LIMIT 1',
+    'SELECT session_id, channel, source, utm_campaign FROM hub.events WHERE visitor_id = ? AND site_id = ? AND ts > ? ORDER BY ts DESC LIMIT 1',
     [visitor, input.siteId, ts - SESSION_GAP_MS],
   );
 
@@ -84,7 +84,7 @@ export async function record(input: TrackInput): Promise<boolean> {
   const session = last?.session_id ?? createHash('sha256').update(`${visitor}|${ts}`).digest('base64url').slice(0, 22);
 
   await run(
-    `INSERT INTO events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device)
+    `INSERT INTO hub.events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.siteId, ts, input.name, session, visitor, input.url.pathname.slice(0, 300), last ? 0 : 1,

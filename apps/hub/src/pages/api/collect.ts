@@ -18,7 +18,7 @@ function limited(ip: string): boolean {
 }
 
 function siteFor(id: string): Promise<Site | undefined> {
-  return get<Site>('SELECT * FROM sites WHERE id = ?', [id]);
+  return get<Site>('SELECT * FROM hub.sites WHERE id = ?', [id]);
 }
 
 function hostMatches(site: Site, host: string): boolean {
