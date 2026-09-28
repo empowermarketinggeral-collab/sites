@@ -1,4 +1,4 @@
-import { getDb } from './db';
+import { all } from './db';
 
 // Eventos que contam como conversão (ex.: data-track="lead" no botão de contacto).
 export const CONVERSION_EVENTS = ['lead', 'contacto', 'agendamento', 'compra'];
@@ -16,12 +16,10 @@ export function periods(days: number, now = Date.now()): Periods {
 
 interface Row { session_id: string; visitor_id: string; ts: number; name: string; path: string; entry: number; channel: string; source: string; country: string; city: string; device: string }
 
-function rows(siteId: string, r: Range): Row[] {
+function rows(siteId: string, r: Range): Promise<Row[]> {
   const where = siteId === 'all' ? '' : 'AND site_id = ?';
   const args = siteId === 'all' ? [r.from, r.to] : [r.from, r.to, siteId];
-  return getDb()
-    .prepare(`SELECT session_id, visitor_id, ts, name, path, entry, channel, source, country, city, device FROM events WHERE ts >= ? AND ts < ? ${where} ORDER BY ts`)
-    .all(...args) as unknown as Row[];
+  return all<Row>(`SELECT session_id, visitor_id, ts, name, path, entry, channel, source, country, city, device FROM hub.events WHERE ts >= ? AND ts < ? ${where} ORDER BY ts`, args);
 }
 
 interface Session { id: string; start: number; end: number; pageviews: number; events: string[]; landing: string; channel: string; source: string; country: string; city: string; device: string }
@@ -96,10 +94,9 @@ function countryName(code: string): string {
   try { return COUNTRY.of(code.toUpperCase()) ?? code; } catch { return code; }
 }
 
-export function report(siteId: string, days: number) {
+export async function report(siteId: string, days: number) {
   const p = periods(days);
-  const curRows = rows(siteId, p.current);
-  const prevRows = rows(siteId, p.previous);
+  const [curRows, prevRows] = await Promise.all([rows(siteId, p.current), rows(siteId, p.previous)]);
   const cur = sessions(curRows);
   const prev = sessions(prevRows);
 
@@ -123,7 +120,7 @@ export function report(siteId: string, days: number) {
   };
 }
 
-export type Report = ReturnType<typeof report>;
+export type Report = Awaited<ReturnType<typeof report>>;
 
 export function change(current: number, previous: number): number | null {
   if (!previous) return current ? null : 0;

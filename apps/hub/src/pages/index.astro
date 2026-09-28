@@ -5,19 +5,19 @@ import { daysUntil, list, type Client, type Domain, type Site } from '../lib/db'
 import { report } from '../lib/analytics';
 import { checkStatus } from '../lib/status';
 
-const sites = list<Site>('sites');
-const clients = list<Client>('clients');
-const domains = list<Domain>('domains');
+const sites = await list<Site>('sites');
+const clients = await list<Client>('clients');
+const domains = await list<Domain>('domains');
 
 const cards = await Promise.all(
   sites.map(async (site) => ({
     site,
     client: clients.find((c) => c.id === site.client_id),
     status: await checkStatus(site.url),
-    kpis: report(site.id, 30).kpis,
+    kpis: (await report(site.id, 30)).kpis,
   })),
 );
-const total = report('all', 30).kpis;
+const total = (await report('all', 30)).kpis;
 
 const expiring = domains
   .map((d) => ({ ...d, days: daysUntil(d.expires_at) }))

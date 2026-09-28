@@ -6,8 +6,8 @@ import { daysUntil, list, type Domain, type Site } from '../lib/db';
 const redirect = await handleCrud(Astro, 'domains');
 if (redirect) return redirect;
 
-const domains = list<Domain>('domains');
-const sites = list<Site>('sites');
+const domains = await list<Domain>('domains');
+const sites = await list<Site>('sites');
 const editing = domains.find((d) => d.id === Astro.url.searchParams.get('edit'));
 const siteName = (id: string) => sites.find((s) => s.id === id)?.name ?? '—';
 const expiry = (days: number | null) => (days === null ? '' : days <= 14 ? 'bad' : days <= 60 ? 'warn' : 'good');

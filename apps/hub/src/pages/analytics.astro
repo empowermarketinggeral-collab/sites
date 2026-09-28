@@ -13,11 +13,11 @@ const PERIODS = [
   { days: 30, label: 'Últimos 30 dias' },
   { days: 90, label: 'Últimos 90 dias' },
 ];
-const sites = list<Site>('sites');
+const sites = await list<Site>('sites');
 const q = Astro.url.searchParams;
 const days = PERIODS.find((p) => p.days === Number(q.get('days')))?.days ?? 30;
 const siteId = sites.some((s) => s.id === q.get('site')) ? q.get('site')! : 'all';
-const r = report(siteId, days);
+const r = await report(siteId, days);
 const { current: k, previous: kp } = r.kpis;
 
 const fmtRange = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', timeZone: 'Europe/Lisbon' });
