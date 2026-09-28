@@ -6,6 +6,7 @@ Monorepo com a app central (hub) e os sites criados pela Empower Marketing.
 apps/
   hub/            App central: métricas de todos os sites, clientes e domínios (privada, com login)
   empower-site/   Novo site da Empower Marketing (estático, conteúdo editável num ficheiro)
+  dreams-academy-site/  Site da Dreams Academy (estático, mesma estrutura do site Empower)
 ```
 
 ## Hub (`apps/hub`)
@@ -109,3 +110,43 @@ npm run build    # gera dist/
    no teu fornecedor de domínio para os valores que o Vercel indicar.
 
 Cada alteração enviada para o branch principal publica o site automaticamente; outros branches geram uma pré-visualização.
+
+## Site Dreams Academy (`apps/dreams-academy-site`)
+
+Site estático (Astro) com a identidade da Dreams Academy: azul-marinho, dourado e cinza, espelho dourado, Playfair Display + Montserrat.
+Os endereços são os mesmos do site atual (`dreamsacademy.pt/...`), para os links já partilhados continuarem a funcionar.
+
+| Página | Endereço | Conteúdo em |
+|---|---|---|
+| Início | `/` | `src/data/home.json` |
+| Técnica Profissional | `/tecnicadecabelos` | `src/data/tecnica.json` |
+| Marketing & Negócio | `/tmarketingenegocios` | `src/data/negocio.json` |
+| Programa Dreams Academy | `/programa_dreams_academy` | `src/data/programa.json` |
+| Guia Anti-Erros | `/ebook-guia-anti-erros` | `src/content/produtos/ebook-guia-anti-erros.json` |
+| Ondas que Fidelizam | `/ondas-que-fidelizam` | `src/content/produtos/ondas-que-fidelizam.json` |
+| Invisível → Inesquecível | `/invisivelaoinesquecivel` | `src/content/produtos/invisivelaoinesquecivel.json` |
+| Do Click ao Compromisso | `/clickaocompromisso` | `src/content/produtos/clickaocompromisso.json` |
+| Fluxo Estratégico | `/fluxoestretategico` | `src/content/produtos/fluxoestretategico.json` |
+| Termos, Privacidade, Reembolso | `/termos_condicoes`, `/politica_de_privacidade`, `/politica_de_reembolso` | `src/content/legal/*.md` |
+
+- **Novo produto:** copia um ficheiro de `src/content/produtos/` e muda o texto; o nome do ficheiro é o endereço.
+  As secções `problem`, `solution`, `modules`, `bonuses`, `testimonials` e `faq` são opcionais (se não existirem, não aparecem).
+  A formadora (`trainer`: `patricia` ou `beatriz`) vem de `src/data/site.json` → `trainers`.
+- **Links** (candidatura, checklist, Instagram, e-mail, newsletter, "quero ser avisada"), menu e rodapé: `src/data/site.json`.
+- **Imagens:** `public/images/espelho.webp|png` (espelho do manual de marca), `public/images/tecido.webp` (tecido de fundo),
+  `public/images/og.jpg` (imagem quando o link é partilhado), `public/favicon.png`.
+- **App central:** o site envia visitas para o hub com o id `dreams-academy`. No hub → **Sites**, adiciona um site com o nome
+  **Dreams Academy** (o id fica `dreams-academy`) e o domínio `dreamsacademy.pt`. Conversões medidas:
+  - `compra` — clique num botão que leva ao checkout da Hotmart
+  - `lead` — candidatura ao Programa, checklist gratuita, newsletter, "quero ser avisada"
+  - `contacto` — "Enviar e-mail"; `instagram` — clique no Instagram (evento, não conta como conversão)
+- **Google Analytics / Google Ads / Meta Pixel:** vazios por agora; preenche `tracking` em `site.json` (igual ao site Empower) e o banner de cookies aparece sozinho.
+
+```bash
+cd apps/dreams-academy-site
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # gera dist/
+```
+
+**Publicar no Vercel:** novo projeto com **Root Directory** `apps/dreams-academy-site`, depois **Settings → Domains** → `dreamsacademy.pt` e `www.dreamsacademy.pt`.

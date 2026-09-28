@@ -1,0 +1,7 @@
+---
+import { linkAttrs } from '../lib/links';
+// track: evento enviado para a app central (lead, compra, contacto…) — ver README.
+interface Props { href: string; variant?: 'gold' | 'navy' | 'outline' | 'outline-dark'; track?: string; size?: 'lg' }
+const { href, variant = 'gold', track, size } = Astro.props;
+---
+<a class:list={['btn', `btn-${variant}`, size && `btn-${size}`]} {...linkAttrs(href)} data-track={track}><slot /></a>

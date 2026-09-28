@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Faq from '../components/Faq.astro';
+import page from '../data/programa.json';
+
+const { meta, hero, problem, includes, results, closing, faq } = page;
+---
+<Base title={meta.title} description={meta.description}>
+  <section class="page-hero">
+    <div class="hero-fabric" aria-hidden="true"></div>
+    <div class="wrap page-hero-inner">
+      <p class="eyebrow reveal">{hero.eyebrow}</p>
+      <h1 class="display page-title reveal">{hero.title} <em class="accent">{hero.accent}</em></h1>
+      <p class="lead reveal">{hero.text}</p>
+      <div class="notice reveal">
+        <strong>{hero.badge}</strong>
+        <span>{hero.note}</span>
+      </div>
+      <div class="actions reveal"><Button href={hero.cta.href} track="lead" size="lg">{hero.cta.label}</Button></div>
+    </div>
+  </section>
+
+  <section class="section section-light">
+    <div class="wrap">
+      <SectionHead eyebrow={problem.eyebrow} title={problem.title} />
+      <ul class="pain-grid">{problem.items.map((i) => <li class="reveal">{i}</li>)}</ul>
+      <p class="body-lg reveal">{problem.text}</p>
+      <div class="scenarios">
+        {problem.scenarios.map((s) => (
+          <article class="scenario reveal">
+            <p class="eyebrow">{s.label}</p>
+            <p class="display scenario-text">{s.text}</p>
+          </article>
+        ))}
+      </div>
+      <p class="display statement reveal">{problem.closing}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap two-col">
+      <div>
+        <SectionHead eyebrow={includes.eyebrow} title={includes.title} />
+        <ol class="numbered-list">
+          {includes.items.map((i, n) => <li class="reveal"><span class="display">{String(n + 1).padStart(2, '0')}</span>{i}</li>)}
+        </ol>
+      </div>
+      <div>
+        <SectionHead eyebrow={results.eyebrow} title={results.title} />
+        <ul class="checks checks-light">{results.items.map((i) => <li class="reveal">{i}</li>)}</ul>
+        <p class="note reveal">{results.note}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section closing">
+    <div class="wrap narrow center">
+      <h2 class="display section-title reveal">{closing.title}<br /><em class="accent">{closing.accent}</em></h2>
+      <p class="reveal"><Button href={hero.cta.href} track="lead" size="lg">{hero.cta.label}</Button></p>
+      <p class="muted small reveal">{hero.badge}</p>
+    </div>
+  </section>
+
+  <Faq eyebrow={faq.eyebrow} title={faq.title} items={faq.items} />
+</Base>

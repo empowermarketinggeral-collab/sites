@@ -1,0 +1,20 @@
+---
+import Button from './Button.astro';
+import program from '../data/programa.json';
+// Bloco "Programa Dreams Academy" no fim das páginas de início, técnica e negócio.
+const { teaser } = program;
+---
+<section class="section program-cta">
+  <div class="wrap program-cta-inner">
+    <picture class="program-cta-mirror reveal" aria-hidden="true">
+      <source srcset="/images/espelho.webp" type="image/webp" />
+      <img src="/images/espelho.png" alt="" width="658" height="858" loading="lazy" decoding="async" />
+    </picture>
+    <div>
+      <p class="eyebrow reveal">{teaser.eyebrow}</p>
+      <h2 class="display section-title reveal">{teaser.title}</h2>
+      <p class="body-lg reveal">{teaser.text}</p>
+      <p class="reveal"><Button href="programa" size="lg">{teaser.cta}</Button></p>
+    </div>
+  </div>
+</section>
