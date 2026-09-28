@@ -133,6 +133,8 @@ Os endereços são os mesmos do site atual (`dreamsacademy.pt/...`), para os lin
   As secções `problem`, `solution`, `modules`, `bonuses`, `testimonials` e `faq` são opcionais (se não existirem, não aparecem).
   A formadora (`trainer`: `patricia` ou `beatriz`) vem de `src/data/site.json` → `trainers`.
 - **Links** (candidatura, checklist, Instagram, e-mail, newsletter, "quero ser avisada"), menu e rodapé: `src/data/site.json`.
+- **E-mail de contacto:** `dreams.beautyandbusiness@gmail.com` (em `src/data/site.json` → `company` e `links`).
+- **Fotos das formadoras:** `public/images/patricia-melo.jpg` e `beatriz-melo.jpg` (600×800), ligadas em `site.json` → `trainers` → `photo`.
 - **Imagens:** `public/images/espelho.webp|png` (espelho do manual de marca), `public/images/tecido.webp` (tecido de fundo),
   `public/images/og.jpg` (imagem quando o link é partilhado), `public/favicon.png`.
 - **App central:** o site envia visitas para o hub com o id `dreams-academy`. No hub → **Sites**, adiciona um site com o nome

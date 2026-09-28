@@ -40,24 +40,32 @@ const { meta, hero, problem, includes, results, closing, faq } = page;
   </section>
 
   <section class="section">
-    <div class="wrap two-col">
-      <div>
-        <SectionHead eyebrow={includes.eyebrow} title={includes.title} />
-        <ol class="numbered-list">
-          {includes.items.map((i, n) => <li class="reveal"><span class="display">{String(n + 1).padStart(2, '0')}</span>{i}</li>)}
-        </ol>
-      </div>
-      <div>
-        <SectionHead eyebrow={results.eyebrow} title={results.title} />
-        <ul class="checks checks-light">{results.items.map((i) => <li class="reveal">{i}</li>)}</ul>
-        <p class="note reveal">{results.note}</p>
+    <div class="wrap">
+      <SectionHead eyebrow={includes.eyebrow} title={includes.title} text={includes.text} />
+      <div class="modules-grid">
+        {includes.groups.map((g, n) => (
+          <article class="program-module reveal">
+            <span class="display step-n">{String(n + 1).padStart(2, '0')}</span>
+            <h3 class="card-title">{g.title}</h3>
+            <p class="muted">{g.text}</p>
+            <ul class="checks checks-light">{g.items.map((i) => <li>{i}</li>)}</ul>
+          </article>
+        ))}
       </div>
     </div>
   </section>
 
+  <section class="section section-light">
+    <div class="wrap narrow">
+      <SectionHead eyebrow={results.eyebrow} title={results.title} />
+      <ul class="checks checks-lg">{results.items.map((i) => <li class="reveal">{i}</li>)}</ul>
+      <p class="note reveal">{results.note}</p>
+    </div>
+  </section>
+
   <section class="section closing">
-    <div class="wrap narrow center">
-      <h2 class="display section-title reveal">{closing.title}<br /><em class="accent">{closing.accent}</em></h2>
+    <div class="wrap center">
+      <h2 class="display section-title title-line reveal">{closing.title}<br /><em class="accent">{closing.accent}</em></h2>
       <p class="reveal"><Button href={hero.cta.href} track="lead" size="lg">{hero.cta.label}</Button></p>
       <p class="muted small reveal">{hero.badge}</p>
     </div>

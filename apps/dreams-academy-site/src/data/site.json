@@ -24,13 +24,13 @@
     "candidatura": "https://api.leadconnectorhq.com/widget/quiz/42VOtnCJsHrLPuSZA8kM",
     "checklist": "https://api.leadconnectorhq.com/widget/quiz/IIgJyf3S5wghBsKemyAv",
     "instagram": "https://www.instagram.com/dreamsacademy.pt",
-    "email": "mailto:empowermarketing.geral@gmail.com?subject=Dreams%20Academy",
-    "newsletter": "mailto:empowermarketing.geral@gmail.com?subject=Quero%20subscrever%20a%20newsletter%20Dreams%20Academy",
-    "avisar": "mailto:empowermarketing.geral@gmail.com?subject=Quero%20ser%20avisada%20dos%20novos%20cursos%20t%C3%A9cnicos"
+    "email": "mailto:dreams.beautyandbusiness@gmail.com?subject=Dreams%20Academy",
+    "newsletter": "mailto:dreams.beautyandbusiness@gmail.com?subject=Quero%20subscrever%20a%20newsletter%20Dreams%20Academy",
+    "avisar": "mailto:dreams.beautyandbusiness@gmail.com?subject=Quero%20ser%20avisada%20dos%20novos%20cursos%20t%C3%A9cnicos"
   },
   "company": {
     "name": "Dreams Academy",
-    "email": "empowermarketing.geral@gmail.com"
+    "email": "dreams.beautyandbusiness@gmail.com"
   },
   "trainers": {
     "patricia": {
@@ -43,7 +43,8 @@
         "Especialista em transformações",
         "Formadora internacional",
         "+500 profissionais formadas"
-      ]
+      ],
+      "photo": "/images/patricia-melo.jpg"
     },
     "beatriz": {
       "eyebrow": "A formadora",
@@ -55,7 +56,8 @@
         "Especialista em marketing para moda e beleza",
         "Estratégia aplicada no terreno (não teoria)",
         "Sistemas reais de vendas e posicionamento"
-      ]
+      ],
+      "photo": "/images/beatriz-melo.jpg"
     }
   },
   "newsletter": {

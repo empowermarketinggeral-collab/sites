@@ -3,58 +3,38 @@ title: "Política de Privacidade"
 updated: "28 de setembro de 2026"
 ---
 
-A presente Política de Privacidade descreve como Beatriz Carneiro de Melo Francisco Malheiro, Empresária em Nome Individual, responsável pela Dreams Academy, recolhe, utiliza e protege os dados pessoais de quem visita este website e adquire os seus produtos.
+A sua privacidade é importante para nós.
 
-## 1. Responsável pelo Tratamento
+## 1. Dados Recolhidos
 
-**Responsável:** Beatriz Carneiro de Melo Francisco Malheiro<br>
-**NIF:** 274345369<br>
-**Morada:** Rua Manuel Pinho 125, 4350-107 Porto, Portugal<br>
-**Email:** [empowermarketing.geral@gmail.com](mailto:empowermarketing.geral@gmail.com)
+Recolhemos dados como nome, email e informações necessárias para acesso aos produtos.
 
-## 2. Dados Recolhidos
+## 2. Pagamentos
 
-- **Identificação e contacto:** nome, e-mail, telefone (quando preenches um formulário, quiz ou candidatura, ou fazes uma compra)
-- **Profissionais:** área de atividade e informação que partilhes na candidatura ao Programa
-- **Navegação:** páginas visitadas, origem da visita, tipo de dispositivo e país/cidade aproximados
-- **Comunicação:** mensagens enviadas por e-mail ou outras formas de contacto
+Os pagamentos são processados exclusivamente pela Hotmart.
 
-## 3. Finalidades e Base Legal
+A Dreams Academy não tem acesso aos dados financeiros do utilizador.
 
-- **Execução de contrato:** entrega dos produtos, acesso às plataformas, apoio e análise de candidaturas
-- **Consentimento:** envio de novidades e conteúdos; cookies de análise e marketing (podes retirar o consentimento a qualquer momento)
-- **Interesse legítimo:** estatísticas agregadas de visitas, melhoria do site e segurança
-- **Obrigação legal:** cumprimento de obrigações fiscais e contabilísticas
+## 3. Utilização dos Dados
 
-## 4. Estatísticas sem cookies
+Os dados são utilizados para:
 
-As estatísticas de visitas deste site são medidas sem cookies: cada visita é identificada por um código anónimo que muda todos os dias e não permite identificar a pessoa. Os dados ficam numa base de dados própria, não em serviços de publicidade.
+- Entrega dos produtos
+- Comunicação com o utilizador
+- Envio de conteúdos e ofertas (quando autorizado)
 
-## 5. Cookies
+## 4. Partilha de Dados
 
-Este site só usa cookies de terceiros (Google Analytics, Google Ads, Meta Pixel) se os aceitares no aviso de cookies. Podes mudar a tua escolha a qualquer momento em "Definições de cookies", no rodapé.
+Os dados podem ser partilhados com a Hotmart para processamento e entrega dos serviços.
 
-## 6. Partilha com Terceiros
+## 5. Segurança
 
-- **Hotmart** – venda e entrega de produtos digitais
-- **GoHighLevel** – formulários, quizzes, candidaturas e comunicações
-- **Google e Meta** – análise e publicidade, apenas com o teu consentimento
-- **Vercel** – alojamento do site
+Adotamos medidas para proteger os dados pessoais.
 
-Alguns prestadores podem estar fora do Espaço Económico Europeu; nesses casos são usadas Cláusulas Contratuais-Tipo ou outros mecanismos legais.
+## 6. Direitos do Utilizador
 
-## 7. Prazos de Conservação
+O utilizador pode solicitar acesso, alteração ou remoção dos seus dados a qualquer momento.
 
-- **Contactos sem compra:** até 6 meses, ou até retirares o consentimento
-- **Clientes:** até 2 anos após o último contacto ou compra
-- **Dados fiscais:** pelo prazo exigido por lei
+## 7. Contacto
 
-## 8. Os Teus Direitos
-
-Podes pedir acesso, retificação, apagamento, limitação, oposição ou portabilidade dos teus dados, e retirar o consentimento, por e-mail para [empowermarketing.geral@gmail.com](mailto:empowermarketing.geral@gmail.com).
-
-Tens ainda o direito de apresentar reclamação à **CNPD – Comissão Nacional de Proteção de Dados** — [www.cnpd.pt](https://www.cnpd.pt).
-
-## 9. Menores e Alterações
-
-Este site não se destina a menores de 16 anos. Esta Política pode ser atualizada; a versão mais recente está sempre disponível nesta página.
+[dreams.beautyandbusiness@gmail.com](mailto:dreams.beautyandbusiness@gmail.com)
