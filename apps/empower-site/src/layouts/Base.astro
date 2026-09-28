@@ -11,8 +11,9 @@ import QuizCta from '../components/QuizCta.astro';
 import CookieConsent from '../components/CookieConsent.astro';
 import site from '../data/site.json';
 
+// quiz: bloco de lead magnet no fim da página (desligado até haver um novo).
 interface Props { title?: string; description?: string; quiz?: boolean; type?: 'website' | 'article' }
-const { title = site.meta.title, description = site.meta.description, quiz = true, type = 'website' } = Astro.props;
+const { title = site.meta.title, description = site.meta.description, quiz = false, type = 'website' } = Astro.props;
 // No build o caminho vem como /servicos.html; o endereço público é /servicos.
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
 const canonical = new URL(path, site.meta.url).href;
