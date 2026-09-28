@@ -5,13 +5,18 @@ import '@fontsource/josefin-sans/400.css';
 import '@fontsource/cormorant-garamond/500.css';
 import '@fontsource/cormorant-garamond/600.css';
 import '../styles/global.css';
-import site from '../content/site.json';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import QuizCta from '../components/QuizCta.astro';
+import site from '../data/site.json';
 
-const { title = site.meta.title, description = site.meta.description } = Astro.props;
+interface Props { title?: string; description?: string; quiz?: boolean; type?: 'website' | 'article' }
+const { title = site.meta.title, description = site.meta.description, quiz = true, type = 'website' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.meta.url).href;
+const ogImage = new URL('/images/og.jpg', site.meta.url).href;
 ---
 <!doctype html>
-<html lang="pt">
+<html lang="pt-PT">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,15 +25,35 @@ const canonical = new URL(Astro.url.pathname, site.meta.url).href;
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#1c0f2e" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="Empower Marketing" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
     <meta property="og:locale" content={site.meta.locale} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     {site.analytics.hubUrl && <script is:inline defer src={`${site.analytics.hubUrl}/t.js`} data-site={site.analytics.siteId}></script>}
+    <slot name="head" />
   </head>
   <body>
-    <slot />
+    <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    {quiz && <QuizCta />}
+    <Footer />
+    <script>
+      const els = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js-reveal');
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        }, { rootMargin: '0px 0px -8% 0px' });
+        els.forEach((el) => io.observe(el));
+      }
+    </script>
   </body>
 </html>

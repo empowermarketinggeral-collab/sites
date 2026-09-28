@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import Faq from '../components/Faq.astro';
+import SectionHead from '../components/SectionHead.astro';
+import servicos from '../data/servicos.json';
+
+const { meta, hero, blocks, formula, process, closing } = servicos;
+---
+<Base title={meta.title} description={meta.description}>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow reveal">{hero.eyebrow}</p>
+      <h1 class="display page-title reveal">{hero.title}</h1>
+      <p class="lead reveal">{hero.text}</p>
+      <div class="actions reveal"><Button href={hero.cta.href} variant="light" track="lead">{hero.cta.label}</Button></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={blocks.eyebrow} title={blocks.title} />
+      <div class="blocks">
+        {blocks.items.map((b, i) => (
+          <article class="block reveal">
+            <span class="step-n display">{i + 1}</span>
+            <h3 class="card-title">{b.title}</h3>
+            <p class="muted">{b.text}</p>
+            <ul class="services">
+              {b.services.map((s) => <li><strong>{s.name}</strong>{s.detail && <span>{s.detail}</span>}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap narrow center">
+      <p class="eyebrow reveal">{formula.eyebrow}</p>
+      <p class="formula display reveal">
+        <span class="nowrap">{formula.parts[0]} <span class="op">=</span> {formula.parts[1]}</span> <span class="nowrap"><span class="op">+</span> <span class="accent">{formula.parts[2]}</span></span>
+      </p>
+      <p class="body-lg reveal" style="margin-inline:auto">{formula.text}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={process.eyebrow} title={process.title} />
+      <ol class="steps steps-3">
+        {process.steps.map((s, i) => (
+          <li class="step reveal">
+            <span class="eyebrow">Passo {i + 1}</span>
+            <h3 class="card-title">{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Faq>
+    <p class="center reveal" style="margin-top:2.5rem"><Button href={closing.cta.href} variant="purple">{closing.cta.label}</Button></p>
+  </Faq>
+</Base>

@@ -1,0 +1,27 @@
+---
+import Logo from './Logo.astro';
+import site from '../data/site.json';
+import { linkAttrs } from '../lib/links';
+const c = site.company;
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div>
+      <Logo />
+      <p class="footer-tag">Primeiro a estratégia, depois a estética.</p>
+    </div>
+    <address>
+      <strong>{c.name}</strong><br />
+      {c.owner}<br />
+      NIF {c.nif}<br />
+      {c.location}<br />
+      <a href={`tel:${c.phone.replace(/\s/g, '')}`}>{c.phone}</a> <span class="muted">({c.phoneNote})</span><br />
+      <a href={`mailto:${c.email}`}>{c.email}</a>
+    </address>
+    <ul class="footer-links">
+      {site.footer.legal.map((l) => <li><a {...linkAttrs(l.href)}>{l.label}</a></li>)}
+    </ul>
+  </div>
+  <p class="wrap copy">{site.footer.copyright.replace('{year}', String(year))}</p>
+</footer>

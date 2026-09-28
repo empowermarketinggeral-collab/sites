@@ -1,0 +1,9 @@
+{
+  "eyebrow": "Dúvidas frequentes",
+  "title": "Antes de pedires o teu Mapa.",
+  "items": [
+    { "q": "O Mapa de Crescimento obriga-me a contratar a Empower depois?", "a": "Não. É um entregável completo com valor próprio, mesmo que decidas não avançar para a execução." },
+    { "q": "Quanto tempo demora a ser entregue?", "a": "O prazo é definido na primeira reunião, consoante a complexidade do teu negócio, tipicamente entre 2 a 3 semanas." },
+    { "q": "E se eu já tiver um estudo de mercado feito?", "a": "Analisamos o que já existe e focamos o Mapa nas lacunas, não repetimos trabalho que já tens validado." }
+  ]
+}

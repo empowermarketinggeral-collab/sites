@@ -1,0 +1,45 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import { formatDate } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('insights');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.headline,
+  description: d.description,
+  datePublished: d.date.toISOString(),
+  author: { '@type': d.author ? 'Person' : 'Organization', name: d.author ?? 'Empower Marketing' },
+  publisher: { '@type': 'Organization', name: 'Empower Marketing' },
+});
+---
+<Base title={`${d.title} — Empower Marketing`} description={d.description} type="article">
+  <script type="application/ld+json" slot="head" set:html={jsonLd} />
+  <article class="article">
+    <header class="wrap narrow article-head">
+      <p class="eyebrow"><a href="/insights">{d.category}</a></p>
+      <h1 class="display page-title">{d.headline}</h1>
+      <p class="post-meta">{formatDate(d.date)} · {d.readingTime} min de leitura{d.author && ` · ${d.author}`}</p>
+      {d.tags.length > 0 && <ul class="tags">{d.tags.map((t) => <li>{t}</li>)}</ul>}
+    </header>
+    <div class="wrap narrow prose">
+      <Content />
+    </div>
+    <footer class="wrap narrow article-foot">
+      {d.author && <p><strong>{d.author}</strong><br /><span class="muted">Dona e Estrategista da Empower Marketing</span></p>}
+      <div class="actions">
+        <Button href="whatsappMapa" variant="purple" track="lead">Pedir o Mapa de Crescimento</Button>
+        <Button href="/insights" variant="outline">Ver todos os casos</Button>
+      </div>
+    </footer>
+  </article>
+</Base>

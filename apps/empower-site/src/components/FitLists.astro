@@ -1,0 +1,15 @@
+---
+interface List { title: string; items: string[] }
+interface Props { yes: List; no: List }
+const { yes, no } = Astro.props;
+---
+<div class="fit-grid">
+  <div class="fit fit-yes reveal">
+    <h3 class="card-title">{yes.title}</h3>
+    <ul>{yes.items.map((i) => <li><span class="mark" aria-hidden="true">✓</span>{i}</li>)}</ul>
+  </div>
+  <div class="fit fit-no reveal">
+    <h3 class="card-title">{no.title}</h3>
+    <ul>{no.items.map((i) => <li><span class="mark" aria-hidden="true">✕</span>{i}</li>)}</ul>
+  </div>
+</div>

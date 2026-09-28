@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import Faq from '../components/Faq.astro';
+import FitLists from '../components/FitLists.astro';
+import SectionHead from '../components/SectionHead.astro';
+import mapa from '../data/mapa.json';
+
+const { meta, hero, steps, fit, pricing, closing } = mapa;
+---
+<Base title={meta.title} description={meta.description}>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow reveal">{hero.eyebrow}</p>
+      <h1 class="display page-title reveal">{hero.title}</h1>
+      <p class="lead reveal">{hero.text}</p>
+      <div class="actions reveal">
+        <Button href={hero.primaryCta.href} variant="light" track="lead">{hero.primaryCta.label}</Button>
+        <Button href={hero.secondaryCta.href} variant="outline">{hero.secondaryCta.label}</Button>
+      </div>
+    </div>
+  </section>
+
+  <section id="etapas" class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={steps.eyebrow} title={steps.title} subtitle={steps.subtitle} />
+      <ol class="grid-6">
+        {steps.items.map((s, i) => (
+          <li class="numbered reveal">
+            <span class="step-n display">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="card-title">{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={fit.eyebrow} title={fit.title} />
+      <FitLists yes={fit.yes} no={fit.no} />
+    </div>
+  </section>
+
+  <Faq>
+    <p class="center reveal" style="margin-top:2.5rem"><Button href="whatsappMapa" variant="purple" track="lead">Pedir o Mapa de Crescimento</Button></p>
+  </Faq>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={pricing.eyebrow} title={pricing.title} />
+      <div class="pricing">
+        {pricing.plans.map((p, i) => (
+          <article class:list={['plan reveal', { 'plan-featured': i === 0 }]}>
+            <p class="eyebrow">{p.label}</p>
+            <h3 class="card-title">{p.name}</h3>
+            <p class="price display">{p.price}</p>
+            <p>{p.text}</p>
+            <Button href={p.cta.href} variant={i === 0 ? 'purple' : 'light'} track="lead">{p.cta.label}</Button>
+          </article>
+        ))}
+      </div>
+      <p class="note reveal">{pricing.note}</p>
+    </div>
+  </section>
+
+  <section class="section closing">
+    <div class="wrap center reveal">
+      <h2 class="display section-title">{closing.title}</h2>
+      <p style="margin-top:2rem"><Button href={closing.cta.href} variant="light" track="lead">{closing.cta.label}</Button></p>
+    </div>
+  </section>
+</Base>

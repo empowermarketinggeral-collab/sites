@@ -1,0 +1,5 @@
+/insights/category/casosdeestudo  /insights  301
+/insights/category/*              /insights  301
+/insights/tag/*                   /insights  301
+/solucoes                         /servicos  301
+/mapa-de-crescimento              /mapadecrescimento  301

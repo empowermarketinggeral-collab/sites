@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { formatDate } from '../../lib/format';
+
+const posts = (await getCollection('insights')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base title="Casos de Estudo — Empower Marketing" description="Resultados inconfundíveis: transformamos negócios em referências. Os bastidores das marcas que deixaram de competir por preço.">
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow reveal">Casos de Estudo</p>
+      <h1 class="display page-title reveal">Resultados Inconfundíveis: <span class="accent">transformamos negócios em referências.</span></h1>
+      <p class="lead reveal">Explore os bastidores das marcas que deixaram de competir por preço para dominar pelo posicionamento premium.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap post-grid">
+      {posts.map((p) => (
+        <a class="post-card reveal" href={`/insights/${p.id}`}>
+          {p.data.highlight && (
+            <div class="post-highlight">
+              <span class="display">{p.data.highlight}</span>
+              <small>{p.data.highlightLabel}</small>
+            </div>
+          )}
+          <p class="eyebrow">{p.data.category}</p>
+          <h2 class="card-title">{p.data.title}</h2>
+          <p>{p.data.description}</p>
+          <p class="post-meta">{formatDate(p.data.date)} · {p.data.readingTime} min de leitura</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

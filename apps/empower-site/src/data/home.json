@@ -1,0 +1,82 @@
+{
+  "hero": {
+    "struck": "O mercado empurra conteúdo.",
+    "title": "Nós construímos posição.",
+    "subtitle": "Consultoria estratégica para marcas que querem ser referência e não só +1 tendência.",
+    "primaryCta": { "label": "Como trabalhamos", "href": "#metodo" },
+    "secondaryCta": { "label": "Agendar Sessão de alinhamento", "href": "booking" }
+  },
+  "manifesto": {
+    "title": "Não somos uma",
+    "accent": "agência.",
+    "text": "Somos uma consultora de crescimento estratégico. Tratamos a causa, a falta de posição, e não o sintoma. A ordem é sempre a mesma: primeiro a estratégia, depois a estética.",
+    "struckList": ["Posts avulso.", "Packs de serviços.", "Campanhas soltas.", "Orçamentos elásticos."],
+    "finalWord": "Posição."
+  },
+  "method": {
+    "eyebrow": "O Método",
+    "title": "Como trabalhamos?",
+    "us": {
+      "title": "Empower, a tua Consultora de Crescimento.",
+      "items": [
+        "Constrói um Ecossistema de Marca completa.",
+        "Trata a causa: falta de posição, não falta de posts.",
+        "Preço fechado. Sem custos adicionais, sem surpresas.",
+        "Uma equipa dedicada a pensar o negócio como arquitetura."
+      ]
+    },
+    "them": {
+      "title": "Agência tradicional",
+      "items": [
+        "Executa tarefas isoladas: posts, anúncios, campanhas.",
+        "Trata sintomas: falta de posts, falta de alcance.",
+        "Preço por peça, orçamento que cresce com imprevistos.",
+        "Sem visão do negócio como um todo."
+      ]
+    },
+    "quote": "O resultado não é mais publicidade. É uma marca que ocupa um espaço que ninguém mais ocupa."
+  },
+  "audience": {
+    "eyebrow": "Para quem construímos",
+    "title": "Não trabalhamos com todas as marcas.",
+    "subtitle": "E isso é propositado.",
+    "yes": {
+      "title": "Construímos com marcas que",
+      "items": [
+        "Atuam em moda, beleza, marcas de conceito, restauração ou mobiliário de design",
+        "Têm um produto ou serviço comprovado por trás da imagem",
+        "Valorizam o detalhe e o posicionamento acima do preço baixo",
+        "Estão dispostas a questionar o modelo de negócio atual"
+      ]
+    },
+    "no": {
+      "title": "Não somos a escolha certa para",
+      "items": [
+        "Marcas focadas em desconto e promoção agressiva",
+        "Quem procura execução tática imediata, sem planeamento",
+        "Quem não aceita questionar o posicionamento atual"
+      ]
+    }
+  },
+  "system": {
+    "eyebrow": "O Sistema",
+    "title": "14 áreas. 3 Etapas.",
+    "subtitle": "Uma única arquitetura.",
+    "steps": [
+      { "title": "Fundação Estratégica", "text": "Posicionamento, estudo de mercado e branding ou rebranding completo. A base sobre a qual todo o ecossistema assenta." },
+      { "title": "Captação de Autoridade", "text": "Conteúdo, fotografia e vídeo profissional, redes sociais. Registamos o impacto real que geras no mundo físico." },
+      { "title": "Escala e Previsibilidade", "text": "CRM, tráfego pago, automações, landing pages, email marketing. O motor que transforma autoridade em receita previsível." }
+    ],
+    "cta": { "label": "Ver as soluções", "href": "/servicos" }
+  },
+  "model": {
+    "eyebrow": "O Modelo",
+    "title": "Preço fechado. Sem surpresas.",
+    "subtitle": "Sem exceções.",
+    "cards": [
+      { "label": "Duração", "title": "6 ou 12 meses", "text": "Uma equipa dedicada a pensar o teu ecossistema como um todo, não uma tarefa de cada vez." },
+      { "label": "Preço fechado", "title": "O risco é nosso", "text": "Se o projeto exigir mais do que o previsto, o custo não é repassado a ti." },
+      { "label": "Ponto de partida", "title": "Mapa de Crescimento", "text": "Um diagnóstico completo de 6 etapas que entrega valor real, mesmo sem avançares para a execução.", "cta": { "label": "Pedir o Mapa de Crescimento", "href": "whatsappMapa" } }
+    ]
+  }
+}

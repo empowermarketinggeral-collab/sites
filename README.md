@@ -58,14 +58,23 @@ Faz backup regular do ficheiro `hub.db`.
 
 ## Site Empower (`apps/empower-site`)
 
-Site estático (Astro) com o design escuro/roxo das referências.
+Site estático (Astro) com o design escuro/roxo das referências. Páginas:
 
-- **Todo o texto está em `src/content/site.json`** — títulos, secções, soluções, casos de estudo, contactos. Edita esse ficheiro e publica.
-- Imagem do hero: coloca `public/images/hero.jpg` (sem ela fica um fundo aveludado em CSS).
-- Contactos: preenche `contact.email`, `contact.bookingUrl` (ex.: Calendly), `instagram`, `linkedin`.
-- Casos de estudo: acrescenta itens em `cases.items` com `client`, `sector`, `summary`, `result`, `image`.
-- Ligar ao hub: em `analytics.hubUrl` põe o endereço do hub (ex.: `https://hub.empowermarketing.online`) e regista o site no hub com o mesmo `siteId`.
-  Acrescenta também esse domínio a `script-src` e `connect-src` em `public/_headers`.
+| Página | Endereço | Conteúdo em |
+|---|---|---|
+| Início | `/` | `src/data/home.json` |
+| Mapa de Crescimento | `/mapadecrescimento` | `src/data/mapa.json` |
+| Soluções | `/servicos` | `src/data/servicos.json` |
+| Casos de Estudo | `/insights` e `/insights/<artigo>` | `src/content/insights/*.md` |
+
+- **Contactos, links (agendamento, WhatsApp, quiz), rodapé e menu:** `src/data/site.json`.
+  Nos outros ficheiros, um botão pode apontar para um desses links pelo nome (ex.: `"href": "whatsappMapa"`).
+- **Dúvidas frequentes** (usadas no Mapa e nas Soluções): `src/data/faq.json`.
+- **Novo caso de estudo:** cria um ficheiro `.md` em `src/content/insights/` (copia um existente e muda o texto e o cabeçalho). O nome do ficheiro é o endereço.
+- **Imagens:** `public/images/hero.jpg` (fundo do topo) e `public/images/og.jpg` (imagem quando o link é partilhado). Substitui por fotos reais quando as tiveres.
+- **Redirecionamentos** de endereços antigos: `public/_redirects`.
+- **Ligar ao hub:** em `site.json`, `analytics.hubUrl` = endereço do hub; regista o site no hub com o mesmo `siteId`
+  e acrescenta esse domínio a `script-src` e `connect-src` em `public/_headers`.
 
 ```bash
 cd apps/empower-site
