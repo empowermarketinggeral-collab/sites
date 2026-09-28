@@ -67,7 +67,7 @@
     "copyright": "© EMPOWER MARKETING {year}. Todos os direitos reservados."
   },
   "analytics": {
-    "hubUrl": "",
+    "hubUrl": "https://sites-fyz8.vercel.app",
     "siteId": "empower-marketing"
   },
   "tracking": {
