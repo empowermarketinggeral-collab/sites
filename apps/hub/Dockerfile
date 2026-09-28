@@ -14,4 +14,4 @@ COPY --from=build /app/dist ./dist
 USER node
 VOLUME /data
 EXPOSE 4321
-CMD ["node", "--disable-warning=ExperimentalWarning", "./dist/server/entry.mjs"]
+CMD ["node", "./dist/server/entry.mjs"]

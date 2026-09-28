@@ -6,8 +6,8 @@ import { list, type Client, type Site } from '../lib/db';
 const redirect = await handleCrud(Astro, 'clients');
 if (redirect) return redirect;
 
-const clients = list<Client>('clients');
-const sites = list<Site>('sites');
+const clients = await list<Client>('clients');
+const sites = await list<Site>('sites');
 const editing = clients.find((c) => c.id === Astro.url.searchParams.get('edit'));
 const sitesOf = (id: string) => sites.filter((s) => s.client_id === id);
 ---

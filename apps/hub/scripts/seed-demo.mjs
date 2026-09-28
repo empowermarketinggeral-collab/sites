@@ -2,18 +2,20 @@
 // Uso: npm run seed:demo   ·   Apagar: npm run seed:demo -- --clear
 import { createHash } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
+import { createClient } from '@libsql/client';
 import { SCHEMA } from '../src/lib/schema.mjs';
 
-const file = resolve(process.env.HUB_DB_FILE ?? './data/hub.db');
-mkdirSync(dirname(file), { recursive: true });
-const db = new DatabaseSync(file);
-db.exec(SCHEMA);
-db.exec("DELETE FROM events WHERE site_id = 'demo'; DELETE FROM sites WHERE id = 'demo';");
+// Usa o Turso se TURSO_DATABASE_URL estiver definido; senão, o ficheiro local.
+mkdirSync('./data', { recursive: true });
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL ?? `file:${process.env.HUB_DB_FILE ?? './data/hub.db'}`,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
+await db.batch(SCHEMA, 'write');
+await db.batch(["DELETE FROM events WHERE site_id = 'demo'", "DELETE FROM sites WHERE id = 'demo'"], 'write');
 if (process.argv.includes('--clear')) { console.log('Dados demo apagados.'); process.exit(0); }
 
-db.prepare("INSERT INTO sites (id, name, url, domain, repo) VALUES ('demo', 'Site Demo', 'https://example.com', 'example.com', '')").run();
+await db.execute("INSERT INTO sites (id, name, url, domain, repo) VALUES ('demo', 'Site Demo', 'https://example.com', 'example.com', '')");
 
 const pick = (list) => { const total = list.reduce((s, [, w]) => s + w, 0); let r = Math.random() * total; for (const [v, w] of list) if ((r -= w) < 0) return v; return list[0][0]; };
 const LOCATIONS = [[['PT', 'Lisboa'], 30], [['PT', 'Porto'], 20], [['PT', 'Almada'], 6], [['PT', ''], 12], [['BR', 'São Paulo'], 8], [['US', ''], 10], [['ES', 'Madrid'], 4], [['FR', 'Paris'], 3]];
@@ -21,12 +23,13 @@ const SOURCES = [[['Direto', 'direto'], 35], [['Pesquisa', 'google'], 25], [['So
 const PAGES = [['/', 50], ['/solucoes', 12], ['/mapa-de-crescimento', 10], ['/casos-de-estudo', 8], ['/blog/posicionamento-de-marca', 12], ['/contacto', 8]];
 const DEVICES = [['Telemóvel', 55], ['Desktop', 42], ['Tablet', 3]];
 
-const insert = db.prepare(`INSERT INTO events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device)
-  VALUES ('demo', ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?)`);
+const INSERT = `INSERT INTO events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device)
+  VALUES ('demo', ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?)`;
+const batch = [];
+const insert = { run: (...args) => batch.push({ sql: INSERT, args }) };
 const DAY = 86_400_000;
 const now = Date.now();
 let n = 0;
-db.exec('BEGIN');
 for (let d = 90; d >= 0; d--) {
   const growth = 1 + (90 - d) / 60;
   const sessions = Math.round((3 + Math.random() * 5) * growth * (new Date(now - d * DAY).getDay() % 6 === 0 ? 0.6 : 1));
@@ -48,5 +51,5 @@ for (let d = 90; d >= 0; d--) {
     if (views > 1 && Math.random() < 0.08) { insert.run(Math.round(ts + 5000), 'lead', sid, vid, '/contacto', 0, channel, source, country, city, device); n++; }
   }
 }
-db.exec('COMMIT');
+await db.batch(batch, 'write');
 console.log(`Site demo criado com ${n} eventos.`);

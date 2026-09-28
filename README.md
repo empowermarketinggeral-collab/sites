@@ -40,20 +40,23 @@ npm run seed:demo                               # opcional: cria o "Site Demo" c
 npm run dev                                     # http://localhost:4321
 ```
 
-`npm run seed:demo -- --clear` apaga os dados de demonstração.
+Sem `TURSO_DATABASE_URL`, os dados ficam no ficheiro `data/hub.db`. `npm run seed:demo -- --clear` apaga os dados de demonstração.
 
-### Publicar
+### Publicar no Vercel
 
-Precisa de um servidor Node 22.13+ com **disco persistente** (a base de dados é o ficheiro `HUB_DB_FILE`):
-Railway, Fly.io, Render (com disco) ou um VPS. Há um `Dockerfile` pronto — monta um volume em `/data`.
+1. Vercel → **Add New → Project** → repositório `sites` → **Root Directory:** `apps/hub` → **Deploy**
+   (o primeiro deploy pode falhar por faltarem as variáveis; é normal).
+2. No projeto: **Storage → Create Database → Turso** → liga ao projeto. Isto cria `TURSO_DATABASE_URL` e `TURSO_AUTH_TOKEN`.
+3. **Settings → Environment Variables:** acrescenta `HUB_PASSWORD_HASH` e `HUB_SESSION_SECRET`.
+4. **Deployments → Redeploy.** Entra no endereço do hub com a tua password.
+5. (Opcional) **Settings → Domains:** `hub.empowermarketing.online`.
 
-Variáveis obrigatórias: `HUB_PASSWORD_HASH`, `HUB_SESSION_SECRET`. Usa sempre HTTPS.
-Faz backup regular do ficheiro `hub.db`.
+No Vercel, país e cidade dos visitantes vêm automaticamente. Alternativa sem Vercel: há um `Dockerfile` (servidor Node com ficheiro SQLite em `/data`).
 
 ### Segurança
 
 - Login com password (hash scrypt), cookie de sessão assinado, `HttpOnly`, `SameSite=Strict`, `Secure` (12 h).
-- Bloqueio de 15 min após 5 tentativas falhadas.
+- Bloqueio de 15 min após 5 tentativas falhadas (guardado na base de dados).
 - Proteção CSRF (verificação de origem nos formulários), CSP, `X-Frame-Options: DENY`, `noindex`.
 
 ## Site Empower (`apps/empower-site`)

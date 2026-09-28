@@ -4,19 +4,19 @@ import { SESSION_COOKIE, clearFailures, createSession, isLocked, recordFailure, 
 let error = '';
 if (Astro.request.method === 'POST') {
   const ip = Astro.clientAddress ?? 'unknown';
-  if (isLocked(ip)) {
+  if (await isLocked(ip)) {
     error = 'Demasiadas tentativas. Tenta novamente daqui a 15 minutos.';
   } else {
     const form = await Astro.request.formData();
     if (verifyPassword(String(form.get('password') ?? ''))) {
-      clearFailures(ip);
+      await clearFailures(ip);
       const { token, maxAge } = createSession();
       Astro.cookies.set(SESSION_COOKIE, token, {
         httpOnly: true, secure: !['localhost', '127.0.0.1'].includes(Astro.url.hostname), sameSite: 'strict', path: '/', maxAge,
       });
       return Astro.redirect('/');
     }
-    recordFailure(ip);
+    await recordFailure(ip);
     error = 'Password incorreta.';
   }
 }

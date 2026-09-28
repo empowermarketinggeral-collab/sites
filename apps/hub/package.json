@@ -6,16 +6,18 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "start": "node --disable-warning=ExperimentalWarning ./dist/server/entry.mjs",
+    "start": "node ./dist/server/entry.mjs",
     "hash-password": "node ./scripts/hash-password.mjs",
-    "seed:demo": "node --disable-warning=ExperimentalWarning ./scripts/seed-demo.mjs"
+    "seed:demo": "node ./scripts/seed-demo.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.6",
+    "@astrojs/vercel": "^11.0.11",
+    "@libsql/client": "^0.18.0",
     "astro": "^7.3.5"
   },
   "engines": {
-    "node": ">=22.13"
+    "node": ">=20"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

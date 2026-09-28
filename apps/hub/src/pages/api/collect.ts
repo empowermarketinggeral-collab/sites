@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getDb, type Site } from '../../lib/db';
+import { get, type Site } from '../../lib/db';
 import { record } from '../../lib/tracking';
 
 const EVENT_NAME = /^[a-z0-9_]{1,40}$/;
@@ -17,8 +17,8 @@ function limited(ip: string): boolean {
   return ++h.count > RATE_LIMIT;
 }
 
-function siteFor(id: string): Site | undefined {
-  return getDb().prepare('SELECT * FROM sites WHERE id = ?').get(id) as Site | undefined;
+function siteFor(id: string): Promise<Site | undefined> {
+  return get<Site>('SELECT * FROM sites WHERE id = ?', [id]);
 }
 
 function hostMatches(site: Site, host: string): boolean {
@@ -50,7 +50,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return new Response(null, { status: 400, headers });
   }
 
-  const site = siteFor(String(data.s ?? ''));
+  const site = await siteFor(String(data.s ?? ''));
   const name = String(data.n ?? 'pageview');
   // Só aceitamos eventos vindos do domínio registado para o site.
   if (!site || !hostMatches(site, url.hostname) || (origin && !hostMatches(site, URL.canParse(origin) ? new URL(origin).hostname : '')) || !EVENT_NAME.test(name)) {
@@ -60,7 +60,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const h = request.headers;
   const ip = h.get('cf-connecting-ip') ?? h.get('x-real-ip') ?? h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? clientAddress ?? '';
   if (limited(ip)) return new Response(null, { status: 429, headers });
-  record({
+  await record({
     siteId: site.id,
     name,
     url,

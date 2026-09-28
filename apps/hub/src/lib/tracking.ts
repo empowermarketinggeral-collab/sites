@@ -1,5 +1,5 @@
 import { createHash, createHmac } from 'node:crypto';
-import { getDb } from './db';
+import { get, run } from './db';
 
 const SESSION_GAP_MS = 30 * 60 * 1000;
 
@@ -67,28 +67,29 @@ export interface TrackInput {
   ts?: number;
 }
 
-export function record(input: TrackInput): boolean {
+export async function record(input: TrackInput): Promise<boolean> {
   const device = deviceOf(input.ua);
   if (!device) return false;
-  const db = getDb();
   const ts = input.ts ?? Date.now();
   const visitor = visitorId(input.siteId, input.ip, input.ua);
 
-  const last = db
-    .prepare('SELECT session_id, channel, source, utm_campaign FROM events WHERE visitor_id = ? AND site_id = ? AND ts > ? ORDER BY ts DESC LIMIT 1')
-    .get(visitor, input.siteId, ts - SESSION_GAP_MS) as { session_id: string; channel: string; source: string; utm_campaign: string } | undefined;
+  const last = await get<{ session_id: string; channel: string; source: string; utm_campaign: string }>(
+    'SELECT session_id, channel, source, utm_campaign FROM events WHERE visitor_id = ? AND site_id = ? AND ts > ? ORDER BY ts DESC LIMIT 1',
+    [visitor, input.siteId, ts - SESSION_GAP_MS],
+  );
 
   const attribution = last
     ? { channel: last.channel, source: last.source, campaign: last.utm_campaign }
     : classify(input.url, input.referrer);
   const session = last?.session_id ?? createHash('sha256').update(`${visitor}|${ts}`).digest('base64url').slice(0, 22);
 
-  db.prepare(
+  await run(
     `INSERT INTO events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-  ).run(
-    input.siteId, ts, input.name, session, visitor, input.url.pathname.slice(0, 300), last ? 0 : 1,
-    attribution.channel, attribution.source, attribution.campaign, input.country, input.city, device,
+    [
+      input.siteId, ts, input.name, session, visitor, input.url.pathname.slice(0, 300), last ? 0 : 1,
+      attribution.channel, attribution.source, attribution.campaign, input.country, input.city, device,
+    ],
   );
   return true;
 }

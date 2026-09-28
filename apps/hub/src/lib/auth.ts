@@ -1,4 +1,5 @@
 import { createHmac, scryptSync, timingSafeEqual } from 'node:crypto';
+import { get, run } from './db';
 
 export const SESSION_COOKIE = 'hub_session';
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
@@ -36,22 +37,24 @@ export function isValidSession(token: string | undefined): boolean {
   return Number(payload) > Date.now();
 }
 
-// Limite simples de tentativas de login por IP (em memória).
-const attempts = new Map<string, { count: number; until: number }>();
+// Limite de tentativas de login por IP, guardado na base de dados (funciona em serverless).
 const MAX_ATTEMPTS = 5;
 const LOCK_MS = 15 * 60 * 1000;
 
-export function isLocked(ip: string): boolean {
-  const a = attempts.get(ip);
+export async function isLocked(ip: string): Promise<boolean> {
+  const a = await get<{ count: number; until: number }>('SELECT count, until FROM login_attempts WHERE ip = ?', [ip]);
   return !!a && a.count >= MAX_ATTEMPTS && a.until > Date.now();
 }
 
-export function recordFailure(ip: string): void {
-  const a = attempts.get(ip);
-  const fresh = !a || a.until < Date.now();
-  attempts.set(ip, { count: fresh ? 1 : a.count + 1, until: Date.now() + LOCK_MS });
+export async function recordFailure(ip: string): Promise<void> {
+  const now = Date.now();
+  await run(
+    `INSERT INTO login_attempts (ip, count, until) VALUES (?, 1, ?)
+     ON CONFLICT(ip) DO UPDATE SET count = CASE WHEN until < ? THEN 1 ELSE count + 1 END, until = excluded.until`,
+    [ip, now + LOCK_MS, now],
+  );
 }
 
-export function clearFailures(ip: string): void {
-  attempts.delete(ip);
+export async function clearFailures(ip: string): Promise<void> {
+  await run('DELETE FROM login_attempts WHERE ip = ?', [ip]);
 }
