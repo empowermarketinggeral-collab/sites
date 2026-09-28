@@ -18,4 +18,9 @@ const insights = defineCollection({
   }),
 });
 
-export const collections = { insights };
+const legal = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/legal' }),
+  schema: z.object({ title: z.string(), updated: z.string() }),
+});
+
+export const collections = { insights, legal };

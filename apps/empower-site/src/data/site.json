@@ -6,9 +6,18 @@
     "locale": "pt_PT"
   },
   "nav": [
-    { "label": "Mapa de Crescimento", "href": "/mapadecrescimento" },
-    { "label": "Soluções", "href": "/servicos" },
-    { "label": "Casos de Estudo", "href": "/insights" }
+    {
+      "label": "Mapa de Crescimento",
+      "href": "/mapadecrescimento"
+    },
+    {
+      "label": "Soluções",
+      "href": "/servicos"
+    },
+    {
+      "label": "Casos de Estudo",
+      "href": "/insights"
+    }
   ],
   "links": {
     "booking": "https://big-boos.vercel.app/agendar/empowermarketing",
@@ -17,7 +26,7 @@
   },
   "company": {
     "name": "Empower Marketing",
-    "owner": "Beatriz Malheiro",
+    "owner": "Beatriz Melo",
     "nif": "274345369",
     "location": "Porto, Portugal",
     "phone": "+351 910199278",
@@ -33,13 +42,37 @@
   },
   "footer": {
     "legal": [
-      { "label": "Política de Privacidade", "href": "/politica-de-privacidade" },
-      { "label": "Livro de Reclamações", "href": "https://www.livroreclamacoes.pt/Inicio/" },
-      { "label": "Política de Cookies", "href": "/politica-de-cookies" },
-      { "label": "Termos e Condições", "href": "/termos-e-condicoes" },
-      { "label": "Blog", "href": "/insights" }
+      {
+        "label": "Política de Privacidade",
+        "href": "/politica-de-privacidade"
+      },
+      {
+        "label": "Livro de Reclamações",
+        "href": "https://www.livroreclamacoes.pt/Inicio/"
+      },
+      {
+        "label": "Política de Cookies",
+        "href": "/politica-de-cookies"
+      },
+      {
+        "label": "Termos e Condições",
+        "href": "/termos-e-condicoes"
+      },
+      {
+        "label": "Blog",
+        "href": "/insights"
+      }
     ],
     "copyright": "© EMPOWER MARKETING {year}. Todos os direitos reservados."
   },
-  "analytics": { "hubUrl": "", "siteId": "empower-marketing" }
+  "analytics": {
+    "hubUrl": "",
+    "siteId": "empower-marketing"
+  },
+  "tracking": {
+    "googleAnalyticsId": "",
+    "googleAdsId": "",
+    "googleAdsLeadLabel": "",
+    "metaPixelId": ""
+  }
 }

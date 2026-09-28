@@ -21,6 +21,7 @@ const year = new Date().getFullYear();
     </address>
     <ul class="footer-links">
       {site.footer.legal.map((l) => <li><a {...linkAttrs(l.href)}>{l.label}</a></li>)}
+      <li><button type="button" class="linklike" data-cookie-settings>Definições de cookies</button></li>
     </ul>
   </div>
   <p class="wrap copy">{site.footer.copyright.replace('{year}', String(year))}</p>

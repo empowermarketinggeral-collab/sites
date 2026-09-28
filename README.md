@@ -72,7 +72,17 @@ Site estático (Astro) com o design escuro/roxo das referências. Páginas:
 - **Dúvidas frequentes** (usadas no Mapa e nas Soluções): `src/data/faq.json`.
 - **Novo caso de estudo:** cria um ficheiro `.md` em `src/content/insights/` (copia um existente e muda o texto e o cabeçalho). O nome do ficheiro é o endereço.
 - **Imagens:** `public/images/hero.jpg` (fundo do topo) e `public/images/og.jpg` (imagem quando o link é partilhado). Substitui por fotos reais quando as tiveres.
-- **Redirecionamentos** de endereços antigos: `public/_redirects`.
+- **Páginas legais** (Privacidade, Cookies, Termos): `src/content/legal/*.md`.
+- **Redirecionamentos** de endereços antigos (artigos `/post/...`, `/portefolio`): `public/_redirects`.
+- **Google Analytics, Google Ads e Meta Pixel:** preenche em `src/data/site.json` → `tracking`:
+  - `googleAnalyticsId` — ex.: `G-XXXXXXX` (GA4 → Administrador → Fluxos de dados)
+  - `googleAdsId` — ex.: `AW-123456789` (Google Ads → Ferramentas → Conversões → Etiqueta)
+  - `googleAdsLeadLabel` — o rótulo da conversão de lead (a parte depois de `AW-123456789/`)
+  - `metaPixelId` — o número do Pixel (Gestor de Eventos da Meta)
+
+  Com pelo menos um ID preenchido, aparece o banner de cookies. Nada do Google/Meta carrega antes de a pessoa aceitar
+  (Consent Mode v2 do Google incluído). Cliques em botões com `data-track="lead"`, `agendamento` ou `contacto`
+  contam como conversão no Google Ads e como `Lead`/`Schedule`/`Contact` na Meta.
 - **Ligar ao hub:** em `site.json`, `analytics.hubUrl` = endereço do hub; regista o site no hub com o mesmo `siteId`
   e acrescenta esse domínio a `script-src` e `connect-src` em `public/_headers`.
 
