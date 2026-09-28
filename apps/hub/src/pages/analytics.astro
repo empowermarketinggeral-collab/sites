@@ -1,0 +1,93 @@
+---
+import Hub from '../layouts/Hub.astro';
+import BarList from '../components/BarList.astro';
+import Donut from '../components/Donut.astro';
+import Funnel from '../components/Funnel.astro';
+import LineChart from '../components/LineChart.astro';
+import Stat from '../components/Stat.astro';
+import { list, type Site } from '../lib/db';
+import { report } from '../lib/analytics';
+
+const PERIODS = [
+  { days: 7, label: 'Últimos 7 dias' },
+  { days: 30, label: 'Últimos 30 dias' },
+  { days: 90, label: 'Últimos 90 dias' },
+];
+const sites = list<Site>('sites');
+const q = Astro.url.searchParams;
+const days = PERIODS.find((p) => p.days === Number(q.get('days')))?.days ?? 30;
+const siteId = sites.some((s) => s.id === q.get('site')) ? q.get('site')! : 'all';
+const r = report(siteId, days);
+const { current: k, previous: kp } = r.kpis;
+
+const fmtRange = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', timeZone: 'Europe/Lisbon' });
+const range = (x: { from: number; to: number }) => `${fmtRange.format(x.from)} – ${fmtRange.format(x.to)}`;
+const nf = new Intl.NumberFormat('pt-PT');
+const pct = (v: number) => `${v.toFixed(1).replace('.', ',')}%`;
+const dur = (s: number) => `${Math.floor(s / 60)}m ${String(Math.round(s % 60)).padStart(2, '0')}s`;
+---
+<Hub title="Análises">
+  <form slot="actions" class="filters" method="get">
+    <select name="site" aria-label="Site" onchange="this.form.submit()">
+      <option value="all">Todos os sites</option>
+      {sites.map((s) => <option value={s.id} selected={s.id === siteId}>{s.name}</option>)}
+    </select>
+    <select name="days" aria-label="Período" onchange="this.form.submit()">
+      {PERIODS.map((p) => <option value={p.days} selected={p.days === days}>{p.label}</option>)}
+    </select>
+    <span class="chip">{range(r.periods.current)}</span>
+    <noscript><button>Aplicar</button></noscript>
+  </form>
+
+  <div class="stack">
+    <div class="grid-stats">
+      <Stat label="Sessões" value={nf.format(k.sessions)} current={k.sessions} previous={kp.sessions} />
+      <Stat label="Visitantes" value={nf.format(k.visitors)} current={k.visitors} previous={kp.visitors} />
+      <Stat label="Páginas vistas" value={nf.format(k.pageviews)} current={k.pageviews} previous={kp.pageviews} />
+      <Stat label="Taxa de rejeição" value={pct(k.bounceRate)} current={k.bounceRate} previous={kp.bounceRate} invert />
+      <Stat label="Duração média" value={dur(k.avgDuration)} current={k.avgDuration} previous={kp.avgDuration} />
+      <Stat label="Taxa de conversão" value={pct(k.conversionRate)} current={k.conversionRate} previous={kp.conversionRate} />
+    </div>
+
+    <div class="grid-3">
+      <section class="card span-2">
+        <h2 class="card-title">Sessões ao longo do tempo</h2>
+        <LineChart current={r.timeseries.current} previous={r.timeseries.previous} />
+        <ul class="legend">
+          <li><span class="swatch"></span>{range(r.periods.current)}</li>
+          <li><span class="swatch prev"></span>{range(r.periods.previous)}</li>
+        </ul>
+        <details>
+          <summary>Ver tabela</summary>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Dia</th><th class="num">Sessões</th><th class="num">Período anterior</th></tr></thead>
+              <tbody>{r.timeseries.current.map((p, i) => <tr><td>{p.date}</td><td class="num">{p.sessions}</td><td class="num">{r.timeseries.previous[i]?.sessions ?? 0}</td></tr>)}</tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+      <section class="card">
+        <h2 class="card-title">Sessões por tipo de dispositivo</h2>
+        <Donut rows={r.byDevice} total={k.sessions} previousTotal={kp.sessions} />
+      </section>
+
+      <BarList title="Sessões por local" rows={r.byLocation} />
+      <BarList title="Sessões por referenciador" rows={r.byReferrer} />
+      <BarList title="Sessões por referenciador social" rows={r.bySocial} />
+
+      <BarList title="Sessões por canal" rows={r.byChannel} />
+      <BarList title="Sessões por página de destino" rows={r.byLanding} />
+      <section class="card">
+        <h2 class="card-title">Detalhamento da taxa de conversão</h2>
+        <Funnel {...r.funnel} />
+      </section>
+    </div>
+
+    <ul class="legend">
+      <li><span class="swatch"></span>Período atual</li>
+      <li><span class="swatch prev"></span>Período anterior</li>
+      <li class="muted">Conversão = sessões com um evento <code>lead</code>, <code>contacto</code>, <code>agendamento</code> ou <code>compra</code>.</li>
+    </ul>
+  </div>
+</Hub>

@@ -1,0 +1,159 @@
+---
+import { existsSync } from 'node:fs';
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import site from '../content/site.json';
+
+const { hero, manifesto, comparison, growthMap, solutions, cases, cta, contact, footer, nav } = site;
+
+// A imagem do hero é opcional: sem ficheiro em public/, fica o fundo aveludado em CSS.
+const heroImage = hero.image && existsSync(new URL(`../../public${hero.image}`, import.meta.url)) ? hero.image : null;
+const heroStyle = heroImage ? `--hero-image: url('${heroImage}')` : undefined;
+const year = new Date().getFullYear();
+---
+<Base>
+  <header class="topbar">
+    <a href="#top" class="brand"><Logo /></a>
+    <nav aria-label="Principal">
+      <ul>
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" style={heroStyle}>
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <p class="struck display reveal">{hero.struck}</p>
+        <h1 class="display hero-title reveal">{hero.title}</h1>
+        <p class="lead reveal">{hero.subtitle}</p>
+        <div class="actions reveal">
+          <a class="btn btn-light" href={hero.primaryCta.href}>{hero.primaryCta.label}</a>
+          <a class="btn btn-purple" href={hero.secondaryCta.href} data-track="cta_click">{hero.secondaryCta.label}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto">
+      <div class="wrap">
+        <h2 class="display section-title center reveal">{manifesto.title} <span class="accent">{manifesto.accent}</span></h2>
+        <div class="manifesto-grid">
+          <p class="body-lg reveal">{manifesto.text}</p>
+          <div class="paper-card reveal">
+            <ul class="struck-list">
+              {manifesto.struckList.map((line) => <li><s>{line}</s></li>)}
+            </ul>
+            <p class="final-word">{manifesto.finalWord}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="como" class="compare">
+      <div class="wrap">
+        <h2 class="display section-title center reveal">{comparison.title}</h2>
+        <div class="compare-grid">
+          <article class="card card-lilac reveal">
+            <h3 class="card-title">{comparison.us.title}</h3>
+            <ul class="dots">{comparison.us.items.map((i) => <li>{i}</li>)}</ul>
+          </article>
+          <article class="card card-dark reveal">
+            <h3 class="card-title">{comparison.them.title}</h3>
+            <ul class="dots">{comparison.them.items.map((i) => <li>{i}</li>)}</ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="mapa" class="map">
+      <div class="wrap">
+        <h2 class="display section-title reveal">{growthMap.title}</h2>
+        <p class="body-lg intro reveal">{growthMap.intro}</p>
+        <ol class="steps">
+          {growthMap.steps.map((s) => (
+            <li class="step reveal">
+              <span class="step-n display">{s.n}</span>
+              <h3 class="card-title">{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section id="solucoes" class="solutions">
+      <div class="wrap">
+        <h2 class="display section-title reveal">{solutions.title}</h2>
+        <p class="body-lg intro reveal">{solutions.intro}</p>
+        <div class="solution-grid">
+          {solutions.items.map((s) => (
+            <article class="solution reveal">
+              <h3 class="card-title">{s.title}</h3>
+              <p>{s.text}</p>
+              <a class="link-arrow" href={s.href}>{s.cta} <span aria-hidden="true">→</span></a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="casos" class="cases">
+      <div class="wrap">
+        <h2 class="display section-title reveal">{cases.title}</h2>
+        <p class="body-lg intro reveal">{cases.intro}</p>
+        {cases.items.length > 0 ? (
+          <div class="case-grid">
+            {cases.items.map((c: { client: string; sector?: string; summary: string; result?: string; image?: string }) => (
+              <article class="case reveal">
+                {c.image && <img src={c.image} alt="" loading="lazy" />}
+                <p class="case-sector">{c.sector}</p>
+                <h3 class="card-title">{c.client}</h3>
+                <p>{c.summary}</p>
+                {c.result && <p class="case-result">{c.result}</p>}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="empty reveal">Casos de estudo em breve.</p>
+        )}
+      </div>
+    </section>
+
+    <section id="contacto" class="cta">
+      <div class="wrap cta-inner reveal">
+        <h2 class="display section-title">{cta.title}</h2>
+        <p class="body-lg">{cta.text}</p>
+        <div class="actions">
+          {contact.bookingUrl && !contact.bookingUrl.startsWith('#') && (
+            <a class="btn btn-light" href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" data-track="agendamento">{cta.button.label}</a>
+          )}
+          {contact.email && <a class="btn btn-purple" href={`mailto:${contact.email}`} data-track="contacto">{contact.email}</a>}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <Logo />
+      <p class="footer-tag">{footer.tagline}</p>
+      <ul class="social">
+        {contact.instagram && <li><a href={contact.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>}
+        {contact.linkedin && <li><a href={contact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>}
+      </ul>
+      <p class="copy">© {year} Empower Marketing</p>
+    </div>
+  </footer>
+
+  <script>
+    const els = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('js-reveal');
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }, { rootMargin: '0px 0px -8% 0px' });
+      els.forEach((el) => io.observe(el));
+    }
+  </script>
+</Base>

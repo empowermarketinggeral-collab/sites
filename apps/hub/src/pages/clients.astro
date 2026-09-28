@@ -1,0 +1,48 @@
+---
+import Hub from '../layouts/Hub.astro';
+import { handleCrud } from '../lib/crud';
+import { list, type Client, type Site } from '../lib/db';
+
+const redirect = await handleCrud(Astro, 'clients');
+if (redirect) return redirect;
+
+const clients = list<Client>('clients');
+const sites = list<Site>('sites');
+const editing = clients.find((c) => c.id === Astro.url.searchParams.get('edit'));
+const sitesOf = (id: string) => sites.filter((s) => s.client_id === id);
+---
+<Hub title="Clientes">
+  <div class="stack">
+    <form method="post" class="card edit">
+      <input type="hidden" name="id" value={editing?.id ?? ''} />
+      <label>Nome <input name="name" required value={editing?.name} /></label>
+      <label>Empresa <input name="company" value={editing?.company} /></label>
+      <label>Email <input name="email" type="email" value={editing?.email} /></label>
+      <label>Telefone <input name="phone" type="tel" value={editing?.phone} /></label>
+      <label>Notas <input name="notes" value={editing?.notes} /></label>
+      <button>{editing ? 'Guardar' : 'Adicionar cliente'}</button>
+    </form>
+
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Nome</th><th>Empresa</th><th>Contacto</th><th>Sites</th><th>Notas</th><th></th></tr></thead>
+        <tbody>
+          {clients.length === 0 && <tr><td colspan="6" class="muted">Ainda sem clientes.</td></tr>}
+          {clients.map((c) => (
+            <tr>
+              <td>{c.name}</td>
+              <td>{c.company}</td>
+              <td>{c.email && <a href={`mailto:${c.email}`}>{c.email}</a>}<br /><span class="muted">{c.phone}</span></td>
+              <td>{sitesOf(c.id).map((s, i) => <>{i > 0 && ', '}<a href={`/analytics?site=${s.id}`}>{s.name}</a></>)}</td>
+              <td class="muted">{c.notes}</td>
+              <td>
+                <a href={`?edit=${c.id}`}>Editar</a>
+                <form method="post" style="display:inline"><input type="hidden" name="id" value={c.id} /><button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este cliente?')">Apagar</button></form>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Hub>

@@ -1,0 +1,20 @@
+---
+import Delta from './Delta.astro';
+interface Props { labels: string[]; current: number[]; previous: number[] }
+const { labels, current, previous } = Astro.props;
+const top = Math.max(1, current[0]);
+const pct = (v: number) => (current[0] ? (v / current[0]) * 100 : 0);
+---
+<div class="funnel">
+  {labels.map((l, i) => (
+    <div class="fn-step">
+      <span class="muted">{l}</span>
+      <b>{pct(current[i]).toFixed(i ? 1 : 0).replace('.', ',')}%</b>
+      <span>{current[i]}</span>
+      <Delta current={current[i]} previous={previous[i]} />
+      <div class="fn-col" title={`${l}: ${current[i]} (anterior: ${previous[i]})`}>
+        <span class={`fn-bar o${i + 1}`} style={`height:${Math.max(2, (current[i] / top) * 100)}%`}></span>
+      </div>
+    </div>
+  ))}
+</div>
