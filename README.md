@@ -73,7 +73,7 @@ Site estático (Astro) com o design escuro/roxo das referências. Páginas:
 - **Novo caso de estudo:** cria um ficheiro `.md` em `src/content/insights/` (copia um existente e muda o texto e o cabeçalho). O nome do ficheiro é o endereço.
 - **Imagens:** `public/images/hero.jpg` (fundo do topo) e `public/images/og.jpg` (imagem quando o link é partilhado). Substitui por fotos reais quando as tiveres.
 - **Páginas legais** (Privacidade, Cookies, Termos): `src/content/legal/*.md`.
-- **Redirecionamentos** de endereços antigos (artigos `/post/...`, `/portefolio`): `public/_redirects`.
+- **Redirecionamentos** de endereços antigos (artigos `/post/...`, `/portefolio`) e **cabeçalhos de segurança**: `vercel.json`.
 - **Google Analytics, Google Ads e Meta Pixel:** preenche em `src/data/site.json` → `tracking`:
   - `googleAnalyticsId` — ex.: `G-XXXXXXX` (GA4 → Administrador → Fluxos de dados)
   - `googleAdsId` — ex.: `AW-123456789` (Google Ads → Ferramentas → Conversões → Etiqueta)
@@ -84,13 +84,21 @@ Site estático (Astro) com o design escuro/roxo das referências. Páginas:
   (Consent Mode v2 do Google incluído). Cliques em botões com `data-track="lead"`, `agendamento` ou `contacto`
   contam como conversão no Google Ads e como `Lead`/`Schedule`/`Contact` na Meta.
 - **Ligar ao hub:** em `site.json`, `analytics.hubUrl` = endereço do hub; regista o site no hub com o mesmo `siteId`
-  e acrescenta esse domínio a `script-src` e `connect-src` em `public/_headers`.
+  e acrescenta esse domínio a `script-src` e `connect-src` no `Content-Security-Policy` do `vercel.json`.
 
 ```bash
 cd apps/empower-site
 npm install
 npm run dev      # http://localhost:4321
-npm run build    # gera dist/ para Cloudflare Pages, Netlify ou similar
+npm run build    # gera dist/
 ```
 
-`public/_headers` define os cabeçalhos de segurança (CSP, HSTS, etc.) para Cloudflare Pages/Netlify.
+### Publicar no Vercel
+
+1. Vercel → **Add New → Project** → importa o repositório `sites` do GitHub.
+2. Em **Root Directory** escolhe `apps/empower-site` (o Vercel deteta o Astro sozinho) → **Deploy**.
+3. Confirma o site no endereço `*.vercel.app` que o Vercel te dá.
+4. **Settings → Domains** → adiciona `empowermarketing.online` e `www.empowermarketing.online`, e muda o DNS
+   no teu fornecedor de domínio para os valores que o Vercel indicar.
+
+Cada alteração enviada para o branch principal publica o site automaticamente; outros branches geram uma pré-visualização.

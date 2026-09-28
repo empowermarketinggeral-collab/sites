@@ -1,0 +1,102 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "astro",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/insights/category/casosdeestudo",
+      "destination": "/insights",
+      "permanent": true
+    },
+    {
+      "source": "/solucoes",
+      "destination": "/servicos",
+      "permanent": true
+    },
+    {
+      "source": "/mapa-de-crescimento",
+      "destination": "/mapadecrescimento",
+      "permanent": true
+    },
+    {
+      "source": "/post/casesclinica-estetica-crescimento-instagram-trafego-pago",
+      "destination": "/insights/clinica-de-estetica-125k-views-instagram",
+      "permanent": true
+    },
+    {
+      "source": "/post/casespatricia-melo-viralizacao-autoridade-video-curto",
+      "destination": "/insights/patricia-melo-tiktok",
+      "permanent": true
+    },
+    {
+      "source": "/post/casesdreams-academy-rebranding-premium-beleza",
+      "destination": "/insights/dreams-academy-rebranding",
+      "permanent": true
+    },
+    {
+      "source": "/portefolio",
+      "destination": "/insights",
+      "permanent": true
+    },
+    {
+      "source": "/insights/category/:path*",
+      "destination": "/insights",
+      "permanent": true
+    },
+    {
+      "source": "/insights/tag/:path*",
+      "destination": "/insights",
+      "permanent": true
+    },
+    {
+      "source": "/post/:path*",
+      "destination": "/insights",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.googletagmanager.com https://connect.facebook.net https://googleads.g.doubleclick.net https://www.googleadservices.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://*.google.pt https://www.googleadservices.com https://www.facebook.com; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://*.google.pt https://www.googleadservices.com https://www.facebook.com https://connect.facebook.net; frame-src https://*.googletagmanager.com https://td.doubleclick.net https://www.facebook.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        }
+      ]
+    },
+    {
+      "source": "/_astro/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

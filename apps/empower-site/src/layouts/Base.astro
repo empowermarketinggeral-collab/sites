@@ -13,7 +13,9 @@ import site from '../data/site.json';
 
 interface Props { title?: string; description?: string; quiz?: boolean; type?: 'website' | 'article' }
 const { title = site.meta.title, description = site.meta.description, quiz = true, type = 'website' } = Astro.props;
-const canonical = new URL(Astro.url.pathname, site.meta.url).href;
+// No build o caminho vem como /servicos.html; o endereço público é /servicos.
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+const canonical = new URL(path, site.meta.url).href;
 const ogImage = new URL('/images/og.jpg', site.meta.url).href;
 ---
 <!doctype html>
