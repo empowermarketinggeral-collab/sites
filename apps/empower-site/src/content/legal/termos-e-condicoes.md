@@ -1,6 +1,6 @@
 ---
 title: "Termos e Condições"
-updated: "19 de janeiro de 2026"
+updated: "28 de setembro de 2026"
 ---
 
 O presente documento estabelece os Termos e Condições que regulam o acesso e utilização deste website, bem como a contratação dos serviços e aquisição de produtos digitais disponibilizados por Beatriz Carneiro de Melo Francisco Malheiro, Empresária em Nome Individual.
@@ -11,9 +11,9 @@ Ao utilizar este site, contratar serviços ou adquirir produtos digitais, o util
 
 **Titular do site e prestadora dos serviços:** Beatriz Carneiro de Melo Francisco Malheiro<br>
 **NIF:** 274345369<br>
-**Morada:** Rua Manuel Pinho 125, 4350-107 Porto<br>
+**Morada:** Rua Manuel Pinho 125, 4350-107 Porto, Portugal<br>
 **Email:** [empowermarketing.geral@gmail.com](mailto:empowermarketing.geral@gmail.com)<br>
-**Telefone:** +351 910 199 928 (chamada para número nacional)
+**Telefone:** +351 910 199 278 (chamada para a rede móvel nacional)
 
 ## 2. Objeto
 

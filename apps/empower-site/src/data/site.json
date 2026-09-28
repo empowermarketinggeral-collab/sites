@@ -29,9 +29,10 @@
     "owner": "Beatriz Melo",
     "nif": "274345369",
     "location": "Porto, Portugal",
-    "phone": "+351 910199278",
-    "phoneNote": "chamada para número móvel nacional",
-    "email": "empowermarketing.geral@gmail.com"
+    "phone": "+351 910 199 278",
+    "phoneNote": "chamada para a rede móvel nacional",
+    "email": "empowermarketing.geral@gmail.com",
+    "address": "Rua Manuel Pinho 125, 4350-107 Porto, Portugal"
   },
   "quiz": {
     "eyebrow": "Diagnóstico gratuito",
@@ -70,8 +71,8 @@
     "siteId": "empower-marketing"
   },
   "tracking": {
-    "googleAnalyticsId": "",
-    "googleAdsId": "",
+    "googleAnalyticsId": "G-T869W05XBB",
+    "googleAdsId": "AW-18144497407",
     "googleAdsLeadLabel": "",
     "metaPixelId": ""
   }

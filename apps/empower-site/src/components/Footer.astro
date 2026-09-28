@@ -15,7 +15,7 @@ const year = new Date().getFullYear();
       <strong>{c.name}</strong><br />
       {c.owner}<br />
       NIF {c.nif}<br />
-      {c.location}<br />
+      {c.address}<br />
       <a href={`tel:${c.phone.replace(/\s/g, '')}`}>{c.phone}</a> <span class="muted">({c.phoneNote})</span><br />
       <a href={`mailto:${c.email}`}>{c.email}</a>
     </address>

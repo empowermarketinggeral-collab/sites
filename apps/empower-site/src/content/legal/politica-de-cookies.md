@@ -1,6 +1,6 @@
 ---
 title: "Política de Cookies"
-updated: "19 de janeiro de 2026"
+updated: "28 de setembro de 2026"
 ---
 
 A presente Política de Cookies explica como Beatriz Carneiro de Melo Francisco Malheiro utiliza cookies e tecnologias semelhantes neste website.
@@ -15,9 +15,9 @@ Cookies são pequenos ficheiros de texto armazenados no seu dispositivo quando v
 
 **Responsável pelo site e pelos cookies:** Beatriz Carneiro de Melo Francisco Malheiro<br>
 **NIF:** 274345369<br>
-**Morada:** Rua de Costa Cabral 259, 1 B, 4200-221 Porto, Portugal<br>
+**Morada:** Rua Manuel Pinho 125, 4350-107 Porto, Portugal<br>
 **Email:** [empowermarketing.geral@gmail.com](mailto:empowermarketing.geral@gmail.com)<br>
-**Telefone:** +351 910 199 928
+**Telefone:** +351 910 199 278 (chamada para a rede móvel nacional)
 
 ## 3. Tipos de cookies utilizados
 

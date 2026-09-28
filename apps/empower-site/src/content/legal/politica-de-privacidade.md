@@ -1,6 +1,6 @@
 ---
 title: "Política de Privacidade"
-updated: "19 de janeiro de 2026"
+updated: "28 de setembro de 2026"
 ---
 
 A presente Política de Privacidade descreve como Beatriz Carneiro de Melo Francisco Malheiro, Empresária em Nome Individual, recolhe, utiliza e protege os dados pessoais dos utilizadores que acedem e utilizam este website e os seus serviços.
@@ -11,9 +11,9 @@ Ao utilizar este site, confirma que leu, compreendeu e concorda com esta Políti
 
 **Responsável:** Beatriz Carneiro de Melo Francisco Malheiro<br>
 **NIF:** 274345369<br>
-**Morada:** Rua de Costa Cabral 259, 1 B, 4200-221 Porto, Portugal<br>
+**Morada:** Rua Manuel Pinho 125, 4350-107 Porto, Portugal<br>
 **Email:** [empowermarketing.geral@gmail.com](mailto:empowermarketing.geral@gmail.com)<br>
-**Telefone:** +351 910 199 928 (chamada para número nacional)
+**Telefone:** +351 910 199 278 (chamada para a rede móvel nacional)
 
 Para efeitos do Regulamento Geral sobre a Proteção de Dados (RGPD), a responsável acima identificada é a controladora dos dados pessoais.
 
