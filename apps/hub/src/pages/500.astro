@@ -1,0 +1,66 @@
+---
+import { databaseUrlKey } from '../lib/db';
+
+// Página de erro com diagnóstico: diz o que falta configurar, sem mostrar valores secretos.
+interface Props { error?: unknown }
+const err = Astro.props.error as { code?: string; name?: string; message?: string } | undefined;
+const code = err?.code ?? err?.name ?? 'desconhecido';
+console.error('[hub] erro', err);
+
+const onVercel = !!process.env.VERCEL;
+const dbKey = databaseUrlKey();
+const checks = [
+  { label: 'Base de dados (Supabase)', ok: !!dbKey || !onVercel, hint: 'Liga o Supabase em Storage no projeto do Vercel (cria a variável POSTGRES_URL) e faz Redeploy.' },
+  { label: 'HUB_PASSWORD_HASH', ok: !!process.env.HUB_PASSWORD_HASH, hint: 'Acrescenta em Settings → Environment Variables e faz Redeploy.' },
+  { label: 'HUB_SESSION_SECRET', ok: !!process.env.HUB_SESSION_SECRET, hint: 'Acrescenta em Settings → Environment Variables e faz Redeploy.' },
+];
+const dbHints: Record<string, string> = {
+  ECONNREFUSED: 'A base de dados recusou a ligação. Confirma que o projeto Supabase está ativo (não em pausa).',
+  ENOTFOUND: 'O endereço da base de dados não existe. Volta a ligar o Supabase em Storage.',
+  ETIMEDOUT: 'A base de dados não respondeu a tempo. Confirma que o projeto Supabase está ativo.',
+  '28P01': 'Utilizador ou password da base de dados errados. Volta a ligar o Supabase em Storage.',
+  '3D000': 'A base de dados indicada não existe.',
+  EROFS: 'Não há base de dados configurada: liga o Supabase em Storage e faz Redeploy.',
+  ENOENT: 'Não há base de dados configurada: liga o Supabase em Storage e faz Redeploy.',
+};
+const hint = dbHints[code] ?? (onVercel && !dbKey ? dbHints.EROFS : undefined);
+Astro.response.status = 500;
+---
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Erro · Empower Hub</title>
+  </head>
+  <body>
+    <main>
+      <h1>✦ Algo não está configurado</h1>
+      {hint && <p class="hint">{hint}</p>}
+      <ul>
+        {checks.map((c) => (
+          <li class={c.ok ? 'ok' : 'bad'}>
+            <strong>{c.ok ? '✓' : '✕'} {c.label}</strong>
+            {!c.ok && <span>{c.hint}</span>}
+          </li>
+        ))}
+      </ul>
+      <p class="muted">Código do erro: <code>{code}</code>{dbKey && <> · variável da base de dados: <code>{dbKey}</code></>}</p>
+      <p><a href="/login">Tentar de novo</a></p>
+    </main>
+  </body>
+</html>
+
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(80% 80% at 50% 0%, #2a1540, #111114 70%); color: #f2eff5; font: 15px/1.5 system-ui, sans-serif; padding: 16px; }
+  main { max-width: 520px; background: #1b1722; border: 1px solid #2e2838; border-radius: 16px; padding: 2rem; }
+  h1 { margin: 0 0 1rem; font-size: 1.3rem; font-weight: 600; }
+  ul { list-style: none; padding: 0; display: grid; gap: .7rem; }
+  li { display: grid; gap: .2rem; }
+  li span { color: #a59fae; font-size: .9rem; }
+  .ok strong { color: #7fd1a4; } .bad strong { color: #f08a8a; }
+  .hint { background: #2a1540; border-radius: 10px; padding: .8rem 1rem; }
+  .muted { color: #a59fae; font-size: .85rem; }
+  a { color: #b89ce0; }
+</style>

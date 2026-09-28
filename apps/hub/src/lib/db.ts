@@ -37,13 +37,22 @@ interface Conn { query(sql: string, params?: Value[]): Promise<Record<string, un
 
 let conn: Promise<Conn> | undefined;
 
+// A integração Supabase do Vercel pode criar a variável com prefixo (ex.: STORAGE_POSTGRES_URL).
+export function databaseUrlKey(): string | undefined {
+  const keys = Object.keys(process.env).filter((k) => /POSTGRES_URL$/.test(k) && !/NON_POOLING/.test(k) && process.env[k]);
+  return keys.find((k) => k === 'POSTGRES_URL') ?? keys.sort()[0] ?? (env('DATABASE_URL') ? 'DATABASE_URL' : undefined);
+}
+
 // Supabase em produção (POSTGRES_URL, criado pela integração do Vercel); Postgres local em ficheiro no desenvolvimento.
 function db(): Promise<Conn> {
   conn ??= (async () => {
-    const c: Conn = await connect({ url: env('POSTGRES_URL') ?? env('DATABASE_URL'), localDir: env('HUB_DB_DIR') ?? './data/pglite' });
+    const key = databaseUrlKey();
+    const c: Conn = await connect({ url: key ? env(key) : undefined, localDir: env('HUB_DB_DIR') ?? './data/pglite' });
     await migrate(c);
     return c;
   })();
+  // Se falhar, tenta de novo no próximo pedido em vez de ficar preso ao erro.
+  conn.catch(() => { conn = undefined; });
   return conn;
 }
 
