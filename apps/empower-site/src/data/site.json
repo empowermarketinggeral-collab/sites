@@ -2,7 +2,7 @@
   "meta": {
     "title": "Empower Marketing — Consultoria de Crescimento Estratégico",
     "description": "Enquanto o mercado empurra conteúdo, nós construímos posição. Consultoria estratégica para marcas que querem ser referência e não só +1 tendência.",
-    "url": "https://empowermarketing.online",
+    "url": "https://www.empowermarketing.online",
     "locale": "pt_PT"
   },
   "nav": [
@@ -67,7 +67,7 @@
     "copyright": "© EMPOWER MARKETING {year}. Todos os direitos reservados."
   },
   "analytics": {
-    "hubUrl": "",
+    "hubUrl": "https://sites-fyz8.vercel.app",
     "siteId": "empower-marketing"
   },
   "tracking": {
