@@ -12,8 +12,9 @@ import CookieConsent from '../components/CookieConsent.astro';
 import site from '../data/site.json';
 
 // quiz: bloco de lead magnet no fim da página (desligado até haver um novo).
-interface Props { title?: string; description?: string; quiz?: boolean; type?: 'website' | 'article' }
-const { title = site.meta.title, description = site.meta.description, quiz = false, type = 'website' } = Astro.props;
+// noindex: páginas privadas (ex.: reunião agendada) que não devem aparecer no Google.
+interface Props { title?: string; description?: string; quiz?: boolean; type?: 'website' | 'article'; noindex?: boolean }
+const { title = site.meta.title, description = site.meta.description, quiz = false, type = 'website', noindex = false } = Astro.props;
 // No build o caminho vem como /servicos.html; o endereço público é /servicos.
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
 const canonical = new URL(path, site.meta.url).href;
@@ -39,6 +40,7 @@ const ogImage = new URL('/images/og.jpg', site.meta.url).href;
     <meta property="og:locale" content={site.meta.locale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     {site.analytics.hubUrl && <script is:inline defer src={`${site.analytics.hubUrl}/t.js`} data-site={site.analytics.siteId}></script>}
     <slot name="head" />
   </head>

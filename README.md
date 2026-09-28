@@ -77,6 +77,9 @@ Site estático (Astro) com o design escuro/roxo das referências. Páginas:
 - **Novo caso de estudo:** cria um ficheiro `.md` em `src/content/insights/` (copia um existente e muda o texto e o cabeçalho). O nome do ficheiro é o endereço.
 - **Imagens:** `public/images/hero.jpg` (fundo do topo) e `public/images/og.jpg` (imagem quando o link é partilhado). Substitui por fotos reais quando as tiveres.
 - **Páginas legais** (Privacidade, Cookies, Termos): `src/content/legal/*.md`.
+- **Página privada `/reuniao-agendada`** (depois de marcar reunião): `src/data/reuniao.json`. Não aparece no menu nem no Google.
+  Conta como conversão `agendamento` (app central, Google Ads, Meta `Schedule`), uma vez por sessão.
+  Vídeos: em `videos.items`, `type` = `file` (ficheiro em `public/videos/…`), `youtube` (ID do vídeo) ou `vimeo` (ID); a secção só aparece com vídeos.
 - **Redirecionamentos** de endereços antigos (artigos `/post/...`, `/portefolio`) e **cabeçalhos de segurança**: `vercel.json`.
 - **Google Analytics, Google Ads e Meta Pixel:** preenche em `src/data/site.json` → `tracking`:
   - `googleAnalyticsId` — ex.: `G-XXXXXXX` (GA4 → Administrador → Fluxos de dados)
