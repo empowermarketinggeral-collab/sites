@@ -7,25 +7,49 @@
     "eyebrow": "Mapa de Crescimento",
     "title": "O diagnóstico que mostra onde a tua marca perde valor!",
     "text": "Um diagnóstico completo de 6 etapas, entregue mesmo que decidas não avançar depois. É o primeiro passo, sério, sem promessas vagas.",
-    "primaryCta": { "label": "Pedir o Mapa de Crescimento", "href": "whatsappMapa" },
-    "secondaryCta": { "label": "Ver as 6 etapas", "href": "#etapas" }
+    "primaryCta": {
+      "label": "Pedir o Mapa de Crescimento",
+      "href": "whatsappMapa"
+    },
+    "secondaryCta": {
+      "label": "Ver as 6 etapas",
+      "href": "#etapas"
+    }
   },
   "steps": {
     "eyebrow": "O que recebes",
     "title": "6 etapas. Um diagnóstico completo,",
     "subtitle": "não uma chamada de consultoria.",
     "items": [
-      { "title": "Diagnóstico de Posicionamento", "text": "Onde estás hoje e onde há espaço para ocupar um lugar único no mercado." },
-      { "title": "Análise de Mercado e Concorrência", "text": "Quem disputa o teu espaço e onde estão as aberturas que ninguém está a explorar." },
-      { "title": "Perfil de Cliente Ideal", "text": "Quem é (e quem não é) o cliente que a tua marca deve atrair." },
-      { "title": "Auditoria de Canais Atuais", "text": "O que já tens a funcionar, o que está a travar-te e o que deve ser abandonado." },
-      { "title": "Recomendações Estratégicas", "text": "As peças, do branding ao CRM, que fazem sentido para o teu objetivo." },
-      { "title": "Roadmap de Implementação", "text": "Prioridades claras e uma sequência de execução, com ou sem a Empower." }
+      {
+        "title": "Diagnóstico de Posicionamento",
+        "text": "Onde estás hoje e onde há espaço para ocupar um lugar único no mercado."
+      },
+      {
+        "title": "Análise de Mercado e Concorrência",
+        "text": "Quem disputa o teu espaço e onde estão as aberturas que ninguém está a explorar."
+      },
+      {
+        "title": "Perfil de Cliente Ideal",
+        "text": "Quem é (e quem não é) o cliente que a tua marca deve atrair."
+      },
+      {
+        "title": "Auditoria de Canais Atuais",
+        "text": "O que já tens a funcionar, o que está a travar-te e o que deve ser abandonado."
+      },
+      {
+        "title": "Recomendações Estratégicas",
+        "text": "As peças, do branding ao CRM, que fazem sentido para o teu objetivo."
+      },
+      {
+        "title": "Roadmap de Implementação",
+        "text": "Prioridades claras e uma sequência de execução, com ou sem a Empower."
+      }
     ]
   },
   "fit": {
     "eyebrow": "Para quem é",
-    "title": "Este é o teu primeiro passo se:",
+    "title": "Este é o teu primeiro passo.",
     "yes": {
       "title": "Faz sentido para ti",
       "items": [
@@ -51,20 +75,29 @@
         "name": "Mapa de Crescimento",
         "price": "950€",
         "text": "Para marcas com um posicionamento e um mercado a definir com profundidade.",
-        "cta": { "label": "Pedir este mapa", "href": "https://api.whatsapp.com/send/?phone=351910199278&text=quero+come%C3%A7ar+o+meu+mapa+de+crescimento+de+marca+%C3%BAnica&type=phone_number&app_absent=0" }
+        "cta": {
+          "label": "Pedir este mapa",
+          "href": "https://api.whatsapp.com/send/?phone=351910199278&text=quero+come%C3%A7ar+o+meu+mapa+de+crescimento+de+marca+%C3%BAnica&type=phone_number&app_absent=0"
+        }
       },
       {
         "label": "Multimarca / Múltiplos mercados",
         "name": "Mapa de Crescimento +complexo",
         "price": "1.500€",
         "text": "Para marcas com múltiplos mercados, franchising ou arquitetura multiproduto.",
-        "cta": { "label": "Pedir este mapa", "href": "https://api.whatsapp.com/send/?phone=351910199278&text=quero+come%C3%A7ar+o+meu+mapa+de+crescimento+%2Bcompleto&type=phone_number&app_absent=0" }
+        "cta": {
+          "label": "Pedir este mapa",
+          "href": "https://api.whatsapp.com/send/?phone=351910199278&text=quero+come%C3%A7ar+o+meu+mapa+de+crescimento+%2Bcompleto&type=phone_number&app_absent=0"
+        }
       }
     ],
     "note": "Política de abate: se avançares para um projeto Core em até 30 dias após o Mapa, o valor investido é 100% abatido na primeira mensalidade."
   },
   "closing": {
     "title": "Vamos mapear onde a tua marca está a perder valor?",
-    "cta": { "label": "Pedir o Mapa de Crescimento", "href": "whatsappMapa" }
+    "cta": {
+      "label": "Pedir o Mapa de Crescimento",
+      "href": "whatsappMapa"
+    }
   }
 }
