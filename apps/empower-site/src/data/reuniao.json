@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Reunião agendada — Empower Marketing",
+    "description": "A tua reunião com a Empower Marketing está marcada."
+  },
+  "hero": {
+    "eyebrow": "Reunião agendada",
+    "title": "Está marcado.",
+    "accent": "Obrigado pelos teus 30 minutos.",
+    "text": "Por agora só precisamos da tua presença. A confirmação e o link da reunião seguem para o teu email."
+  },
+  "next": {
+    "eyebrow": "O que acontece a seguir",
+    "steps": [
+      {
+        "title": "Confirma o teu email",
+        "text": "Recebes a confirmação com o link da reunião. Se não a vires, espreita a pasta de spam ou promoções."
+      },
+      {
+        "title": "Prepara-te em 10 minutos",
+        "text": "Vê os vídeos abaixo. Vais chegar à reunião com as perguntas certas.",
+        "textNoVideos": "Espreita os casos de estudo abaixo. Vais chegar à reunião com as perguntas certas."
+      },
+      {
+        "title": "Na reunião",
+        "text": "30 minutos para percebermos o momento da tua marca e onde está a perder valor."
+      }
+    ]
+  },
+  "videos": {
+    "eyebrow": "Enquanto esperas",
+    "title": "Vídeos curtos para começares já a gerar valor.",
+    "text": "Uma seleção de temas-chave para qualquer negócio que quer escalar as suas vendas.",
+    "items": [
+      {
+        "title": "",
+        "type": "file",
+        "src": "",
+        "poster": ""
+      },
+      {
+        "title": "",
+        "type": "file",
+        "src": "",
+        "poster": ""
+      },
+      {
+        "title": "",
+        "type": "file",
+        "src": "",
+        "poster": ""
+      }
+    ]
+  },
+  "cases": {
+    "eyebrow": "Casos de Estudo",
+    "title": "O que acontece quando a estratégia vem primeiro."
+  },
+  "reschedule": {
+    "text": "Precisas de remarcar?",
+    "cta": {
+      "label": "Fala connosco no WhatsApp",
+      "href": "whatsappReagendar"
+    }
+  }
+}

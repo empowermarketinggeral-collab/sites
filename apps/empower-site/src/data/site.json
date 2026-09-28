@@ -22,7 +22,8 @@
   "links": {
     "booking": "https://big-boos.vercel.app/agendar/empowermarketing",
     "whatsappMapa": "https://api.whatsapp.com/send/?phone=351910199278&text=quero+come%C3%A7ar+o+meu+mapa+de+crescimento&type=phone_number&app_absent=0",
-    "quiz": "https://api.leadconnectorhq.com/widget/quiz/de5lxON1nr0a5eWJfJRg"
+    "quiz": "https://api.leadconnectorhq.com/widget/quiz/de5lxON1nr0a5eWJfJRg",
+    "whatsappReagendar": "https://api.whatsapp.com/send/?phone=351910199278&text=Ol%C3%A1%21+Preciso+de+remarcar+a+minha+reuni%C3%A3o.&type=phone_number&app_absent=0"
   },
   "company": {
     "name": "Empower Marketing",

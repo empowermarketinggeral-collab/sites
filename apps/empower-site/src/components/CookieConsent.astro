@@ -74,6 +74,7 @@ const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tr
 
     function apply(c) {
       state = c;
+      setTimeout(flush, 0);
       if (c.analytics || c.marketing) loadGoogle(c);
       if (c.marketing) loadMeta();
       if (!c.marketing && loaded.meta) fbq('consent', 'revoke');
@@ -83,10 +84,7 @@ const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tr
     }
 
     // Eventos: data-track="lead" (e agendamento, contacto) conta como conversão no Google Ads e na Meta.
-    document.addEventListener('click', function (e) {
-      var el = e.target.closest && e.target.closest('[data-track]');
-      if (!el || !state) return;
-      var name = el.getAttribute('data-track');
+    function send(name) {
       if (window.gtag && (state.analytics || state.marketing)) gtag('event', name);
       if (CONVERSIONS[name] && state.marketing) {
         if (window.gtag && tracking.googleAdsId && tracking.googleAdsLeadLabel) {
@@ -94,6 +92,18 @@ const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tr
         }
         if (window.fbq) fbq('track', CONVERSIONS[name]);
       }
+    }
+    // Conversões ao abrir uma página (ex.: reunião agendada): esperam pela escolha de cookies.
+    var pending = [];
+    function flush() {
+      if (!state) return;
+      while (pending.length) send(pending.shift());
+    }
+    window.empowerConversion = function (name) { pending.push(name); flush(); };
+
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest && e.target.closest('[data-track]');
+      if (el && state) send(el.getAttribute('data-track'));
     });
 
     var box = document.getElementById('consent');

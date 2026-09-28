@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { formatDate } from '../lib/format';
+import page from '../data/reuniao.json';
+
+// Página privada: não aparece no menu, no rodapé nem no Google. É o destino depois de marcar reunião.
+const { meta, hero, next, videos, cases, reschedule } = page;
+interface Video { title: string; type: string; src: string; poster: string }
+const videoItems = (videos.items as Video[]).filter((v) => v.src);
+const embed = (v: Video) =>
+  v.type === 'youtube' ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.src)}?rel=0&modestbranding=1`
+  : v.type === 'vimeo' ? `https://player.vimeo.com/video/${encodeURIComponent(v.src)}?dnt=1`
+  : null;
+
+const posts = (await getCollection('insights')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+---
+<Base title={meta.title} description={meta.description} noindex>
+  <section class="page-hero booked">
+    <div class="wrap">
+      <p class="eyebrow reveal"><span class="check" aria-hidden="true">✓</span> {hero.eyebrow}</p>
+      <h1 class="display page-title reveal">{hero.title}<br /><span class="accent">{hero.accent}</span></h1>
+      <p class="lead reveal">{hero.text}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={next.eyebrow} title="Três passos simples." small />
+      <ol class="steps">
+        {next.steps.map((s, i) => (
+          <li class="step reveal">
+            <span class="step-n display">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="card-title">{s.title}</h3>
+            <p>{videoItems.length === 0 && 'textNoVideos' in s ? s.textNoVideos : s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {videoItems.length > 0 && (
+    <section class="section" id="videos">
+      <div class="wrap">
+        <SectionHead eyebrow={videos.eyebrow} title={videos.title} small />
+        <p class="body-lg intro-text reveal">{videos.text}</p>
+        <div class="video-grid">
+          {videoItems.map((v) => (
+            <figure class="video reveal">
+              {embed(v)
+                ? <iframe src={embed(v)!} title={v.title || 'Vídeo Empower'} loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>
+                : <video controls playsinline preload="metadata" poster={v.poster || undefined} src={v.src}></video>}
+              {v.title && <figcaption>{v.title}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={cases.eyebrow} title={cases.title} small />
+      <div class="post-grid">
+        {posts.map((p) => (
+          <a class="post-card reveal" href={`/insights/${p.id}`}>
+            {p.data.highlight && (
+              <div class="post-highlight">
+                <span class="display">{p.data.highlight}</span>
+                <small>{p.data.highlightLabel}</small>
+              </div>
+            )}
+            <h3 class="card-title">{p.data.title}</h3>
+            <p>{p.data.description}</p>
+            <p class="post-meta">{formatDate(p.data.date)} · {p.data.readingTime} min de leitura</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap center reveal">
+      <p class="body-lg" style="margin-inline:auto">{reschedule.text}</p>
+      <p><Button href={reschedule.cta.href} variant="outline">{reschedule.cta.label}</Button></p>
+    </div>
+  </section>
+
+  <script is:inline>
+    // Conta a reunião como conversão (app central + Google Ads/Meta, se aceites), uma vez por sessão.
+    window.addEventListener('load', function () {
+      try { if (sessionStorage.getItem('empower-booked')) return; sessionStorage.setItem('empower-booked', '1'); } catch (e) {}
+      if (window.empowerTrack) window.empowerTrack('agendamento');
+      if (window.empowerConversion) window.empowerConversion('agendamento');
+    });
+  </script>
+</Base>
