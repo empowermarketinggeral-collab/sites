@@ -1,16 +1,19 @@
 {
   "meta": {
-    "title": "Guia Anti-Erros · Diagnóstico Capilar — Dreams Academy",
-    "description": "E-book profissional de diagnóstico capilar. Transforma a tua técnica em ciência e eleva o teu nível profissional em 15 dias. 27€, acesso imediato."
+    "title": "Diagnóstico Capilar: E-book Guia Anti-Erros | Dreams Academy",
+    "description": "E-book de diagnóstico capilar para cabeleireiras: cortes, coloração e descoloração seguras, sinais de alerta e planos de tratamento. 27€, acesso imediato."
   },
   "trainer": "patricia",
   "urgency": "Oferta limitada · Vagas restritas a este preço promocional",
   "hero": {
-    "eyebrow": "E-book profissional",
+    "eyebrow": "E-book de diagnóstico capilar",
     "title": "Diagnóstico Capilar",
     "subtitle": "Transforma a tua técnica em ciência.",
     "text": "O método exclusivo que vai elevar o teu nível profissional em 15 dias.",
-    "cta": { "label": "Quero transformar a minha carreira", "href": "#oferta" },
+    "cta": {
+      "label": "Quero transformar a minha carreira",
+      "href": "#oferta"
+    },
     "note": "★★★★★ 4.9/5 · +1200 profissionais"
   },
   "problem": {
@@ -18,16 +21,37 @@
     "title": "Estás a perder clientes",
     "accent": "sem saber porquê?",
     "items": [
-      { "title": "Erros técnicos", "text": "Decisões erradas que destroem reputações construídas em anos." },
-      { "title": "Clientes insatisfeitos", "text": "Saem do salão e nunca mais voltam e tu não sabes porquê." },
-      { "title": "Trabalho inconsistente", "text": "Resultados imprevisíveis que minam a tua confiança diária." },
-      { "title": "Medo de falhar", "text": "A ansiedade antes de cada serviço novo é exaustiva." }
+      {
+        "title": "Erros técnicos",
+        "text": "Decisões erradas que destroem reputações construídas em anos."
+      },
+      {
+        "title": "Clientes insatisfeitos",
+        "text": "Saem do salão e nunca mais voltam e tu não sabes porquê."
+      },
+      {
+        "title": "Trabalho inconsistente",
+        "text": "Resultados imprevisíveis que minam a tua confiança diária."
+      },
+      {
+        "title": "Medo de falhar",
+        "text": "A ansiedade antes de cada serviço novo é exaustiva."
+      }
     ],
     "question": "Quantos clientes já perdeste por não saberes diagnosticar corretamente?",
     "stats": [
-      { "value": "€€€", "label": "Prejuízos financeiros silenciosos todos os meses" },
-      { "value": "24/7", "label": "Desgaste emocional que te acompanha para casa" },
-      { "value": "0%", "label": "Crescimento profissional. Estagnação total." }
+      {
+        "value": "€€€",
+        "label": "Prejuízos financeiros silenciosos todos os meses"
+      },
+      {
+        "value": "24/7",
+        "label": "Desgaste emocional que te acompanha para casa"
+      },
+      {
+        "value": "0%",
+        "label": "Crescimento profissional. Estagnação total."
+      }
     ]
   },
   "solution": {
@@ -44,27 +68,62 @@
     "eyebrow": "O que vais aprender",
     "title": "Conhecimento que muda carreiras.",
     "items": [
-      { "title": "Diagnóstico para cortes personalizados", "text": "Como fazer um diagnóstico correto para cortes verdadeiramente à medida de cada cliente." },
-      { "title": "Cortes que valorizam a cliente", "text": "Como escolher cortes que valorizam e evitam desastres irreversíveis." },
-      { "title": "Coloração & descoloração segura", "text": "Como identificar se o cabelo pode (ou não) receber coloração ou descoloração." },
-      { "title": "Sinais de socorro no cabelo", "text": "Como identificar sinais no couro cabeludo e nos fios que pedem socorro imediato." },
-      { "title": "Planos de tratamento eficazes", "text": "Como montar planos de tratamento com resultados consistentes e mensuráveis." }
+      {
+        "title": "Diagnóstico para cortes personalizados",
+        "text": "Como fazer um diagnóstico correto para cortes verdadeiramente à medida de cada cliente."
+      },
+      {
+        "title": "Cortes que valorizam a cliente",
+        "text": "Como escolher cortes que valorizam e evitam desastres irreversíveis."
+      },
+      {
+        "title": "Coloração & descoloração segura",
+        "text": "Como identificar se o cabelo pode (ou não) receber coloração ou descoloração."
+      },
+      {
+        "title": "Sinais de socorro no cabelo",
+        "text": "Como identificar sinais no couro cabeludo e nos fios que pedem socorro imediato."
+      },
+      {
+        "title": "Planos de tratamento eficazes",
+        "text": "Como montar planos de tratamento com resultados consistentes e mensuráveis."
+      }
     ]
   },
   "bonuses": {
     "eyebrow": "Bónus incluídos",
     "items": [
-      { "label": "Bónus 1", "title": "Checklist de Diagnóstico", "text": "Checklist prático de diagnóstico para cada procedimento que vais executar." },
-      { "label": "Bónus 2", "title": "Cronograma Capilar", "text": "Passo a passo completo para construíres cronogramas capilares profissionais." }
+      {
+        "label": "Bónus 1",
+        "title": "Checklist de Diagnóstico",
+        "text": "Checklist prático de diagnóstico para cada procedimento que vais executar."
+      },
+      {
+        "label": "Bónus 2",
+        "title": "Cronograma Capilar",
+        "text": "Passo a passo completo para construíres cronogramas capilares profissionais."
+      }
     ]
   },
   "testimonials": {
     "eyebrow": "Histórias reais",
     "title": "Profissionais que deram o salto.",
     "items": [
-      { "quote": "Mudou completamente a forma como abordo cada cliente. Em 2 semanas senti a diferença na confiança.", "name": "Sofia Marques", "role": "Cabeleireira · Lisboa" },
-      { "quote": "Investimento mais inteligente da minha carreira. Recuperei o valor na primeira semana.", "name": "Inês Gomes", "role": "Color specialist · Braga" },
-      { "quote": "O sistema 360° é genial. Hoje diagnostico antes de tocar no cabelo e os resultados falam por si.", "name": "Catarina Roque", "role": "Hairstylist · Porto" }
+      {
+        "quote": "Mudou completamente a forma como abordo cada cliente. Em 2 semanas senti a diferença na confiança.",
+        "name": "Sofia Marques",
+        "role": "Cabeleireira · Lisboa"
+      },
+      {
+        "quote": "Investimento mais inteligente da minha carreira. Recuperei o valor na primeira semana.",
+        "name": "Inês Gomes",
+        "role": "Color specialist · Braga"
+      },
+      {
+        "quote": "O sistema 360° é genial. Hoje diagnostico antes de tocar no cabelo e os resultados falam por si.",
+        "name": "Catarina Roque",
+        "role": "Hairstylist · Porto"
+      }
     ]
   },
   "offer": {
@@ -81,7 +140,10 @@
       "Bónus: material extra de apoio",
       "Atualizações futuras incluídas"
     ],
-    "cta": { "label": "Quero transformar a minha carreira", "href": "https://pay.hotmart.com/L101262732T?checkoutMode=10&bid=1774021934881" }
+    "cta": {
+      "label": "Quero transformar a minha carreira",
+      "href": "https://pay.hotmart.com/L101262732T?checkoutMode=10&bid=1774021934881"
+    }
   },
   "guarantee": {
     "title": "15 dias para aplicar.",
@@ -93,15 +155,31 @@
     "eyebrow": "Perguntas frequentes",
     "title": "Esclarecimentos antes de decidires",
     "items": [
-      { "q": "O conteúdo serve para o meu nível de experiência?", "a": "Sim. O guia foi pensado tanto para quem está a começar como para profissionais com anos de salão que querem trabalhar com mais método e segurança em cada diagnóstico." },
-      { "q": "Quanto tempo preciso para estudar?", "a": "Lês ao teu ritmo. Em poucas horas tens a base do método e depois aplicas nas tuas clientes ao longo dos 15 dias seguintes." },
-      { "q": "Como vou receber o material?", "a": "Logo após a confirmação do pagamento recebes por e-mail o acesso ao e-book e aos bónus, através da Hotmart." }
+      {
+        "q": "O conteúdo serve para o meu nível de experiência?",
+        "a": "Sim. O guia foi pensado tanto para quem está a começar como para profissionais com anos de salão que querem trabalhar com mais método e segurança em cada diagnóstico."
+      },
+      {
+        "q": "Quanto tempo preciso para estudar?",
+        "a": "Lês ao teu ritmo. Em poucas horas tens a base do método e depois aplicas nas tuas clientes ao longo dos 15 dias seguintes."
+      },
+      {
+        "q": "Como vou receber o material?",
+        "a": "Logo após a confirmação do pagamento recebes por e-mail o acesso ao e-book e aos bónus, através da Hotmart."
+      }
     ]
   },
   "final": {
     "title": "A tua próxima cliente merece o melhor de ti.",
     "text": "Preço promocional por tempo limitado.",
-    "cta": { "label": "Quero o meu acesso por 27€", "href": "https://pay.hotmart.com/L101262732T?checkoutMode=10&bid=1774021934881" },
-    "badges": ["Garantia 15 dias", "Comunidade exclusiva", "Resultados em 72h"]
+    "cta": {
+      "label": "Quero o meu acesso por 27€",
+      "href": "https://pay.hotmart.com/L101262732T?checkoutMode=10&bid=1774021934881"
+    },
+    "badges": [
+      "Garantia 15 dias",
+      "Comunidade exclusiva",
+      "Resultados em 72h"
+    ]
   }
 }

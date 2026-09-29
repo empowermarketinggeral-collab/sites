@@ -5,12 +5,11 @@ const { size = 'header' } = Astro.props;
 ---
 <span class:list={['logo', `logo-${size}`]}>
   <picture>
-    <source srcset="/images/espelho.webp" type="image/webp" />
-    <img src="/images/espelho.png" alt="" width="658" height="858" decoding="async" />
+    <source srcset="/images/espelho-96.webp 96w, /images/espelho-400.webp 400w" sizes={size === 'footer' ? '74px' : '46px'} type="image/webp" />
+    <img src="/images/espelho-96.png" alt="" width="96" height="125" decoding="async" />
   </picture>
   <span class="logo-word">
-    <span class="logo-dreams">Dreams</span>
-    <span class="logo-academy">Academy</span>
+    <span class="logo-dreams">Dreams</span> <span class="logo-academy">Academy</span>
   </span>
 </span>
 

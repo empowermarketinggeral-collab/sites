@@ -154,7 +154,7 @@ a:focus-visible, .btn:focus-visible, button:focus-visible { outline: 2px solid v
 .freebie-name { font-size: clamp(2rem, 4vw, 2.8rem); color: var(--navy); }
 .freebie-sub { font-weight: 600; }
 .freebie-card .checks { margin: .6rem 0 1rem; }
-.badge { display: inline-block; margin: 0; padding: .3rem .8rem; border-radius: 999px; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; background: rgba(184, 154, 88, .16); color: var(--gold-deep); }
+.badge { display: inline-block; margin: 0; padding: .3rem .8rem; border-radius: 999px; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; background: rgba(184, 154, 88, .16); color: #6c5020; }
 
 /* Listas */
 .checks { display: grid; gap: .65rem; }

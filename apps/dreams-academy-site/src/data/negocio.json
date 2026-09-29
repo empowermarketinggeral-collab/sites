@@ -1,38 +1,59 @@
 {
   "meta": {
-    "title": "Marketing & Negócio — Dreams Academy",
-    "description": "Ter talento não chega. Se não vendes, não tens negócio. Posicionamento, escada de valor e funis para profissionais da beleza."
+    "title": "Marketing para Cabeleireiras e Beleza | Dreams Academy",
+    "description": "Marketing e vendas para profissionais de beleza: posicionamento, escada de valor e funis para atrair clientes e deixar de competir por preço."
   },
   "hero": {
-    "eyebrow": "Pilar II · Marketing & Negócio",
+    "eyebrow": "Pilar II · Marketing para profissionais de beleza",
     "title": "Ter talento não chega.",
     "accent": "Se não vendes, não tens negócio.",
     "text": "Podes ser excelente tecnicamente. Se ninguém compra, isso não importa."
   },
   "products": {
     "eyebrow": "Produtos disponíveis",
-    "title": "Da marca ao sistema de vendas.",
+    "title": "Marketing e vendas: da marca ao sistema.",
     "items": [
       {
         "type": "E-book",
         "name": "Invisível → Inesquecível",
         "hook": "Se não sabes quem és, também ninguém vai saber por que te escolher.",
-        "items": ["Define a tua mensagem", "Cria identidade clara", "Posiciona-te com intenção"],
-        "cta": { "label": "Quero deixar de ser invisível", "href": "/invisivelaoinesquecivel" }
+        "items": [
+          "Define a tua mensagem",
+          "Cria identidade clara",
+          "Posiciona-te com intenção"
+        ],
+        "cta": {
+          "label": "Quero deixar de ser invisível",
+          "href": "/invisivelaoinesquecivel"
+        }
       },
       {
         "type": "Mini-curso",
         "name": "Do Click ao Compromisso",
         "hook": "Seguidores não pagam contas.",
-        "items": ["Cria a tua escada de valor", "Aprende a estruturar produtos", "Monta um funil simples"],
-        "cta": { "label": "Quero transformar atenção em clientes", "href": "/clickaocompromisso" }
+        "items": [
+          "Cria a tua escada de valor",
+          "Aprende a estruturar produtos",
+          "Monta um funil simples"
+        ],
+        "cta": {
+          "label": "Quero transformar atenção em clientes",
+          "href": "/clickaocompromisso"
+        }
       },
       {
         "type": "Masterclass",
         "name": "Fluxo Estratégico",
         "hook": "Negócio sem sistema = esforço infinito.",
-        "items": ["Os 4 funis essenciais", "Estrutura de crescimento", "Base para escalar"],
-        "cta": { "label": "Quero criar um sistema", "href": "/fluxoestretategico" }
+        "items": [
+          "Os 4 funis essenciais",
+          "Estrutura de crescimento",
+          "Base para escalar"
+        ],
+        "cta": {
+          "label": "Quero criar um sistema",
+          "href": "/fluxoestretategico"
+        }
       }
     ]
   }

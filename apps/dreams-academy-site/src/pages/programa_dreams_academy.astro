@@ -4,10 +4,15 @@ import Button from '../components/Button.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Faq from '../components/Faq.astro';
 import page from '../data/programa.json';
+import { course, faqPage } from '../lib/schema';
 
 const { meta, hero, problem, includes, results, closing, faq } = page;
+const schema = [
+  { ...course({ name: 'Programa Dreams Academy — Formação de cabeleireiro em 90 dias', description: meta.description, path: '/programa_dreams_academy', mode: 'blended' }), hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'blended', courseSchedule: { '@type': 'Schedule', duration: 'P90D', repeatFrequency: 'P3M' } } },
+  faqPage(faq.items),
+];
 ---
-<Base title={meta.title} description={meta.description}>
+<Base title={meta.title} description={meta.description} schema={schema}>
   <section class="page-hero">
     <div class="hero-fabric" aria-hidden="true"></div>
     <div class="wrap page-hero-inner">

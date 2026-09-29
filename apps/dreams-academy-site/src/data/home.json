@@ -1,22 +1,43 @@
 {
   "hero": {
-    "eyebrow": "Academia de formação",
+    "eyebrow": "Academia de formação para cabeleireiras",
     "title": "Transforma o teu talento",
     "accent": "em negócio.",
     "text": "Não precisas de mais cursos genéricos. Precisas de direção: técnica, estratégia e clientes.",
     "note": "Só para profissionais de beleza que querem viver tranquilamente do seu ofício.",
-    "primaryCta": { "label": "Quero entrar no Programa Dreams", "href": "programa" },
-    "secondaryCta": { "label": "Conhecer outros produtos", "href": "#pilares" },
+    "primaryCta": {
+      "label": "Quero entrar no Programa Dreams",
+      "href": "programa"
+    },
+    "secondaryCta": {
+      "label": "Conhecer outros produtos",
+      "href": "#pilares"
+    },
     "tagline": "+30 anos no terreno · 90 dias de transformação"
   },
   "proof": [
-    { "value": "+30", "label": "Anos no terreno", "text": "A trabalhar com clientes reais. Não em PowerPoints." },
-    { "value": "Milhares", "label": "de clientes atendidas", "text": "Resultados validados em cadeira. Não apenas seguidores." },
-    { "value": "Método", "label": "comprovado", "text": "Funciona no mundo real. Não só no Instagram." }
+    {
+      "value": "+30",
+      "label": "Anos no terreno",
+      "text": "A trabalhar com clientes reais. Não em PowerPoints."
+    },
+    {
+      "value": "Milhares",
+      "label": "de clientes atendidas",
+      "text": "Resultados validados em cadeira. Não apenas seguidores."
+    },
+    {
+      "value": "Método",
+      "label": "comprovado",
+      "text": "Funciona no mundo real. Não só no Instagram."
+    }
   ],
   "principle": {
     "eyebrow": "O nosso princípio",
-    "lines": ["Técnica sem estratégia não escala.", "Estratégia sem técnica não sustenta."],
+    "lines": [
+      "Técnica sem estratégia não escala.",
+      "Estratégia sem técnica não sustenta."
+    ],
     "text": "E talvez seja por isso que sentes que estás sempre a começar do zero. Aqui, juntamos as duas peças que te faltam para que pares de recomeçar e comeces a crescer."
   },
   "pillars": {
@@ -28,13 +49,19 @@
         "number": "I",
         "title": "Técnica Profissional",
         "text": "Dominar a técnica não é só fazer. É saber diagnosticar, decidir e executar com consistência sessão após sessão, cliente após cliente.",
-        "cta": { "label": "Quero dominar a técnica", "href": "/tecnicadecabelos" }
+        "cta": {
+          "label": "Quero dominar a técnica",
+          "href": "/tecnicadecabelos"
+        }
       },
       {
         "number": "II",
         "title": "Marketing & Negócio",
         "text": "Ter talento não chega. Se não vendes, não tens negócio. Posicionamento, atração e estrutura de vendas para uma marca que se sustenta.",
-        "cta": { "label": "Quero construir a minha marca", "href": "/tmarketingenegocios" }
+        "cta": {
+          "label": "Quero construir a minha marca",
+          "href": "/tmarketingenegocios"
+        }
       }
     ]
   },
@@ -53,6 +80,9 @@
       "Os sinais de risco que a maioria ignora",
       "Como trabalhar com mais segurança e confiança"
     ],
-    "cta": { "label": "Quero trabalhar com segurança", "href": "checklist" }
+    "cta": {
+      "label": "Quero trabalhar com segurança",
+      "href": "checklist"
+    }
   }
 }

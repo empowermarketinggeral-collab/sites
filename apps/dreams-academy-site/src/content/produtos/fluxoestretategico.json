@@ -1,15 +1,18 @@
 {
   "meta": {
-    "title": "Masterclass Fluxo Estratégico — Dreams Academy",
-    "description": "Publicar todos os dias sem vender é o novo burnout silencioso. Constrói os 4 Funis Perpétuos: um sistema de vendas que trabalha por ti 24 horas por dia."
+    "title": "Funis de Vendas para Negócios de Beleza | Dreams Academy",
+    "description": "Masterclass Fluxo Estratégico: os 4 funis perpétuos para profissionais de beleza venderem sem depender de publicar todos os dias. 47€."
   },
   "trainer": "beatriz",
   "hero": {
-    "eyebrow": "Masterclass Fluxo Estratégico • Dreams Academy",
+    "eyebrow": "Masterclass de funis de vendas • Fluxo Estratégico",
     "title": "Publicar todos os dias sem vender",
     "accent": "é o novo burnout silencioso.",
     "text": "Uma masterclass prática para profissionais da beleza que querem parar de depender de conteúdo solto e construir um sistema de vendas automático.",
-    "cta": { "label": "Quero um sistema que vende", "href": "#oferta" },
+    "cta": {
+      "label": "Quero um sistema que vende",
+      "href": "#oferta"
+    },
     "note": "Acesso imediato"
   },
   "problem": {
@@ -28,10 +31,22 @@
     "title": "Masterclass Fluxo Estratégico.",
     "text": "Na Masterclass Fluxo Estratégico, vais construir os 4 Funis Perpétuos. Um sistema que trabalha por ti 24 horas por dia.",
     "steps": [
-      { "title": "Funil de Awareness", "text": "Atrai atenção e cria conexão imediata." },
-      { "title": "Funil de Entrada", "text": "Transforma desconhecidos em compradores." },
-      { "title": "Funil de Continuidade", "text": "Aumenta recorrência e retenção." },
-      { "title": "Funil Premium", "text": "Gera vendas de alto valor." }
+      {
+        "title": "Funil de Awareness",
+        "text": "Atrai atenção e cria conexão imediata."
+      },
+      {
+        "title": "Funil de Entrada",
+        "text": "Transforma desconhecidos em compradores."
+      },
+      {
+        "title": "Funil de Continuidade",
+        "text": "Aumenta recorrência e retenção."
+      },
+      {
+        "title": "Funil Premium",
+        "text": "Gera vendas de alto valor."
+      }
     ]
   },
   "offer": {
@@ -47,7 +62,10 @@
       "Aumentar faturação sem aumentar esforço",
       "Escalar com estrutura (não com sorte)"
     ],
-    "cta": { "label": "Quero garantir acesso", "href": "https://pay.hotmart.com/L102169562L?checkoutMode=10&bid=1774019359860" }
+    "cta": {
+      "label": "Quero garantir acesso",
+      "href": "https://pay.hotmart.com/L102169562L?checkoutMode=10&bid=1774019359860"
+    }
   },
   "guarantee": {
     "title": "15 dias para aplicar.",
@@ -56,6 +74,9 @@
   },
   "final": {
     "title": "Conteúdo sem sistema não escala. Sistema… muda o jogo.",
-    "cta": { "label": "Garantir o meu acesso agora", "href": "https://pay.hotmart.com/L102169562L?checkoutMode=10&bid=1774019359860" }
+    "cta": {
+      "label": "Garantir o meu acesso agora",
+      "href": "https://pay.hotmart.com/L102169562L?checkoutMode=10&bid=1774019359860"
+    }
   }
 }

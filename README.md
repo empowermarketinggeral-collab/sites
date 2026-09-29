@@ -142,6 +142,11 @@ Os endereços são os mesmos do site atual (`dreamsacademy.pt/...`), para os lin
   - `compra` — clique num botão que leva ao checkout da Hotmart
   - `lead` — candidatura ao Programa, checklist gratuita, newsletter, "quero ser avisada"
   - `contacto` — "Enviar e-mail"; `instagram` — clique no Instagram (evento, não conta como conversão)
+- **SEO:** título e descrição de cada página no campo `meta` do ficheiro de conteúdo (até ~60 e ~155 caracteres).
+  Palavras-chave do negócio em `site.json` → `meta.keywords`. Todas as páginas têm dados estruturados para o Google
+  (organização; nas páginas de venda e no Programa também "Curso" e "Perguntas frequentes").
+- **`/sitemap.xml` e `/llms.txt`** (resumo do site para assistentes de IA) são gerados sozinhos a partir do conteúdo; `public/robots.txt` aponta para o sitemap.
+  Depois de publicar, submete `https://dreamsacademy.pt/sitemap.xml` no Google Search Console.
 - **Google Analytics / Google Ads / Meta Pixel:** vazios por agora; preenche `tracking` em `site.json` (igual ao site Empower) e o banner de cookies aparece sozinho.
 
 ```bash

@@ -15,12 +15,27 @@ import site from '../data/site.json';
 
 // landing: páginas de venda de produto — cabeçalho só com o logótipo, para não desviar do checkout.
 // noindex: páginas que não devem aparecer no Google.
-interface Props { title?: string; description?: string; landing?: boolean; noindex?: boolean }
-const { title = site.meta.title, description = site.meta.description, landing = false, noindex = false } = Astro.props;
+// fabric: a página abre com o tecido de fundo (pré-carregado, é a maior imagem do topo).
+// schema: dados estruturados extra (Curso, FAQ…) para o Google perceber o conteúdo.
+interface Props { title?: string; description?: string; landing?: boolean; noindex?: boolean; fabric?: boolean; schema?: Record<string, unknown>[] }
+const { title = site.meta.title, description = site.meta.description, landing = false, noindex = false, fabric = true, schema = [] } = Astro.props;
 // No build o caminho vem como /tecnicadecabelos.html; o endereço público é /tecnicadecabelos.
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
 const canonical = new URL(path, site.meta.url).href;
 const ogImage = new URL('/images/og.jpg', site.meta.url).href;
+const org = {
+  '@type': 'EducationalOrganization',
+  '@id': `${site.meta.url}/#organizacao`,
+  name: 'Dreams Academy',
+  url: site.meta.url,
+  logo: new URL('/apple-touch-icon.png', site.meta.url).href,
+  image: ogImage,
+  email: site.company.email,
+  description: site.meta.description,
+  sameAs: [site.links.instagram],
+  knowsAbout: site.meta.keywords,
+};
+const jsonLd = { '@context': 'https://schema.org', '@graph': [org, { '@type': 'WebSite', '@id': `${site.meta.url}/#site`, url: site.meta.url, name: 'Dreams Academy', inLanguage: 'pt-PT', publisher: { '@id': org['@id'] } }, ...schema] };
 ---
 <!doctype html>
 <html lang="pt-PT">
@@ -39,16 +54,23 @@ const ogImage = new URL('/images/og.jpg', site.meta.url).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Dreams Academy — espelho dourado e logótipo" />
     <meta property="og:locale" content={site.meta.locale} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+    {fabric && <link rel="preload" as="image" href="/images/tecido.webp" type="image/webp" fetchpriority="high" />}
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     {site.analytics.hubUrl && <script is:inline defer src={`${site.analytics.hubUrl}/t.js`} data-site={site.analytics.siteId}></script>}
   </head>
   <body>
     <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
     {landing
-      ? <header class="topbar topbar-landing"><a href="/" class="brand" aria-label="Dreams Academy — início"><Logo /></a></header>
+      ? <header class="topbar topbar-landing"><a href="/" class="brand"><Logo /></a></header>
       : <Header />}
     <main id="conteudo">
       <slot />
