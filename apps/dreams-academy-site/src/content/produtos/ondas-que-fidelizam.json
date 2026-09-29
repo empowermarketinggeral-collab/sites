@@ -1,17 +1,24 @@
 {
   "meta": {
-    "title": "Masterclass Ondas que Fidelizam — Dreams Academy",
-    "description": "Técnica de Escova com Memória: brushings com resultado até 72 horas que convertem clientes ocasionais em agendamentos recorrentes."
+    "title": "Masterclass de Brushing e Ondas Duradouras | Dreams Academy",
+    "description": "Técnica de escova com memória: ondas que duram até 72 horas e clientes que voltam. Masterclass online para cabeleireiras, com certificado. Desde 57€."
   },
   "trainer": "patricia",
   "urgency": "Inscrições abertas • Apenas 50 vagas • Próxima turma só em 3 meses",
   "hero": {
-    "eyebrow": "Masterclass • Edição limitada",
+    "eyebrow": "Masterclass de brushing • Edição limitada",
     "title": "Ondas que Fidelizam",
     "subtitle": "Técnica de Escova com Memória.",
     "text": "O método que transforma brushings temporários em resultados de até 72 horas e converte clientes ocasionais em agendamentos recorrentes.",
-    "highlights": ["1h de treino", "Método próprio", "Garantia de 15 dias"],
-    "cta": { "label": "Quero dominar esta técnica", "href": "#oferta" },
+    "highlights": [
+      "1h de treino",
+      "Método próprio",
+      "Garantia de 15 dias"
+    ],
+    "cta": {
+      "label": "Quero dominar esta técnica",
+      "href": "#oferta"
+    },
     "note": "+500 profissionais impactadas"
   },
   "problem": {
@@ -19,9 +26,33 @@
     "title": "Já te sentiste refém de um brushing que se desmancha antes do fim do dia?",
     "text": "A inconsistência técnica não é falta de talento, é falta de método. E está a custar-te clientes, faturação e reputação todos os meses.",
     "items": [
-      { "label": "01", "title": "Inconsistência técnica", "items": ["Brushings que caem em poucas horas", "Clientes insatisfeitas", "Reputação profissional em risco"] },
-      { "label": "02", "title": "Impacto financeiro", "items": ["Média de 2 clientes perdidas/mês", "Estimativa de 300€ perdidos mensalmente", "Baixa taxa de retorno"] },
-      { "label": "03", "title": "Insegurança técnica", "items": ["Medo de não entregar resultado", "Dependência de produtos milagrosos", "Ausência de método comprovado"] }
+      {
+        "label": "01",
+        "title": "Inconsistência técnica",
+        "items": [
+          "Brushings que caem em poucas horas",
+          "Clientes insatisfeitas",
+          "Reputação profissional em risco"
+        ]
+      },
+      {
+        "label": "02",
+        "title": "Impacto financeiro",
+        "items": [
+          "Média de 2 clientes perdidas/mês",
+          "Estimativa de 300€ perdidos mensalmente",
+          "Baixa taxa de retorno"
+        ]
+      },
+      {
+        "label": "03",
+        "title": "Insegurança técnica",
+        "items": [
+          "Medo de não entregar resultado",
+          "Dependência de produtos milagrosos",
+          "Ausência de método comprovado"
+        ]
+      }
     ],
     "question": "Quantas clientes perdeste este mês por resultados que não duram?"
   },
@@ -30,41 +61,98 @@
     "title": "Método Escova com Memória.",
     "text": "Uma técnica que combina biomecânica capilar, modulação térmica precisa e vetorização das ondas, sem químicos, sem dependência de produtos, com resultado mensurável.",
     "steps": [
-      { "title": "Biomecânica Capilar", "text": "Compreender a estrutura para a dominar." },
-      { "title": "Modulação Térmica", "text": "Calor preciso, no ângulo e tempo certos." },
-      { "title": "Vetorização de Ondas", "text": "Direção controlada, formato consistente." }
+      {
+        "title": "Biomecânica Capilar",
+        "text": "Compreender a estrutura para a dominar."
+      },
+      {
+        "title": "Modulação Térmica",
+        "text": "Calor preciso, no ângulo e tempo certos."
+      },
+      {
+        "title": "Vetorização de Ondas",
+        "text": "Direção controlada, formato consistente."
+      }
     ],
     "stats": [
-      { "value": "72h", "label": "Duração das ondas" },
-      { "value": "+40%", "label": "Retenção de clientes" },
-      { "value": "+20%", "label": "Ticket médio" }
+      {
+        "value": "72h",
+        "label": "Duração das ondas"
+      },
+      {
+        "value": "+40%",
+        "label": "Retenção de clientes"
+      },
+      {
+        "value": "+20%",
+        "label": "Ticket médio"
+      }
     ]
   },
   "modules": {
     "eyebrow": "O programa",
     "title": "1 masterclass. Uma transformação completa.",
     "items": [
-      { "title": "Fundamentos da Biomecânica Capilar", "text": "Estrutura capilar avançada, princípios da ondulação e diagnóstico de precisão." },
-      { "title": "Método Escova com Memória", "text": "A técnica exclusiva passo a passo, modulação térmica precisa e vetorização das ondas." },
-      { "title": "Divisões Estratégicas", "text": "Diagonais, triângulos, volume, leveza e adaptação a todos os tipos de cabelo." },
-      { "title": "Movimento Técnico", "text": "Execução perfeita: posicionamento do secador, ângulos de aplicação e gestos certeiros." }
+      {
+        "title": "Fundamentos da Biomecânica Capilar",
+        "text": "Estrutura capilar avançada, princípios da ondulação e diagnóstico de precisão."
+      },
+      {
+        "title": "Método Escova com Memória",
+        "text": "A técnica exclusiva passo a passo, modulação térmica precisa e vetorização das ondas."
+      },
+      {
+        "title": "Divisões Estratégicas",
+        "text": "Diagonais, triângulos, volume, leveza e adaptação a todos os tipos de cabelo."
+      },
+      {
+        "title": "Movimento Técnico",
+        "text": "Execução perfeita: posicionamento do secador, ângulos de aplicação e gestos certeiros."
+      }
     ]
   },
   "bonuses": {
     "eyebrow": "Bónus exclusivos",
     "items": [
-      { "label": "Bónus 01", "title": "Guia Técnico", "text": "PDF completo com toda a metodologia para consulta." },
-      { "label": "Bónus 02", "title": "Checklist 7 Alertas Invisíveis", "text": "Os erros que sabotam o resultado e como evitá-los." },
-      { "label": "Bónus 03", "title": "Aula Extra", "text": "Adaptação para cabelos finos e cabelos muito grossos." }
+      {
+        "label": "Bónus 01",
+        "title": "Guia Técnico",
+        "text": "PDF completo com toda a metodologia para consulta."
+      },
+      {
+        "label": "Bónus 02",
+        "title": "Checklist 7 Alertas Invisíveis",
+        "text": "Os erros que sabotam o resultado e como evitá-los."
+      },
+      {
+        "label": "Bónus 03",
+        "title": "Aula Extra",
+        "text": "Adaptação para cabelos finos e cabelos muito grossos."
+      }
     ]
   },
   "testimonials": {
     "eyebrow": "Histórias reais",
     "title": "Profissionais que transformaram o seu trabalho.",
     "items": [
-      { "quote": "Mudou completamente a minha forma de trabalhar. +50% de agendamentos em 2 meses.", "name": "Ana Silva", "role": "Cabeleireira · Lisboa", "result": "+50% agendamentos" },
-      { "quote": "A técnica que transformou a minha segurança profissional. Hoje as clientes voltam.", "name": "Mariana Santos", "role": "Hair Stylist · Porto", "result": "Fidelização real" },
-      { "quote": "O método elevou o padrão do meu trabalho e o valor do meu serviço acompanhou.", "name": "Carla Oliveira", "role": "Dona de um salão · Braga", "result": "+20% ticket médio" }
+      {
+        "quote": "Mudou completamente a minha forma de trabalhar. +50% de agendamentos em 2 meses.",
+        "name": "Ana Silva",
+        "role": "Cabeleireira · Lisboa",
+        "result": "+50% agendamentos"
+      },
+      {
+        "quote": "A técnica que transformou a minha segurança profissional. Hoje as clientes voltam.",
+        "name": "Mariana Santos",
+        "role": "Hair Stylist · Porto",
+        "result": "Fidelização real"
+      },
+      {
+        "quote": "O método elevou o padrão do meu trabalho e o valor do meu serviço acompanhou.",
+        "name": "Carla Oliveira",
+        "role": "Dona de um salão · Braga",
+        "result": "+20% ticket médio"
+      }
     ]
   },
   "offer": {
@@ -82,11 +170,27 @@
       "Acesso à plataforma por 12 meses",
       "Certificado Dreams Academy"
     ],
-    "cta": { "label": "Garantir a minha vaga agora", "href": "https://pay.hotmart.com/W102483616K?checkoutMode=10&bid=1774022012087" },
+    "cta": {
+      "label": "Garantir a minha vaga agora",
+      "href": "https://pay.hotmart.com/W102483616K?checkoutMode=10&bid=1774022012087"
+    },
     "tiers": [
-      { "label": "Early Bird", "price": "57€", "note": "20 vagas", "active": true },
-      { "label": "Padrão", "price": "95€", "note": "20 vagas" },
-      { "label": "Late", "price": "190€", "note": "10 vagas" }
+      {
+        "label": "Early Bird",
+        "price": "57€",
+        "note": "20 vagas",
+        "active": true
+      },
+      {
+        "label": "Padrão",
+        "price": "95€",
+        "note": "20 vagas"
+      },
+      {
+        "label": "Late",
+        "price": "190€",
+        "note": "10 vagas"
+      }
     ]
   },
   "guarantee": {
@@ -99,19 +203,47 @@
     "eyebrow": "Perguntas frequentes",
     "title": "Esclarecimentos antes de decidires",
     "items": [
-      { "q": "A técnica funciona para todos os tipos de cabelo?", "a": "Sim. O método inclui divisões estratégicas adaptadas a cada tipo de cabelo e a aula extra mostra como ajustar a cabelos finos e a cabelos muito grossos." },
-      { "q": "Quanto tempo leva a dominar o método?", "a": "A masterclass tem 1 hora. Com prática nas tuas clientes, a maioria das profissionais sente a diferença logo nas primeiras semanas." },
-      { "q": "Preciso de equipamentos especiais?", "a": "Não. Trabalhas com o secador e as escovas que já usas no salão. O resultado vem da técnica, não de produtos milagrosos." },
-      { "q": "Como funciona o acesso ao treino?", "a": "Depois do pagamento recebes acesso imediato à plataforma, onde vês a masterclass e os bónus sempre que quiseres durante 12 meses." },
-      { "q": "Existe suporte após o treino?", "a": "Sim. Tens acesso à comunidade exclusiva para tirar dúvidas sobre a aplicação do método." },
-      { "q": "A garantia funciona mesmo?", "a": "Sim. Tens 15 dias para aplicar a técnica. Se não notares diferença, pedes o reembolso e devolvemos 100% do valor." },
-      { "q": "Qual o diferencial desta masterclass?", "a": "Não é mais um tutorial de brushing: é um método com fundamentos de biomecânica capilar, modulação térmica e vetorização, criado por uma profissional com mais de 30 anos de salão." }
+      {
+        "q": "A técnica funciona para todos os tipos de cabelo?",
+        "a": "Sim. O método inclui divisões estratégicas adaptadas a cada tipo de cabelo e a aula extra mostra como ajustar a cabelos finos e a cabelos muito grossos."
+      },
+      {
+        "q": "Quanto tempo leva a dominar o método?",
+        "a": "A masterclass tem 1 hora. Com prática nas tuas clientes, a maioria das profissionais sente a diferença logo nas primeiras semanas."
+      },
+      {
+        "q": "Preciso de equipamentos especiais?",
+        "a": "Não. Trabalhas com o secador e as escovas que já usas no salão. O resultado vem da técnica, não de produtos milagrosos."
+      },
+      {
+        "q": "Como funciona o acesso ao treino?",
+        "a": "Depois do pagamento recebes acesso imediato à plataforma, onde vês a masterclass e os bónus sempre que quiseres durante 12 meses."
+      },
+      {
+        "q": "Existe suporte após o treino?",
+        "a": "Sim. Tens acesso à comunidade exclusiva para tirar dúvidas sobre a aplicação do método."
+      },
+      {
+        "q": "A garantia funciona mesmo?",
+        "a": "Sim. Tens 15 dias para aplicar a técnica. Se não notares diferença, pedes o reembolso e devolvemos 100% do valor."
+      },
+      {
+        "q": "Qual o diferencial desta masterclass?",
+        "a": "Não é mais um tutorial de brushing: é um método com fundamentos de biomecânica capilar, modulação térmica e vetorização, criado por uma profissional com mais de 30 anos de salão."
+      }
     ]
   },
   "final": {
     "title": "A tua próxima cliente fiel começa hoje.",
     "text": "50 vagas limitadas. Próxima turma só dentro de 3 meses. A decisão é tua.",
-    "cta": { "label": "Garantir a minha vaga agora", "href": "https://pay.hotmart.com/W102483616K?checkoutMode=10&bid=1774022012087" },
-    "badges": ["Garantia 15 dias", "Comunidade exclusiva", "Resultados em 72h"]
+    "cta": {
+      "label": "Garantir a minha vaga agora",
+      "href": "https://pay.hotmart.com/W102483616K?checkoutMode=10&bid=1774022012087"
+    },
+    "badges": [
+      "Garantia 15 dias",
+      "Comunidade exclusiva",
+      "Resultados em 72h"
+    ]
   }
 }

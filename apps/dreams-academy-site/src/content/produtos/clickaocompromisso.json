@@ -1,15 +1,18 @@
 {
   "meta": {
-    "title": "Mini-curso Do Click ao Compromisso — Dreams Academy",
-    "description": "Deixa de ter seguidores e começa a ter clientes. Mini-curso prático de 2 horas: escada de valor, produtos e funil para profissionais da beleza."
+    "title": "Como Transformar Seguidores em Clientes: Mini-curso | Dreams",
+    "description": "Mini-curso de 2 horas para profissionais de beleza: escada de valor, produtos e um funil simples para transformar seguidores em clientes. 37€."
   },
   "trainer": "beatriz",
   "hero": {
-    "eyebrow": "Curso Do Click ao Compromisso • Dreams Academy",
+    "eyebrow": "Mini-curso de vendas para beleza • Do Click ao Compromisso",
     "title": "Deixa de ter seguidores…",
     "accent": "e começa a ter clientes.",
     "text": "Um mini-curso prático de 2 horas para profissionais da beleza que querem estruturar o seu negócio, criar uma escada de valor e transformar atenção em vendas reais.",
-    "cta": { "label": "Quero esta transformação", "href": "#oferta" },
+    "cta": {
+      "label": "Quero esta transformação",
+      "href": "#oferta"
+    },
     "note": "Acesso imediato"
   },
   "problem": {
@@ -28,10 +31,18 @@
     "title": "Mini-curso “Do Click ao Compromisso”.",
     "text": "No Do Click ao Compromisso, vais aplicar a metodologia exclusiva Escada de Valor 5 Degraus para:",
     "steps": [
-      { "title": "Organizar os teus produtos e serviços de forma estratégica" },
-      { "title": "Criar um caminho claro para o cliente, do primeiro contacto à compra" },
-      { "title": "Estruturar um funil simples e replicável" },
-      { "title": "Deixar de depender de descontos para vender" }
+      {
+        "title": "Organizar os teus produtos e serviços de forma estratégica"
+      },
+      {
+        "title": "Criar um caminho claro para o cliente, do primeiro contacto à compra"
+      },
+      {
+        "title": "Estruturar um funil simples e replicável"
+      },
+      {
+        "title": "Deixar de depender de descontos para vender"
+      }
     ]
   },
   "offer": {
@@ -47,7 +58,10 @@
       "Estrutura prática para aplicares no teu negócio",
       "Acesso imediato após pagamento"
     ],
-    "cta": { "label": "Quero garantir acesso", "href": "https://pay.hotmart.com/I102160710O?checkoutMode=10&bid=1774017662951" }
+    "cta": {
+      "label": "Quero garantir acesso",
+      "href": "https://pay.hotmart.com/I102160710O?checkoutMode=10&bid=1774017662951"
+    }
   },
   "guarantee": {
     "title": "15 dias para aplicar.",
@@ -56,6 +70,9 @@
   },
   "final": {
     "title": "Ter seguidores não é um negócio. Ter estrutura… é.",
-    "cta": { "label": "Garantir o meu acesso agora", "href": "https://pay.hotmart.com/I102160710O?checkoutMode=10&bid=1774017662951" }
+    "cta": {
+      "label": "Garantir o meu acesso agora",
+      "href": "https://pay.hotmart.com/I102160710O?checkoutMode=10&bid=1774017662951"
+    }
   }
 }

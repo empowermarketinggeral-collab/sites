@@ -6,7 +6,7 @@ const page = await getEntry('legal', Astro.props.id);
 if (!page) throw new Error(`Página legal em falta: ${Astro.props.id}`);
 const { Content } = await render(page);
 ---
-<Base title={`${page.data.title} — Dreams Academy`} description={`${page.data.title} da Dreams Academy.`}>
+<Base title={`${page.data.title} — Dreams Academy`} description={`${page.data.title} da Dreams Academy: formação para cabeleireiras e profissionais de beleza.`} fabric={false}>
   <article class="article">
     <header class="wrap narrow article-head">
       <p class="eyebrow">Informação legal</p>

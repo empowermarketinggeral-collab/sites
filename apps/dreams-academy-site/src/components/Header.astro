@@ -4,7 +4,7 @@ import site from '../data/site.json';
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
 ---
 <header class="topbar">
-  <a href="/" class="brand" aria-label="Dreams Academy — início"><Logo /></a>
+  <a href="/" class="brand"><Logo /></a>
   <nav aria-label="Principal">
     <ul>
       {site.nav.map((item) => (

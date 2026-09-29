@@ -1,2 +1,5 @@
+# Dreams Academy — todo o site pode ser indexado, incluindo por assistentes de IA.
 User-agent: *
 Allow: /
+
+Sitemap: https://dreamsacademy.pt/sitemap.xml

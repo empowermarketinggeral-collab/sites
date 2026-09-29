@@ -1,9 +1,25 @@
 {
   "meta": {
-    "title": "Dreams Academy — Academia de formação para profissionais de beleza",
-    "description": "Transforma o teu talento em negócio. Técnica, estratégia e clientes para profissionais de beleza que querem viver tranquilamente do seu ofício.",
+    "title": "Dreams Academy · Formação para Cabeleireiras e Beleza",
+    "description": "Formação para cabeleireiras e profissionais de beleza: técnica certificada, do corte à coloração, e marketing para atrair clientes. +30 anos de salão.",
     "url": "https://dreamsacademy.pt",
-    "locale": "pt_PT"
+    "locale": "pt_PT",
+    "keywords": [
+      "formação para cabeleireiras",
+      "curso de cabeleireiro",
+      "formação de cabeleireiro certificada",
+      "curso de cabeleireiro online",
+      "diagnóstico capilar",
+      "curso de coloração",
+      "corte de cabelo",
+      "brushing e ondas",
+      "marketing para cabeleireiros",
+      "marketing para profissionais de beleza",
+      "como conseguir clientes para o salão",
+      "posicionamento de marca na beleza",
+      "funil de vendas para beleza",
+      "negócio de beleza"
+    ]
   },
   "nav": [
     {
@@ -21,11 +37,11 @@
   ],
   "links": {
     "programa": "/programa_dreams_academy",
-    "candidatura": "https://api.leadconnectorhq.com/widget/quiz/42VOtnCJsHrLPuSZA8kM",
+    "candidatura": "https://big-boos.vercel.app/formulario/programa-dreams-academy-g1nku",
     "checklist": "https://api.leadconnectorhq.com/widget/quiz/IIgJyf3S5wghBsKemyAv",
     "instagram": "https://www.instagram.com/dreamsacademy.pt",
     "email": "mailto:dreams.beautyandbusiness@gmail.com?subject=Dreams%20Academy",
-    "newsletter": "mailto:dreams.beautyandbusiness@gmail.com?subject=Quero%20subscrever%20a%20newsletter%20Dreams%20Academy",
+    "newsletter": "https://big-boos.vercel.app/formulario/assinante-de-email-gao64",
     "avisar": "mailto:dreams.beautyandbusiness@gmail.com?subject=Quero%20ser%20avisada%20dos%20novos%20cursos%20t%C3%A9cnicos"
   },
   "company": {

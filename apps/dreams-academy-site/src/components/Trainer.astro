@@ -7,7 +7,7 @@ const t = site.trainers[Astro.props.id];
 <section class="section trainer">
   <div class="wrap trainer-inner">
     {t.photo
-      ? <img class="trainer-mark trainer-photo reveal" src={t.photo} alt={t.name} width="600" height="800" loading="lazy" decoding="async" />
+      ? <img class="trainer-mark trainer-photo reveal" src={t.photo} alt={`${t.name}, formadora da Dreams Academy`} width="600" height="800" loading="lazy" decoding="async" />
       : <div class="trainer-mark reveal" aria-hidden="true"><span class="display">{t.name.split(' ').map((w) => w[0]).join('')}</span></div>}
     <div>
       <p class="eyebrow reveal">{t.eyebrow}</p>

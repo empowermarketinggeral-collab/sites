@@ -5,6 +5,8 @@ import Button from '../components/Button.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Trainer from '../components/Trainer.astro';
 import Faq from '../components/Faq.astro';
+import { course, faqPage } from '../lib/schema';
+import site from '../data/site.json';
 
 // Páginas de venda: uma por ficheiro em src/content/produtos/ (o nome do ficheiro é o endereço).
 export async function getStaticPaths() {
@@ -14,11 +16,15 @@ export async function getStaticPaths() {
 
 const { p } = Astro.props;
 const { hero, problem, solution, modules, bonuses, testimonials, offer, guarantee, faq, final } = p;
+const schema = [
+  course({ name: hero.title, description: p.meta.description, path: `/${Astro.params.produto}`, price: offer.price, instructor: site.trainers[p.trainer].name }),
+  ...(faq ? [faqPage(faq.items)] : []),
+];
 const pad = (i: number) => String(i + 1).padStart(2, '0');
 // Os botões para o checkout (Hotmart) contam como "compra" na app central; os que levam à oferta não contam.
 const trackFor = (href: string) => (/^https?:\/\//.test(href) ? 'compra' : undefined);
 ---
-<Base title={p.meta.title} description={p.meta.description} landing>
+<Base title={p.meta.title} description={p.meta.description} landing schema={schema}>
   {p.urgency && <p class="urgency">{p.urgency}</p>}
 
   <section class="page-hero sales-hero">
