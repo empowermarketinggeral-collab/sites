@@ -4,8 +4,8 @@ interface Props { size?: 'header' | 'footer' }
 const { size = 'header' } = Astro.props;
 ---
 <picture class:list={['logo', `logo-${size}`]}>
-  <source srcset="/images/logo.webp" type="image/webp" />
-  <img src="/images/logo.png" alt="Empower Marketing" width="480" height="405" decoding="async" />
+  <source srcset="/images/logo-300.webp" type="image/webp" />
+  <img src="/images/logo-300.png" alt="Empower Marketing" width="300" height="253" decoding="async" />
 </picture>
 
 <style>

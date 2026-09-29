@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Empower Marketing — Consultoria de Crescimento Estratégico",
-    "description": "Enquanto o mercado empurra conteúdo, nós construímos posição. Consultoria estratégica para marcas que querem ser referência e não só +1 tendência.",
+    "title": "Consultoria de Marketing e Posicionamento de Marca · Porto",
+    "description": "Consultora de marketing estratégico no Porto: posicionamento de marca, branding, conteúdo, tráfego pago e CRM para marcas de moda, beleza, restauração e design.",
     "url": "https://www.empowermarketing.online",
     "locale": "pt_PT"
   },
@@ -65,7 +65,8 @@
         "href": "/insights"
       }
     ],
-    "copyright": "© EMPOWER MARKETING {year}. Todos os direitos reservados."
+    "copyright": "© EMPOWER MARKETING {year}. Todos os direitos reservados.",
+    "tagline": "Consultora de marketing e posicionamento de marca no Porto, para marcas de moda, beleza, restauração e design em todo o país."
   },
   "analytics": {
     "hubUrl": "https://sites-fyz8.vercel.app",
@@ -76,5 +77,30 @@
     "googleAdsId": "AW-18144497407",
     "googleAdsLeadLabel": "",
     "metaPixelId": "1512353287105316"
+  },
+  "seo": {
+    "businessDescription": "Consultora de marketing e crescimento estratégico no Porto, Portugal. Construímos o posicionamento e o ecossistema de marca completo — estratégia, branding, conteúdo, tráfego pago, CRM e automações — para marcas premium de moda, beleza e estética, restauração, marcas de conceito e mobiliário de design.",
+    "keywords": [
+      "consultoria de marketing",
+      "consultora de marketing Porto",
+      "posicionamento de marca",
+      "estratégia de marca",
+      "branding",
+      "rebranding",
+      "marketing estratégico",
+      "tráfego pago",
+      "CRM e automações",
+      "gestão de redes sociais",
+      "email marketing",
+      "estudo de mercado",
+      "marketing para marcas de moda",
+      "marketing para marcas de beleza e estética",
+      "marketing para restauração",
+      "marketing para mobiliário de design"
+    ],
+    "areaServed": "Portugal",
+    "city": "Porto",
+    "postalCode": "4350-107",
+    "street": "Rua Manuel Pinho 125"
   }
 }

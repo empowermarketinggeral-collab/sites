@@ -3,14 +3,26 @@
     "struck": "O mercado empurra conteúdo.",
     "title": "Nós construímos posição.",
     "subtitle": "Consultoria estratégica para marcas que querem ser referência e não só +1 tendência.",
-    "primaryCta": { "label": "Como trabalhamos", "href": "#metodo" },
-    "secondaryCta": { "label": "Agendar Sessão de alinhamento", "href": "booking" }
+    "primaryCta": {
+      "label": "Como trabalhamos",
+      "href": "#metodo"
+    },
+    "secondaryCta": {
+      "label": "Agendar Sessão de alinhamento",
+      "href": "booking"
+    },
+    "kicker": "Consultoria de marketing e posicionamento de marca · Porto"
   },
   "manifesto": {
     "title": "Não somos uma",
     "accent": "agência.",
     "text": "Somos uma consultora de crescimento estratégico. Tratamos a causa, a falta de posição, e não o sintoma. A ordem é sempre a mesma: primeiro a estratégia, depois a estética.",
-    "struckList": ["Posts avulso.", "Packs de serviços.", "Campanhas soltas.", "Orçamentos elásticos."],
+    "struckList": [
+      "Posts avulso.",
+      "Packs de serviços.",
+      "Campanhas soltas.",
+      "Orçamentos elásticos."
+    ],
     "finalWord": "Posição."
   },
   "method": {
@@ -63,20 +75,48 @@
     "title": "14 áreas. 3 Etapas.",
     "subtitle": "Uma única arquitetura.",
     "steps": [
-      { "title": "Fundação Estratégica", "text": "Posicionamento, estudo de mercado e branding ou rebranding completo. A base sobre a qual todo o ecossistema assenta." },
-      { "title": "Captação de Autoridade", "text": "Conteúdo, fotografia e vídeo profissional, redes sociais. Registamos o impacto real que geras no mundo físico." },
-      { "title": "Escala e Previsibilidade", "text": "CRM, tráfego pago, automações, landing pages, email marketing. O motor que transforma autoridade em receita previsível." }
+      {
+        "title": "Fundação Estratégica",
+        "text": "Posicionamento, estudo de mercado e branding ou rebranding completo. A base sobre a qual todo o ecossistema assenta."
+      },
+      {
+        "title": "Captação de Autoridade",
+        "text": "Conteúdo, fotografia e vídeo profissional, redes sociais. Registamos o impacto real que geras no mundo físico."
+      },
+      {
+        "title": "Escala e Previsibilidade",
+        "text": "CRM, tráfego pago, automações, landing pages, email marketing. O motor que transforma autoridade em receita previsível."
+      }
     ],
-    "cta": { "label": "Ver as soluções", "href": "/servicos" }
+    "cta": {
+      "label": "Ver as soluções",
+      "href": "/servicos"
+    }
   },
   "model": {
     "eyebrow": "O Modelo",
     "title": "Preço fechado. Sem surpresas.",
     "subtitle": "Sem exceções.",
     "cards": [
-      { "label": "Duração", "title": "6 ou 12 meses", "text": "Uma equipa dedicada a pensar o teu ecossistema como um todo, não uma tarefa de cada vez." },
-      { "label": "Preço fechado", "title": "O risco é nosso", "text": "Se o projeto exigir mais do que o previsto, o custo não é repassado a ti." },
-      { "label": "Ponto de partida", "title": "Mapa de Crescimento", "text": "Um diagnóstico completo de 6 etapas que entrega valor real, mesmo sem avançares para a execução.", "cta": { "label": "Pedir o Mapa de Crescimento", "href": "whatsappMapa" } }
+      {
+        "label": "Duração",
+        "title": "6 ou 12 meses",
+        "text": "Uma equipa dedicada a pensar o teu ecossistema como um todo, não uma tarefa de cada vez."
+      },
+      {
+        "label": "Preço fechado",
+        "title": "O risco é nosso",
+        "text": "Se o projeto exigir mais do que o previsto, o custo não é repassado a ti."
+      },
+      {
+        "label": "Ponto de partida",
+        "title": "Mapa de Crescimento",
+        "text": "Um diagnóstico completo de 6 etapas que entrega valor real, mesmo sem avançares para a execução.",
+        "cta": {
+          "label": "Pedir o Mapa de Crescimento",
+          "href": "whatsappMapa"
+        }
+      }
     ]
   }
 }

@@ -1,2 +1,5 @@
+# Empower Marketing — https://www.empowermarketing.online
 User-agent: *
 Allow: /
+
+Sitemap: https://www.empowermarketing.online/sitemap-index.xml
