@@ -9,11 +9,13 @@ import home from '../data/home.json';
 const { hero, manifesto, method, audience, system, model } = home;
 ---
 <Base>
+  <link slot="head" rel="preload" as="image" href="/images/hero.webp" type="image/webp" fetchpriority="high" />
   <section class="hero">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="wrap hero-inner">
+      <h1 class="eyebrow hero-kicker reveal">{hero.kicker}</h1>
       <p class="struck display reveal">{hero.struck}</p>
-      <h1 class="display hero-title reveal">{hero.title}</h1>
+      <p class="display hero-title reveal">{hero.title}</p>
       <p class="lead reveal">{hero.subtitle}</p>
       <div class="actions reveal">
         <Button href={hero.primaryCta.href} variant="light">{hero.primaryCta.label}</Button>

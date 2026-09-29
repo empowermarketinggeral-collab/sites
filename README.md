@@ -81,6 +81,9 @@ Site estático (Astro) com o design escuro/roxo das referências. Páginas:
 - **Página privada `/reuniao-agendada`** (depois de marcar reunião): `src/data/reuniao.json`. Não aparece no menu nem no Google.
   Conta como conversão `agendamento` (app central, Google Ads, Meta `Schedule`), uma vez por sessão.
   Vídeos: em `videos.items`, `type` = `file` (ficheiro em `public/videos/…`), `youtube` (ID do vídeo) ou `vimeo` (ID); a secção só aparece com vídeos.
+- **SEO:** títulos e descrições em `meta` de cada ficheiro de `src/data/`; dados da empresa e palavras-chave em `site.json → seo`
+  (usados nos dados estruturados do Google e no `llms.txt`). O `sitemap-index.xml` e o `llms.txt` são gerados no build;
+  `/sitemap.xml` redireciona para o sitemap. Páginas privadas ficam fora do sitemap (`PRIVATE` em `astro.config.mjs`).
 - **Redirecionamentos** de endereços antigos (artigos `/post/...`, `/portefolio`) e **cabeçalhos de segurança**: `vercel.json`.
 - **Google Analytics, Google Ads e Meta Pixel:** preenche em `src/data/site.json` → `tracking`:
   - `googleAnalyticsId` — ex.: `G-XXXXXXX` (GA4 → Administrador → Fluxos de dados)

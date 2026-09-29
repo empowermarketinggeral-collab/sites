@@ -1,7 +1,15 @@
 ---
 import SectionHead from './SectionHead.astro';
 import faq from '../data/faq.json';
+
+// Dados estruturados FAQPage: o Google pode mostrar as perguntas nos resultados.
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.items.map((i) => ({ '@type': 'Question', name: i.q, acceptedAnswer: { '@type': 'Answer', text: i.a } })),
+});
 ---
+<script type="application/ld+json" set:html={jsonLd} />
 <section class="section">
   <div class="wrap narrow">
     <SectionHead eyebrow={faq.eyebrow} title={faq.title} />

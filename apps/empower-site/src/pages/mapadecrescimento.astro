@@ -7,8 +7,26 @@ import SectionHead from '../components/SectionHead.astro';
 import mapa from '../data/mapa.json';
 
 const { meta, hero, steps, fit, pricing, closing } = mapa;
+
+const serviceLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Mapa de Crescimento — diagnóstico de marca e marketing',
+  serviceType: 'Consultoria de marketing e posicionamento de marca',
+  description: meta.description,
+  provider: { '@id': new URL('/#empresa', Astro.site).href },
+  areaServed: 'PT',
+  offers: pricing.plans.map((p) => ({
+    '@type': 'Offer',
+    name: p.name,
+    description: p.text,
+    price: p.price.replace(/[^0-9]/g, ''),
+    priceCurrency: 'EUR',
+  })),
+});
 ---
 <Base title={meta.title} description={meta.description}>
+  <script slot="head" type="application/ld+json" set:html={serviceLd} />
   <section class="page-hero">
     <div class="wrap">
       <p class="eyebrow reveal">{hero.eyebrow}</p>
