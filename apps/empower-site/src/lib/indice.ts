@@ -2,7 +2,7 @@
 // Regras do briefing: total = soma/45×100; dimensão = soma/9×100; as duas
 // dimensões mais fracas desempatam pela ordem D1 > D2 > D4 > D3 > D5.
 
-export interface Dimension { id: string; name: string; block: string; questions: unknown[] }
+export interface Dimension { id: string; name: string; block: string; explanation: string; questions: unknown[] }
 export interface Profile { min: number; tag: string; name: string; text: string }
 export interface IndiceConfig {
   dimensions: Dimension[];
@@ -48,7 +48,7 @@ export function computeFit(config: IndiceConfig, q: Qualification): 'icp-sim' | 
 
 export interface Contact { firstName: string; email: string; brand: string; site: string; newsletter: boolean }
 
-/** Corpo para a função lead-intake do Big Boss (máx. 10 tags e 20 campos). */
+/** Corpo para a função lead-intake do Big Boss (máx. 10 tags e 20 campos: aqui são até 20). */
 export function buildLeadPayload(config: IndiceConfig, q: Qualification, answers: number[], c: Contact, source: string) {
   const r = computeIndice(config, answers);
   const fit = computeFit(config, q);
@@ -72,6 +72,7 @@ export function buildLeadPayload(config: IndiceConfig, q: Qualification, answers
     texto_perfil: r.profile.text,
     bloco_dimensao_fraca_1: r.weakest[0].block,
     bloco_dimensao_fraca_2: r.weakest[1].block,
+    explicacao_dimensao_fraca_1: r.weakest[0].explanation,
     objetivo_12m: q.objetivo_12m,
     intencao: q.intencao,
     faturacao: q.faturacao,

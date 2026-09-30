@@ -9,7 +9,7 @@ const { meta, landing, qualification, dimensions, capture, result } = indice;
 const scored = dimensions.flatMap((d) => d.questions.map((q) => ({ ...q, dimension: d.name })));
 const totalSteps = qualification.length + scored.length;
 const config = {
-  dimensions: dimensions.map(({ id, name, block }) => ({ id, name, block, questions: [0, 0, 0] })),
+  dimensions: dimensions.map(({ id, name, block, explanation }) => ({ id, name, block, explanation, questions: [0, 0, 0] })),
   profiles: indice.profiles,
   tieBreak: indice.tieBreak,
   focusSectors: indice.focusSectors,
