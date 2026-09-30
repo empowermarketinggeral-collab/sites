@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8" />
+<title>Da Estética à Posição — Empower Marketing</title>
+<style>
+  @font-face { font-family: 'Gloock'; src: url('../node_modules/@fontsource/gloock/files/gloock-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'Josefin Sans'; src: url('../node_modules/@fontsource/josefin-sans/files/josefin-sans-latin-300-normal.woff2') format('woff2'); font-weight: 300; }
+  @font-face { font-family: 'Josefin Sans'; src: url('../node_modules/@fontsource/josefin-sans/files/josefin-sans-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'Cormorant Garamond'; src: url('../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2') format('woff2'); font-weight: 500; }
+  @font-face { font-family: 'Cormorant Garamond'; src: url('../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2') format('woff2'); font-weight: 600; }
+
+  :root {
+    --ink: #111114; --deep: #1c0f2e; --plum: #2a1540; --plum-2: #3a1d5c;
+    --lilac: #b89ce0; --accent: #8e6aa8; --paper: #fbfaf8; --muted: #5d5766; --line: #e4dfe9;
+  }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'Josefin Sans', sans-serif; font-weight: 300; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; page-break-after: always; break-after: page; background: var(--paper); padding: 26mm 24mm 24mm; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .page .folio { position: absolute; bottom: 12mm; left: 24mm; right: 24mm; display: flex; justify-content: space-between; font-size: 8.5pt; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+
+  .dark { background: radial-gradient(90% 70% at 85% 0%, #4a2670 0%, var(--plum) 45%, var(--deep) 100%); color: #f2eff5; }
+  .dark .folio { color: var(--lilac); }
+
+  h1, h2, h3 { margin: 0; font-weight: 400; }
+  .display { font-family: 'Gloock', serif; line-height: 1.02; letter-spacing: -.01em; }
+  .serif { font-family: 'Cormorant Garamond', serif; font-weight: 500; }
+  .eyebrow { font-size: 9pt; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); margin: 0 0 6mm; }
+  .dark .eyebrow { color: var(--lilac); }
+
+  p { font-size: 11.2pt; line-height: 1.62; margin: 0 0 4.2mm; }
+  .lead { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 17pt; line-height: 1.35; }
+
+  h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 17pt; color: var(--plum-2); margin: 7mm 0 3mm; }
+  h3:first-child { margin-top: 0; }
+  h3 small { display: block; font-family: 'Josefin Sans', sans-serif; font-weight: 400; font-size: 8.5pt; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5mm; }
+
+  /* Capa */
+  .cover { display: flex; flex-direction: column; justify-content: space-between; padding: 22mm 22mm 20mm; }
+  .cover img { width: 34mm; }
+  .cover h1 { font-size: 58pt; }
+  .cover h1 span { color: var(--lilac); }
+  .cover .sub { font-family: 'Cormorant Garamond', serif; font-size: 19pt; line-height: 1.3; max-width: 125mm; margin-top: 9mm; color: #e7e1ee; }
+  .cover .by { font-size: 9.5pt; letter-spacing: .22em; text-transform: uppercase; color: var(--lilac); }
+
+  /* Abertura de capítulo */
+  .opener { display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 34mm; }
+  .opener .num { position: absolute; top: 14mm; right: 16mm; font-family: 'Gloock', serif; font-size: 220pt; line-height: 1; color: rgba(184,156,224,.16); }
+  .opener h2 { font-size: 44pt; max-width: 150mm; }
+  .opener .principle { font-family: 'Cormorant Garamond', serif; font-size: 22pt; line-height: 1.3; color: var(--lilac); margin-top: 10mm; max-width: 140mm; }
+  .opener .dim { margin-top: 12mm; font-size: 9.5pt; letter-spacing: .16em; text-transform: uppercase; color: #cfc6da; }
+
+  /* Blocos */
+  .box { border: 1px solid var(--line); border-left: 3px solid var(--plum-2); background: #fff; padding: 5mm 6mm; margin: 4mm 0 5mm; }
+  .box p:last-child { margin-bottom: 0; }
+  .quote { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 19pt; line-height: 1.3; color: var(--plum-2); margin: 7mm 0; padding-left: 6mm; border-left: 2px solid var(--accent); }
+  ol.steps, ul.signs { margin: 0 0 4mm; padding-left: 6mm; }
+  ol.steps li, ul.signs li { font-size: 11pt; line-height: 1.55; margin-bottom: 2.4mm; padding-left: 1mm; }
+  ul.signs { list-style: none; padding-left: 0; }
+  ul.signs li { padding-left: 7mm; position: relative; }
+  ul.signs li::before { content: ''; position: absolute; left: 0; top: 2.1mm; width: 3mm; height: 3mm; border: 1.4px solid var(--plum-2); border-radius: 50%; }
+  .write { border-bottom: 1px solid #cfc8d6; height: 9mm; margin-bottom: 1mm; }
+  .fill { font-family: 'Cormorant Garamond', serif; font-size: 15pt; color: var(--plum-2); margin: 3mm 0 1mm; }
+  .label { font-size: 8.5pt; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin: 5mm 0 2mm; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  table.channels { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 10pt; }
+  table.channels th { text-align: left; font-weight: 400; font-size: 8.5pt; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--plum-2); padding: 2mm 2mm 2mm 0; }
+  table.channels td { border-bottom: 1px solid #d9d2e0; height: 9.5mm; padding: 0 2mm 0 0; color: var(--muted); }
+
+  /* Sumário */
+  .toc { list-style: none; padding: 0; margin: 8mm 0 0; }
+  .toc li { display: grid; grid-template-columns: 16mm 1fr; align-items: baseline; padding: 4mm 0; border-bottom: 1px solid var(--line); }
+  .toc .n { font-family: 'Gloock', serif; font-size: 16pt; color: var(--accent); }
+  .toc .t { font-family: 'Cormorant Garamond', serif; font-size: 16pt; color: var(--ink); }
+  .toc .t small { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 9.5pt; color: var(--muted); margin-top: 1mm; }
+
+  /* Fecho */
+  .mapa-list { list-style: none; padding: 0; margin: 5mm 0 7mm; }
+  .mapa-list li { padding: 3.2mm 0 3.2mm 9mm; position: relative; border-bottom: 1px solid rgba(242,239,245,.18); font-size: 11.5pt; line-height: 1.5; }
+  .mapa-list li::before { content: attr(data-n); position: absolute; left: 0; font-family: 'Gloock', serif; color: var(--lilac); }
+  .dark p { color: #e7e1ee; }
+  .cta { display: inline-block; margin-top: 4mm; padding: 4mm 7mm; background: #f2eff5; color: var(--deep); text-decoration: none; font-size: 11pt; border-radius: 3mm; }
+  .back { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .back img { width: 40mm; margin-bottom: 12mm; }
+  .back p { font-size: 11pt; color: #d9d1e4; margin: 1.5mm 0; }
+  .back .tag { font-family: 'Cormorant Garamond', serif; font-size: 20pt; color: #f2eff5; margin-bottom: 10mm; }
+</style>
+</head>
+<body>
+
+<!-- 1. CAPA -->
+<section class="page dark cover">
+  <img src="../public/images/logo-300.png" alt="Empower Marketing" />
+  <div>
+    <p class="eyebrow">Guia · Índice de Posição</p>
+    <h1 class="display">Da Estética<br /><span>à Posição</span></h1>
+    <p class="sub">Os 5 movimentos das marcas premium que crescem de forma sustentável.</p>
+  </div>
+  <p class="by">Beatriz Melo · Empower Marketing</p>
+</section>
+
+<!-- 2. SOBRE ESTE GUIA -->
+<section class="page">
+  <p class="eyebrow">Antes de começar</p>
+  <h2 class="display" style="font-size:30pt">Como usar este guia</h2>
+  <p class="lead" style="margin-top:7mm">Este guia não é uma lista de dicas. É uma sequência. Cada movimento prepara o seguinte, e saltar um deles é a forma mais comum de gastar dinheiro em marketing sem ver a marca crescer.</p>
+  <p>Se chegaste aqui pelo Índice de Posição, já sabes quais são as tuas duas dimensões mais fracas. Começa por esses capítulos, mas lê a introdução primeiro: é ela que explica porque é que a ordem importa.</p>
+  <p>Cada capítulo tem a mesma estrutura: o princípio, o erro que vemos repetir-se nas marcas premium, um exemplo, um exercício para fazeres esta semana e o sinal de que o ponto está resolvido. Os exercícios são curtos de propósito. Pede-se honestidade, não tempo.</p>
+  <ol class="toc">
+    <li><span class="n">00</span><span class="t">Bonita não é o mesmo que escolhida<small>Introdução</small></span></li>
+    <li><span class="n">01</span><span class="t">Definir o espaço<small>Posição</small></span></li>
+    <li><span class="n">02</span><span class="t">Sair do território comum<small>Diferenciação</small></span></li>
+    <li><span class="n">03</span><span class="t">Alinhar o ecossistema<small>Ecossistema de canais</small></span></li>
+    <li><span class="n">04</span><span class="t">Proteger o valor<small>Valor e preço</small></span></li>
+    <li><span class="n">05</span><span class="t">Construir ativos próprios<small>Ativos próprios</small></span></li>
+    <li><span class="n">06</span><span class="t">O que vem depois do diagnóstico<small>Fecho</small></span></li>
+  </ol>
+  <div class="folio"><span>Da Estética à Posição</span><span>2</span></div>
+</section>
+
+<!-- 3. INTRODUÇÃO — ABERTURA -->
+<section class="page dark opener">
+  <span class="num">00</span>
+  <p class="eyebrow">Introdução</p>
+  <h2 class="display">Bonita não é o mesmo que escolhida</h2>
+  <p class="principle">A estética atrai a atenção. Só a posição cria escolha.</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>3</span></div>
+</section>
+
+<!-- 4. INTRODUÇÃO — TEXTO -->
+<section class="page">
+  <h3><small>O ponto de partida</small>Toda a gente elogia a marca. As vendas não acompanham.</h3>
+  <p>É uma das frases que mais ouço de fundadores de marcas premium. Investiram em fotografia, em packaging, numa identidade visual cuidada. A marca ficou bonita. E ficou, ao mesmo tempo, igual a dezenas de outras marcas igualmente bonitas.</p>
+  <p>O problema não é a estética. A estética faz o trabalho dela: faz alguém parar. Mas parar não é escolher. A escolha acontece quando o cliente percebe, sem esforço, porque é que aquela marca é a única que serve o que ele procura. Isso não se desenha. Define-se.</p>
+  <p class="quote">A estética é a embalagem da posição. Nunca o substituto.</p>
+  <h3><small>Porque é que a ordem importa</small>Primeiro a causa, depois o sintoma</h3>
+  <p>Quando as vendas abrandam, o reflexo é produzir mais: mais conteúdo, mais campanhas, mais canais, mais investimento em anúncios. Mas volume não cria diferença. Só amplifica a que já existe, ou a falta dela. Uma marca sem posição que publica o dobro fica apenas duas vezes mais indistinta.</p>
+  <p>Os cinco movimentos deste guia seguem a ordem pela qual as marcas que crescem de forma sustentável tomam decisões. Primeiro definem o espaço que querem ocupar. Depois retiram tudo o que as confunde com a concorrência. Só então alinham os canais, protegem o preço e constroem ativos que ninguém lhes pode tirar.</p>
+  <div class="box">
+    <p><strong>Uma pergunta para levares contigo ao longo do guia:</strong> se amanhã a tua marca desaparecesse, o que é que os teus clientes perderiam que não encontram em mais lado nenhum? Se a resposta demorar, este guia foi escrito para ti.</p>
+  </div>
+  <div class="folio"><span>Da Estética à Posição</span><span>4</span></div>
+</section>
+
+<!-- 5. MOVIMENTO 1 — ABERTURA -->
+<section class="page dark opener">
+  <span class="num">01</span>
+  <p class="eyebrow">Movimento 1</p>
+  <h2 class="display">Definir o espaço</h2>
+  <p class="principle">Posição é uma decisão, não uma descrição.</p>
+  <p class="dim">Dimensão do Índice: Posição</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>5</span></div>
+</section>
+
+<!-- 6. MOVIMENTO 1 — PRINCÍPIO E ERRO -->
+<section class="page">
+  <h3><small>O princípio</small>Uma posição escolhe, e por isso abdica</h3>
+  <p>Posição é o espaço que a tua marca ocupa na cabeça de quem compra, em relação às alternativas. Não é o que dizes sobre ti. É a razão pela qual alguém te escolhe a ti e não ao concorrente que está a dois cliques de distância.</p>
+  <p>Uma posição verdadeira tem sempre um custo: para ocupar um espaço, abdicas de outros. Decides para quem és e, por consequência, para quem não és. Decides o que fazes e o que nunca farás, mesmo que dê dinheiro no curto prazo. É essa renúncia que torna a posição clara. Uma marca que quer servir toda a gente não ocupa espaço nenhum.</p>
+  <p>Quando a posição está definida, torna-se um filtro. Cada coleção, cada campanha, cada parceria e cada contratação passa por uma pergunta simples: isto reforça o espaço que escolhemos, ou dilui-o? As decisões deixam de ser tomadas do zero. E a equipa deixa de depender do fundador para saber o que é "a cara da marca".</p>
+  <h3><small>O erro comum nas marcas premium</small>Confundir qualidades com posição</h3>
+  <p>Pede a uma marca premium que se descreva e ouvirás quase sempre as mesmas palavras: qualidade, design, atenção ao detalhe, exclusividade, experiência. São verdadeiras. E são exatamente o que todo o setor diz. Qualidades são o preço de entrada no mercado premium, não a razão de escolha.</p>
+  <p>O segundo erro é deixar a posição implícita, "na cabeça do fundador". Enquanto não estiver escrita numa frase que toda a equipa repete, cada pessoa interpreta a marca à sua maneira. O resultado é uma comunicação que muda de tom consoante quem a faz, e um cliente que recebe sinais diferentes em cada contacto.</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>6</span></div>
+</section>
+
+<!-- 7. MOVIMENTO 1 — EXEMPLO, EXERCÍCIO, SINAL -->
+<section class="page">
+  <h3><small>Um exemplo (ilustrativo)</small>Do "atelier de joalharia" à joia de marco</h3>
+  <p>Pensa num atelier de joalharia de autor que se apresenta como "peças únicas, feitas à mão, com materiais nobres". Tal como os outros vinte ateliers da cidade. Quando decide que só faz peças para marcar momentos de passagem (um primeiro emprego, um divórcio, um recomeço), tudo muda: o nome das coleções, a forma de atender, as parcerias, até o tempo de produção. Deixa de competir com os outros ateliers. Passa a ser o sítio aonde se vai quando algo muda na vida.</p>
+  <h3><small>O exercício desta semana</small>A frase da posição</h3>
+  <p>Completa a frase abaixo. Depois lê-a a três clientes e pergunta-lhes se se reconhecem nela. Se hesitarem, ainda não é uma posição: é uma aspiração.</p>
+  <p class="fill">Somos a única marca que</p><div class="write"></div>
+  <p class="fill">para</p><div class="write"></div>
+  <p class="fill">porque</p><div class="write"></div>
+  <p class="label">E agora, a parte difícil: o que é que, por causa desta frase, deixamos de fazer?</p>
+  <div class="write"></div><div class="write"></div>
+  <h3><small>O sinal de que está resolvido</small></h3>
+  <ul class="signs">
+    <li>Três clientes descrevem a marca com palavras parecidas, e próximas das tuas.</li>
+    <li>A equipa consegue recusar uma ideia "gira" sem precisar de ti, porque não serve a posição.</li>
+    <li>A frase serviria mal a qualquer um dos teus concorrentes.</li>
+  </ul>
+  <div class="folio"><span>Da Estética à Posição</span><span>7</span></div>
+</section>
+
+<!-- 8. MOVIMENTO 2 — ABERTURA -->
+<section class="page dark opener">
+  <span class="num">02</span>
+  <p class="eyebrow">Movimento 2</p>
+  <h2 class="display">Sair do território comum</h2>
+  <p class="principle">A diferenciação começa no que deixas de dizer.</p>
+  <p class="dim">Dimensão do Índice: Diferenciação</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>8</span></div>
+</section>
+
+<!-- 9. MOVIMENTO 2 — PRINCÍPIO E ERRO -->
+<section class="page">
+  <h3><small>O princípio</small>Quando todos dizem o mesmo, o cliente compara o preço</h3>
+  <p>Cada setor tem o seu território comum: as palavras, as imagens e as promessas que toda a gente usa. Na beleza, é "ciência", "natural" e "cuidado". Na moda, "intemporal", "sustentável" e "feito em Portugal". Na restauração, "produto", "sazonal" e "experiência". Quando uma marca fala a mesma língua que as outras, o cliente fica sem forma de a distinguir, e recorre ao único critério que sobra: o preço.</p>
+  <p>Diferenciar não é inventar uma qualidade nova. Na maioria das marcas premium, a diferença real já existe: está na origem, no método, no ponto de vista do fundador, no tipo de cliente que servem melhor do que ninguém. O problema é que está enterrada debaixo das mesmas palavras que todo o setor usa. O trabalho é tirar essas palavras, para que a diferença apareça.</p>
+  <h3><small>O erro comum nas marcas premium</small>Olhar para o líder e imitar</h3>
+  <p>O reflexo natural é estudar a marca que está a correr bem e fazer parecido: a mesma estética, o mesmo tom, o mesmo tipo de campanha. Parece seguro. É a forma mais cara de desaparecer. Quem copia o líder reforça a posição dele e fica sempre um passo atrás.</p>
+  <p>O erro inverso também existe: diferenciar-se em coisas que o cliente não valoriza. Uma diferença só conta se for relevante para quem compra e difícil de copiar por quem compete. Tudo o resto é decoração.</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>9</span></div>
+</section>
+
+<!-- 10. MOVIMENTO 2 — EXEMPLO, EXERCÍCIO, SINAL -->
+<section class="page">
+  <h3><small>Um exemplo</small>A Dreams Academy e o posicionamento "anti-mercado"</h3>
+  <p>Quando a Dreams Academy, uma academia de formação para profissionais de estética, chegou à Empower, o setor inteiro seguia o mesmo caminho: minimalismo limpo, tons neutros, promessa de "cursos certificados". Em vez de fazer melhor o mesmo, a academia ocupou o território que ninguém ocupava: passou de "escola de cursos" a academia premium de formação, com um inimigo claro, os cursos superficiais, e uma identidade que assumia o detalhe onde todos eram simples. A fundadora deixou de ter de explicar porque é que os cursos eram mais caros: a marca passou a fazer essa pré-venda.</p>
+  <h3><small>O exercício desta semana</small>A lista do que deixas de dizer</h3>
+  <ol class="steps">
+    <li>Escolhe os teus três principais concorrentes e lê o site e as últimas publicações de cada um.</li>
+    <li>Escreve as cinco frases, palavras ou promessas que mais se repetem entre eles.</li>
+    <li>Tudo o que estiver nessa lista, deixa de dizer. O que sobra é o início da tua diferença.</li>
+  </ol>
+  <div class="grid-2">
+    <div><p class="label">O território comum</p><div class="write"></div><div class="write"></div><div class="write"></div><div class="write"></div><div class="write"></div></div>
+    <div><p class="label">O que só nós podemos dizer</p><div class="write"></div><div class="write"></div><div class="write"></div><div class="write"></div><div class="write"></div></div>
+  </div>
+  <h3><small>O sinal de que está resolvido</small></h3>
+  <ul class="signs">
+    <li>Se tapares o logótipo, a tua comunicação continua a ser reconhecível.</li>
+    <li>Quem te procura já não pergunta "qual é a diferença?", pergunta "quando podemos começar?".</li>
+  </ul>
+  <div class="folio"><span>Da Estética à Posição</span><span>10</span></div>
+</section>
+
+<!-- 11. MOVIMENTO 3 — ABERTURA -->
+<section class="page dark opener">
+  <span class="num">03</span>
+  <p class="eyebrow">Movimento 3</p>
+  <h2 class="display">Alinhar o ecossistema</h2>
+  <p class="principle">Cada canal tem uma função, e todos contam a mesma história.</p>
+  <p class="dim">Dimensão do Índice: Ecossistema de canais</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>11</span></div>
+</section>
+
+<!-- 12. MOVIMENTO 3 — PRINCÍPIO E ERRO -->
+<section class="page">
+  <h3><small>O princípio</small>Um ecossistema, não uma coleção de canais</h3>
+  <p>Antes de comprar a uma marca premium, o cliente passa por vários pontos de contacto: vê uma publicação, visita o site, recebe uma recomendação, entra na loja ou no espaço, troca uma mensagem, recebe um email. Cada um destes pontos é uma oportunidade de reforçar a posição, ou de a contradizer.</p>
+  <p>Num ecossistema de marca, cada canal tem uma função clara na decisão de compra: atrair quem ainda não te conhece, nutrir quem já te conhece, converter quem está pronto e fidelizar quem já comprou. E todos contam a mesma história, com a mesma voz. Não é preciso estar em todo o lado. É preciso que cada sítio onde estás trabalhe para o mesmo fim.</p>
+  <h3><small>O erro comum nas marcas premium</small>Estar em todos os canais porque "tem de ser"</h3>
+  <p>O padrão repete-se: a marca abre conta em cada rede nova, lança uma newsletter porque alguém recomendou, investe em anúncios porque a concorrência investe. Cada canal é gerido como uma peça solta, muitas vezes por pessoas diferentes. Um inspira, outro vende com desconto, outro não diz nada. O cliente atravessa estas contradições e cada uma é um motivo para adiar a decisão.</p>
+  <p>O segundo erro é medir tudo pelo alcance. Um canal que alcança muita gente mas não move ninguém para a fase seguinte não é presença: é custo. Estar em todo o lado sem função é a forma mais silenciosa de desperdiçar orçamento.</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>12</span></div>
+</section>
+
+<!-- 13. MOVIMENTO 3 — EXEMPLO, EXERCÍCIO, SINAL -->
+<section class="page">
+  <h3><small>Um exemplo (ilustrativo)</small>Menos canais, mais direção</h3>
+  <p>Pensa num restaurante de autor presente em quatro redes sociais, com site, newsletter e campanhas pagas, e uma equipa sempre ocupada a produzir. Quando dá uma função a cada canal, percebe que duas redes não trazem ninguém à mesa e que a newsletter é o canal que mais reservas gera, embora seja o menos cuidado. Pausa o que não tem função, e passa a usar o tempo que ganhou para contar melhor a história da cozinha nos canais que realmente levam à reserva.</p>
+  <h3><small>O exercício desta semana</small>Uma palavra por canal</h3>
+  <p>Para cada canal onde a marca está, escreve uma única palavra: atrair, nutrir, converter ou fidelizar. Os canais sem palavra são candidatos a pausar.</p>
+  <table class="channels">
+    <thead><tr><th style="width:34%">Canal</th><th style="width:22%">Função</th><th>Como sei que está a cumprir?</th></tr></thead>
+    <tbody>
+      <tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <h3><small>O sinal de que está resolvido</small></h3>
+  <ul class="signs">
+    <li>Consegues explicar em uma frase o papel de cada canal na decisão de compra.</li>
+    <li>O cliente ouve a mesma história no site, no espaço, no email e no atendimento.</li>
+    <li>As métricas que acompanhas por canal correspondem à função que lhe deste.</li>
+  </ul>
+  <div class="folio"><span>Da Estética à Posição</span><span>13</span></div>
+</section>
+
+<!-- 14. MOVIMENTO 4 — ABERTURA -->
+<section class="page dark opener">
+  <span class="num">04</span>
+  <p class="eyebrow">Movimento 4</p>
+  <h2 class="display">Proteger o valor</h2>
+  <p class="principle">Os descontos treinam o cliente errado.</p>
+  <p class="dim">Dimensão do Índice: Valor e preço</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>14</span></div>
+</section>
+
+<!-- 15. MOVIMENTO 4 — PRINCÍPIO E ERRO -->
+<section class="page">
+  <h3><small>O princípio</small>O preço defende-se antes da venda</h3>
+  <p>Numa marca premium, o preço não se justifica com argumentos no momento da compra. Defende-se antes, na forma como a marca é percebida. Quando a posição é clara e a diferença é evidente, quem chega já conhece o valor, e a conversa deixa de ser "porque é que custa isto?" para passar a ser "quando é que posso ter?".</p>
+  <p>Proteger o valor é tratar o preço como parte da posição, não como uma alavanca de vendas. Cada decisão comercial comunica alguma coisa: o que dás, a quem dás e em que condições. Uma marca que protege o valor escolhe gestos que reforçam a exclusividade (acesso antecipado, serviço, edições limitadas) em vez de gestos que a desgastam.</p>
+  <h3><small>O erro comum nas marcas premium</small>Usar o desconto para resolver um problema de posição</h3>
+  <p>Quando um mês corre mal, a promoção parece a solução mais rápida. E funciona, uma vez. Mas cada desconto ensina quem compra a esperar pelo próximo e atrai precisamente o cliente que escolhe pelo preço, o mesmo que sai quando aparece alguém mais barato. Ao fim de um ano, a marca tem mais volume, menos margem e uma base de clientes que só compra em promoção.</p>
+  <p>O sinal mais claro deste erro está na conversa de venda: quando é preciso explicar longamente porque é que é caro, o problema não está no preço. Está a montante, na posição e na diferenciação.</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>15</span></div>
+</section>
+
+<!-- 16. MOVIMENTO 4 — EXEMPLO, EXERCÍCIO, SINAL -->
+<section class="page">
+  <h3><small>Um exemplo (ilustrativo)</small>Trocar a promoção por um gesto</h3>
+  <p>Pensa numa marca de cosmética premium que fazia promoções todos os meses para manter as vendas. Em vez da campanha habitual de novembro, decide abrir a nova coleção uma semana mais cedo, só para clientes atuais, com uma consulta de pele incluída. Não mexe no preço. Os clientes que ficam são os que valorizam o acesso e o cuidado, e a marca deixa de treinar a sua base para esperar pelo próximo desconto.</p>
+  <h3><small>O exercício desta semana</small>O gesto em vez do desconto</h3>
+  <p>Olha para a próxima promoção que tens planeada. Substitui-a por um gesto exclusivo para clientes atuais, sem mexer no preço.</p>
+  <p class="label">A próxima promoção planeada</p><div class="write"></div>
+  <p class="label">O gesto que a substitui (acesso antecipado, serviço, edição limitada…)</p><div class="write"></div><div class="write"></div>
+  <p class="label">O que este gesto diz sobre a nossa posição</p><div class="write"></div><div class="write"></div>
+  <h3><small>O sinal de que está resolvido</small></h3>
+  <ul class="signs">
+    <li>As vendas deixam de depender do calendário de promoções.</li>
+    <li>A objeção "é caro" aparece cada vez menos, e quem a levanta raramente é o teu cliente ideal.</li>
+    <li>O preço está no topo do mercado e ninguém da equipa sente necessidade de o justificar.</li>
+  </ul>
+  <div class="folio"><span>Da Estética à Posição</span><span>16</span></div>
+</section>
+
+<!-- 17. MOVIMENTO 5 — ABERTURA -->
+<section class="page dark opener">
+  <span class="num">05</span>
+  <p class="eyebrow">Movimento 5</p>
+  <h2 class="display">Construir ativos próprios</h2>
+  <p class="principle">O crescimento sustentável acontece em canais que controlas.</p>
+  <p class="dim">Dimensão do Índice: Ativos próprios</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>17</span></div>
+</section>
+
+<!-- 18. MOVIMENTO 5 — PRINCÍPIO E ERRO -->
+<section class="page">
+  <h3><small>O princípio</small>Alugado ou teu</h3>
+  <p>Seguidores, alcance, marketplaces e anúncios são canais alugados. Funcionam enquanto pagas, e enquanto a plataforma quiser: basta uma mudança de algoritmo ou de preço para as vendas mudarem com ela. Os ativos próprios são diferentes. A lista de clientes, o email, o WhatsApp, as indicações, o espaço físico, a comunidade: são os únicos que acumulam valor ao longo do tempo.</p>
+  <p>Uma marca com ativos próprios fortes consegue prever as vendas, lançar uma coleção sem depender de anúncios e falar com os melhores clientes quando quer, sem pedir licença a ninguém. É isto que torna o crescimento sustentável: não depender da boa vontade de uma plataforma para existir.</p>
+  <h3><small>O erro comum nas marcas premium</small>Construir a casa num terreno alugado</h3>
+  <p>Muitas marcas premium nasceram no Instagram e continuam a viver lá. Toda a energia vai para a rede, e o contacto do cliente, que é o ativo mais valioso de qualquer marca, nunca é recolhido. Quando o alcance cai, e cai sempre, a marca descobre que não tem forma de chegar às pessoas que já compraram.</p>
+  <p>O segundo erro é recolher contactos e não fazer nada com eles. Uma lista que só recebe promoções não é um ativo: é um canal de descontos. O valor está na relação, e a relação constrói-se com comunicação pessoal, relevante e com propósito.</p>
+  <div class="folio"><span>Da Estética à Posição</span><span>18</span></div>
+</section>
+
+<!-- 19. MOVIMENTO 5 — EXEMPLO, EXERCÍCIO, SINAL -->
+<section class="page">
+  <h3><small>Um exemplo (ilustrativo)</small>Do algoritmo à lista</h3>
+  <p>Pensa numa marca de mobiliário de design que vendia quase só através de publicações patrocinadas. Passa a pedir o contacto de cada cliente na entrega, e envia, um mês depois, uma nota pessoal sobre como cuidar da peça. Meses mais tarde, quando lança uma nova coleção, a primeira pessoa a saber é quem já comprou. Uma parte relevante das vendas passa a vir de clientes recorrentes e de indicações, e o orçamento em anúncios deixa de ser a única forma de crescer.</p>
+  <h3><small>O exercício desta semana</small>O primeiro ativo</h3>
+  <ol class="steps">
+    <li>Define um mecanismo simples para captar o contacto de cada cliente (email ou WhatsApp), com consentimento: na compra, na entrega ou na visita.</li>
+    <li>Escreve uma primeira comunicação pessoal, sem promoção, e envia-a este mês a quem já comprou.</li>
+  </ol>
+  <p class="label">O nosso mecanismo de captação</p><div class="write"></div><div class="write"></div>
+  <p class="label">A primeira mensagem (uma ideia, sem desconto)</p><div class="write"></div><div class="write"></div>
+  <h3><small>O sinal de que está resolvido</small></h3>
+  <ul class="signs">
+    <li>Se o Instagram desaparecesse amanhã, sentias, mas recuperavas.</li>
+    <li>Consegues prever as vendas dos próximos três meses com uma margem razoável.</li>
+    <li>Uma parte crescente das vendas vem de clientes recorrentes e de indicações.</li>
+  </ul>
+  <div class="folio"><span>Da Estética à Posição</span><span>19</span></div>
+</section>
+
+<!-- 20. FECHO — O MAPA -->
+<section class="page dark">
+  <p class="eyebrow">Fecho</p>
+  <h2 class="display" style="font-size:36pt;max-width:150mm">O que vem depois do diagnóstico</h2>
+  <p class="lead" style="margin-top:8mm;color:#f2eff5">O Índice de Posição e este guia dão-te uma fotografia. Mostram onde a marca está a perder valor. Não dizem, ainda, o que fazer primeiro na tua marca, no teu mercado, com os teus concorrentes.</p>
+  <p>É para isso que existe o Mapa de Crescimento: o diagnóstico completo, feito em 2 a 3 semanas, antes de qualquer projeto. Analisamos a tua marca, o teu mercado e os teus concorrentes para chegar a três respostas:</p>
+  <ul class="mapa-list">
+    <li data-n="1">Que espaço a tua marca pode ocupar que mais ninguém ocupa.</li>
+    <li data-n="2">O que está realmente a travar o crescimento.</li>
+    <li data-n="3">O que fazer nos próximos 6 meses, e por que ordem.</li>
+  </ul>
+  <p>O Mapa fica contigo, quer avances connosco para execução quer não. Foi desenhado para ter valor por si só.</p>
+  <p>Se o teu índice te deixou com perguntas, é aí que elas têm resposta.</p>
+  <a class="cta" href="https://www.empowermarketing.online/mapadecrescimento">www.empowermarketing.online/mapadecrescimento</a>
+  <div class="folio"><span>Da Estética à Posição</span><span>20</span></div>
+</section>
+
+<!-- 21. CONTRACAPA -->
+<section class="page dark back">
+  <img src="../public/images/logo-300.png" alt="Empower Marketing" />
+  <p class="tag">Estratégia que posiciona.<br />Crescimento que sustenta.</p>
+  <p>Beatriz Melo · Empower Marketing</p>
+  <p>Rua Manuel Pinho 125, 4350-107 Porto</p>
+  <p>empowermarketing.geral@gmail.com · +351 910 199 278</p>
+  <p>www.empowermarketing.online</p>
+</section>
+
+</body>
+</html>
