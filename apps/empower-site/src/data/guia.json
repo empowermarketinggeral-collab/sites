@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "title": "Da Estética à Posição — guia gratuito para marcas premium | Empower Marketing",
+    "description": "Os 5 movimentos das marcas premium que crescem de forma sustentável: posição, diferenciação, ecossistema de canais, valor e ativos próprios. Guia gratuito com exercícios práticos."
+  },
+  "pdf": "/guia/da-estetica-a-posicao.pdf",
+  "lead": {
+    "endpoint": "https://sites-fyz8.vercel.app/api/lead?site=empower-marketing",
+    "source": "guia-estetica-posicao",
+    "tags": ["guia:pedido"]
+  },
+  "hero": {
+    "eyebrow": "Guia gratuito · 21 páginas",
+    "title": "Da Estética",
+    "accent": "à Posição",
+    "text": "Os 5 movimentos das marcas premium que crescem de forma sustentável. Um guia para fundadores cuja marca é elogiada, mas nem sempre escolhida."
+  },
+  "insideTitle": "O que está no guia",
+  "inside": [
+    { "n": "01", "title": "Definir o espaço", "text": "Posição é uma decisão, não uma descrição." },
+    { "n": "02", "title": "Sair do território comum", "text": "A diferenciação começa no que deixas de dizer." },
+    { "n": "03", "title": "Alinhar o ecossistema", "text": "Cada canal tem uma função, e todos contam a mesma história." },
+    { "n": "04", "title": "Proteger o valor", "text": "Os descontos treinam o cliente errado." },
+    { "n": "05", "title": "Construir ativos próprios", "text": "O crescimento sustentável acontece em canais que controlas." }
+  ],
+  "insideNote": "Cada capítulo tem o princípio, o erro que vemos repetir-se nas marcas premium, um exemplo, um exercício para fazeres esta semana e o sinal de que o ponto está resolvido.",
+  "form": {
+    "title": "Recebe o guia",
+    "firstName": "Primeiro nome",
+    "email": "Email",
+    "brand": "Nome da marca",
+    "newsletter": "Quero receber a Carta de Posição, uma reflexão quinzenal sobre marcas premium.",
+    "privacy": "Usamos estes dados para te enviar o guia. Podes sair a qualquer momento.",
+    "button": "Quero o guia",
+    "sending": "A enviar…",
+    "invalid": "Preenche o primeiro nome, um email válido e o nome da marca."
+  },
+  "done": {
+    "title": "O guia é teu.",
+    "text": "Também o enviámos para o teu email, para o teres sempre à mão.",
+    "download": "Descarregar o guia (PDF)",
+    "indiceTitle": "Por onde começar?",
+    "indiceText": "O Índice de Posição mede, em 4 minutos, as 5 dimensões do guia e diz-te quais são as tuas duas mais fracas.",
+    "indiceCta": "Fazer o Índice de Posição"
+  }
+}

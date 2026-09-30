@@ -1,0 +1,148 @@
+---
+import Base from '../layouts/Base.astro';
+import guia from '../data/guia.json';
+
+// Landing do guia "Da Estética à Posição": o contacto segue para o Big Boss
+// através do hub (/api/lead) com a tag guia:pedido, que arranca o email de
+// entrega. O download aparece logo, mesmo que o envio falhe.
+const { meta, hero, insideTitle, inside, insideNote, form, done } = guia;
+const config = { lead: guia.lead, sending: form.sending, invalid: form.invalid };
+---
+<Base title={meta.title} description={meta.description}>
+  <section class="page-hero">
+    <div class="wrap gd-hero">
+      <div>
+        <p class="eyebrow reveal">{hero.eyebrow}</p>
+        <h1 class="display page-title reveal">{hero.title}<br /><span class="accent">{hero.accent}</span></h1>
+        <p class="lead reveal">{hero.text}</p>
+      </div>
+
+      <div class="gd-card reveal" data-guia>
+        <div data-step="form">
+          <h2 class="card-title">{form.title}</h2>
+          <form class="gd-form" data-form novalidate>
+            <label>{form.firstName}<input name="first_name" autocomplete="given-name" required maxlength="60" /></label>
+            <label>{form.email}<input name="email" type="email" autocomplete="email" required maxlength="200" /></label>
+            <label>{form.brand}<input name="brand" autocomplete="organization" required maxlength="120" /></label>
+            <label class="gd-hp" aria-hidden="true">Não preencher<input name="website_url" tabindex="-1" autocomplete="off" /></label>
+            <label class="gd-check"><input type="checkbox" name="newsletter" /><span>{form.newsletter}</span></label>
+            <p class="muted small">{form.privacy} <a href="/politica-de-privacidade">Política de privacidade</a>.</p>
+            <p class="gd-error" role="alert" data-error hidden></p>
+            <button class="btn btn-light gd-btn" data-submit>{form.button}</button>
+          </form>
+        </div>
+        <div data-step="done" hidden>
+          <h2 class="card-title">{done.title}</h2>
+          <p class="muted" data-done-text>{done.text}</p>
+          <a class="btn btn-light" href={guia.pdf} download data-track="guia_download">{done.download}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow reveal">{insideTitle}</p>
+      <ol class="gd-inside">
+        {inside.map((m) => (
+          <li class="reveal">
+            <span class="display gd-n">{m.n}</span>
+            <h3 class="card-title">{m.title}</h3>
+            <p>{m.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="note reveal">{insideNote}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="card card-outline gd-indice reveal">
+        <h2 class="card-title">{done.indiceTitle}</h2>
+        <p>{done.indiceText}</p>
+        <a class="btn btn-light" href="/indice-de-posicao">{done.indiceCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/json" id="guia-config" set:html={JSON.stringify(config)} />
+</Base>
+
+<script>
+  const config = JSON.parse(document.getElementById('guia-config')!.textContent!);
+  const root = document.querySelector<HTMLElement>('[data-guia]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+  const error = root.querySelector<HTMLElement>('[data-error]')!;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    error.hidden = true;
+    const data = new FormData(form);
+    const firstName = String(data.get('first_name') ?? '').trim();
+    const email = String(data.get('email') ?? '').trim();
+    const brand = String(data.get('brand') ?? '').trim();
+    if (!firstName || !brand || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      error.textContent = config.invalid;
+      error.hidden = false;
+      return;
+    }
+    const newsletter = data.get('newsletter') === 'on';
+    const button = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    button.disabled = true;
+    button.textContent = config.sending;
+
+    let ok = false;
+    try {
+      const res = await fetch(config.lead.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: firstName,
+          email,
+          source: config.lead.source,
+          tags: [...config.lead.tags, ...(newsletter ? ['newsletter:ativo'] : [])],
+          consent_email: newsletter,
+          custom_fields: { nome_marca: brand },
+          website_url: String(data.get('website_url') ?? ''),
+        }),
+      });
+      ok = res.ok;
+    } catch {
+      ok = false;
+    }
+
+    // O guia fica sempre disponível; se o envio falhou, não prometemos o email.
+    if (!ok) root.querySelector<HTMLElement>('[data-done-text]')!.hidden = true;
+    root.querySelector<HTMLElement>('[data-step=form]')!.hidden = true;
+    root.querySelector<HTMLElement>('[data-step=done]')!.hidden = false;
+    (window as any).empowerTrack?.('lead');
+    (window as any).empowerConversion?.('lead');
+  });
+</script>
+
+<style>
+  .gd-hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 3rem 4rem; align-items: center; }
+  .gd-hero .page-title { max-width: 12ch; }
+  .gd-card { background: rgba(242,239,245,.05); border: 1px solid rgba(242,239,245,.25); border-radius: var(--radius) 0 var(--radius) var(--radius); padding: 2rem; }
+  .gd-card .card-title { margin-bottom: 1.2rem; }
+  .gd-form { display: grid; gap: 1rem; }
+  .gd-form label { display: grid; gap: .4rem; font-size: 1rem; }
+  .gd-form input:not([type=checkbox]) { background: rgba(242,239,245,.06); color: var(--paper); border: 1px solid rgba(242,239,245,.3); border-radius: 10px; padding: .8rem .9rem; font: inherit; font-family: var(--font-sans); }
+  .gd-form input:focus { outline: 2px solid var(--lilac); outline-offset: 1px; }
+  .gd-form .gd-check { grid-template-columns: auto 1fr; align-items: start; gap: .7rem; }
+  .gd-check input { width: 1.1rem; height: 1.1rem; margin-top: .2rem; accent-color: var(--lilac); }
+  .gd-form p { margin: 0; }
+  .gd-btn { border: 0; cursor: pointer; font-family: var(--font-sans); justify-self: start; }
+  .gd-btn:disabled { opacity: .6; cursor: progress; }
+  .gd-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .gd-error { color: #f0a8c0; }
+  .gd-inside { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 1.5rem; }
+  .gd-inside li { border-top: 1px solid rgba(242,239,245,.25); padding-top: 1.2rem; }
+  .gd-n { font-size: 2.2rem; color: var(--lilac); display: block; margin-bottom: .6rem; }
+  .gd-inside .card-title { font-size: 1.45rem; margin-bottom: .5rem; }
+  .gd-inside p { color: var(--paper-muted); margin: 0; }
+  .gd-indice { max-width: 760px; }
+  .gd-indice p { color: var(--paper-muted); margin: 0 0 1.6rem; }
+  @media (max-width: 900px) { .gd-hero { grid-template-columns: 1fr; } }
+</style>
