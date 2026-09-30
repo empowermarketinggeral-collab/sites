@@ -1,0 +1,305 @@
+{
+  "meta": {
+    "title": "Índice de Posição — diagnóstico gratuito de marca | Empower Marketing",
+    "description": "Em 4 minutos, mede onde a tua marca premium está a perder valor: posição, diferenciação, canais, preço e ativos próprios. Recebe o índice de 0 a 100 e as 3 prioridades para os próximos 90 dias."
+  },
+  "lead": {
+    "endpoint": "",
+    "token": "",
+    "source": "indice-de-posicao"
+  },
+  "landing": {
+    "eyebrow": "Índice de Posição · diagnóstico gratuito",
+    "title": "A tua marca é bonita.",
+    "accent": "Mas é escolhida?",
+    "subtitle": "O Índice de Posição mede, em 4 minutos, onde a tua marca está a perder valor: posição, diferenciação, canais, preço e ativos próprios. No fim, recebes um relatório com as 3 prioridades para os próximos 90 dias.",
+    "forWhoTitle": "Para quem",
+    "forWho": "Fundadores de marcas premium de moda, beleza, restauração, mobiliário de design e marcas conceito.",
+    "getTitle": "O que recebes",
+    "get": [
+      "A pontuação da tua marca em 5 dimensões, de 0 a 100",
+      "O perfil da tua marca e o que ele significa para o crescimento",
+      "As 3 prioridades estratégicas para os próximos 90 dias",
+      "O guia \"Da Estética à Posição\": os 5 movimentos das marcas premium que crescem de forma sustentável"
+    ],
+    "button": "Fazer o diagnóstico (4 min)",
+    "note": "20 perguntas. Sem respostas certas. Responde pela marca que tens hoje, não pela que gostavas de ter."
+  },
+  "qualification": [
+    {
+      "id": "setor",
+      "question": "Em que setor está a tua marca?",
+      "options": [
+        { "label": "Moda", "value": "moda" },
+        { "label": "Beleza", "value": "beleza" },
+        { "label": "Restauração/hospitality", "value": "restauracao" },
+        { "label": "Mobiliário e design", "value": "mobiliario" },
+        { "label": "Marca conceito/lifestyle", "value": "marca-conceito" },
+        { "label": "Marca pessoal", "value": "marca-pessoal" },
+        { "label": "Outro", "value": "outro" }
+      ]
+    },
+    {
+      "id": "faturacao",
+      "question": "Qual é a faturação anual aproximada?",
+      "options": [
+        { "label": "Menos de 100 mil €", "value": "<100k" },
+        { "label": "100–250 mil €", "value": "100-250k" },
+        { "label": "250 mil–1 M€", "value": "250k-1M" },
+        { "label": "Mais de 1 M€", "value": ">1M" },
+        { "label": "Prefiro não dizer", "value": "prefiro-nao-dizer" }
+      ]
+    },
+    {
+      "id": "papel",
+      "question": "Qual é o teu papel?",
+      "options": [
+        { "label": "Fundador(a)/CEO", "value": "fundador" },
+        { "label": "Direção de marketing ou marca", "value": "direcao" },
+        { "label": "Outro", "value": "outro" }
+      ]
+    },
+    {
+      "id": "objetivo_12m",
+      "question": "Qual é o objetivo principal para os próximos 12 meses?",
+      "options": [
+        { "label": "Lançar", "value": "Lançar" },
+        { "label": "Reposicionar", "value": "Reposicionar" },
+        { "label": "Escalar", "value": "Escalar" },
+        { "label": "Proteger a posição atual", "value": "Proteger a posição atual" }
+      ]
+    },
+    {
+      "id": "intencao",
+      "question": "Se tivesses clareza total sobre o que fazer, quando gostarias de começar?",
+      "options": [
+        { "label": "Este trimestre", "value": "Este trimestre" },
+        { "label": "Nos próximos 6 meses", "value": "Nos próximos 6 meses" },
+        { "label": "Sem pressa", "value": "Sem pressa" },
+        { "label": "Estou só a explorar", "value": "Estou só a explorar" }
+      ]
+    }
+  ],
+  "focusSectors": ["moda", "beleza", "restauracao", "mobiliario", "marca-conceito"],
+  "dimensions": [
+    {
+      "id": "d1",
+      "name": "Posição",
+      "block": "Escrever a posição numa frase. Sem uma frase que toda a equipa repita, cada decisão de marca é tomada do zero. Exercício desta semana: escreve \"Somos a única marca que ___ para ___ porque ___\" e testa-a com 3 clientes. Se não se reconhecerem, ainda não é uma posição.",
+      "questions": [
+        {
+          "question": "Se pedires a três clientes para descreverem a tua marca numa frase, o que acontece?",
+          "options": [
+            "Dizem coisas diferentes, quase sempre sobre o produto.",
+            "Falam de qualidade ou estética, em termos genéricos.",
+            "Dizem algo parecido e próximo do que queremos transmitir.",
+            "Repetem, quase palavra por palavra, a nossa posição."
+          ]
+        },
+        {
+          "question": "Consegues completar, sem hesitar: \"Somos a única marca que ___ para ___\"?",
+          "options": [
+            "Não consigo.",
+            "Consigo, mas a frase serviria a vários concorrentes.",
+            "Consigo, mas a equipa diria de outra forma.",
+            "Sim, e toda a equipa diria o mesmo."
+          ]
+        },
+        {
+          "question": "Quando lanças uma coleção, serviço ou campanha, a decisão parte de quê?",
+          "options": [
+            "Do que está a funcionar nos concorrentes ou das tendências.",
+            "Da intuição do momento.",
+            "De um plano anual, sem uma posição escrita.",
+            "De uma posição definida que filtra o que fazemos e o que não fazemos."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Diferenciação",
+      "block": "Encontrar o espaço livre. Estás a competir num território onde os concorrentes dizem o mesmo. Exercício: lista as 5 frases que os teus 3 principais concorrentes mais repetem. Tudo o que estiver nessa lista, deixa de dizer. O que sobra é o início da tua diferença.",
+      "questions": [
+        {
+          "question": "Se tirasses o logótipo de toda a tua comunicação, alguém reconheceria a marca?",
+          "options": [
+            "Não. Parece-se com o resto do setor.",
+            "Só os clientes mais fiéis.",
+            "Provavelmente, pela estética.",
+            "Sim, pela estética e pelo que dizemos."
+          ]
+        },
+        {
+          "question": "Quando um cliente potencial te compara com concorrentes, compara o quê?",
+          "options": [
+            "Preço.",
+            "Características do produto ou serviço.",
+            "A experiência.",
+            "Raramente compara: procura-nos especificamente."
+          ]
+        },
+        {
+          "question": "Nos últimos 12 meses, algum concorrente começou a dizer o mesmo que tu?",
+          "options": [
+            "Sempre dissemos todos mais ou menos o mesmo.",
+            "Sim, e ficámos parecidos.",
+            "Sim, mas continuamos claramente distintos.",
+            "Não. É difícil copiar-nos."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Ecossistema de canais",
+      "block": "Dar uma função a cada canal. Estar em todo o lado sem função é custo, não presença. Exercício: para cada canal, escreve uma palavra (atrair, nutrir, converter ou fidelizar). Os canais sem palavra são candidatos a pausar.",
+      "questions": [
+        {
+          "question": "Redes sociais, site, espaço físico, email e atendimento contam a mesma história?",
+          "options": [
+            "Cada um parece de uma marca diferente.",
+            "Visualmente parecidos, mas com mensagens diferentes.",
+            "Coerentes na maioria dos pontos.",
+            "Totalmente, e cada um tem uma função clara."
+          ]
+        },
+        {
+          "question": "Cada canal tem uma função definida (atrair, nutrir, converter, fidelizar)?",
+          "options": [
+            "Estamos em todos porque \"tem de ser\".",
+            "Só alguns têm um objetivo.",
+            "Sim, mas não medimos.",
+            "Sim, com métricas acompanhadas todos os meses."
+          ]
+        },
+        {
+          "question": "Como decidem o que comunicar?",
+          "options": [
+            "Semana a semana, conforme surgem ideias.",
+            "Com um calendário, sem ligação clara à estratégia.",
+            "Com pilares definidos, mas execução irregular.",
+            "Com pilares ligados à posição e a cada fase da decisão de compra."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Valor e preço",
+      "block": "Parar de treinar o cliente errado. Cada desconto ensina o cliente a esperar pelo próximo. Exercício: substitui a próxima promoção por um gesto exclusivo para clientes atuais (acesso antecipado, serviço, edição limitada), sem mexer no preço.",
+      "questions": [
+        {
+          "question": "Com que frequência usas descontos ou promoções para gerar vendas?",
+          "options": [
+            "Todos os meses, ou mais.",
+            "Várias vezes por ano.",
+            "Só em momentos pontuais do setor.",
+            "Nunca, ou apenas de forma exclusiva e controlada."
+          ]
+        },
+        {
+          "question": "Quando um cliente acha caro, o que costuma acontecer?",
+          "options": [
+            "Baixamos o preço ou oferecemos algo.",
+            "Explicamos longamente o valor.",
+            "Às vezes perdemos a venda, sem padrão claro.",
+            "Raramente acontece: quem chega já conhece o valor."
+          ]
+        },
+        {
+          "question": "Face ao mercado, o teu preço está...",
+          "options": [
+            "Abaixo da média, para conquistar clientes.",
+            "Na média.",
+            "Acima, mas sinto que tenho sempre de o justificar.",
+            "No topo, e sustentado pela perceção da marca."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Ativos próprios",
+      "block": "Construir o ativo que ninguém te tira. Se o crescimento depende de uma plataforma, não é teu. Exercício: define um mecanismo para captar o contacto de cada cliente (email ou WhatsApp) e envia uma primeira comunicação pessoal este mês.",
+      "questions": [
+        {
+          "question": "De onde vem a maioria das vendas?",
+          "options": [
+            "Quase tudo de anúncios, marketplaces ou algoritmo.",
+            "Maioria desses canais alugados.",
+            "Equilibrado entre canais alugados e próprios.",
+            "Maioria de canais próprios: clientes recorrentes, email, indicações, espaço próprio."
+          ]
+        },
+        {
+          "question": "Se o Instagram desaparecesse amanhã, o que acontecia às vendas?",
+          "options": [
+            "Caíam drasticamente.",
+            "Caíam bastante.",
+            "Sentíamos, mas recuperávamos.",
+            "Pouco impacto."
+          ]
+        },
+        {
+          "question": "Consegues prever as vendas dos próximos 3 meses?",
+          "options": [
+            "Não. Depende muito do mês.",
+            "Mais ou menos.",
+            "Com uma margem razoável.",
+            "Sim, com base em dados e recorrência."
+          ]
+        }
+      ]
+    }
+  ],
+  "tieBreak": ["d1", "d2", "d4", "d3", "d5"],
+  "profiles": [
+    {
+      "min": 0,
+      "tag": "perfil-1",
+      "name": "Marca Invisível",
+      "text": "A tua marca pode ser bonita, mas ainda não ocupa um espaço claro. Os clientes compram o produto, não a marca, e isso torna cada venda mais cara. A boa notícia: é o ponto onde uma posição bem definida muda mais depressa os resultados."
+    },
+    {
+      "min": 40,
+      "tag": "perfil-2",
+      "name": "Marca Dispersa",
+      "text": "Há ativos valiosos na tua marca, mas estão a puxar em direções diferentes. Cada canal conta uma história ligeiramente diferente, e o esforço dilui-se. O próximo salto não vem de fazer mais: vem de alinhar."
+    },
+    {
+      "min": 60,
+      "tag": "perfil-3",
+      "name": "Marca em Ascensão",
+      "text": "A tua marca já tem uma posição reconhecível. O que falta está nas margens: canais sem função clara, dependência de plataformas ou pressão no preço. É a fase de transformar posição em crescimento previsível."
+    },
+    {
+      "min": 80,
+      "tag": "perfil-4",
+      "name": "Marca com Posição",
+      "text": "Ocupas um espaço claro e difícil de copiar. O risco agora é outro: a erosão silenciosa, quando o mercado muda e a marca não. A prioridade é proteger e escalar a posição."
+    }
+  ],
+  "capture": {
+    "title": "O teu Índice de Posição está calculado.",
+    "subtitle": "Para onde enviamos o relatório completo e o guia?",
+    "firstName": "Primeiro nome",
+    "email": "Email",
+    "brand": "Nome da marca",
+    "site": "Site ou Instagram (opcional)",
+    "newsletter": "Quero receber a Carta de Posição, uma reflexão quinzenal sobre marcas premium.",
+    "privacy": "Usamos estes dados só para te enviar o relatório, o guia e os emails ligados a este diagnóstico. Podes sair a qualquer momento.",
+    "button": "Ver o meu resultado",
+    "sending": "A calcular…",
+    "error": "Não conseguimos enviar o relatório agora. O teu resultado está abaixo; tenta de novo daqui a pouco para o receberes por email.",
+    "retry": "Tentar enviar de novo"
+  },
+  "result": {
+    "eyebrow": "O teu Índice de Posição",
+    "chartTitle": "As 5 dimensões",
+    "emailNote": "O relatório completo, com as tuas 3 prioridades, está a caminho do teu email.",
+    "nextTitle": "Queres perceber o que está por trás do teu índice?",
+    "nextText": "O Mapa de Crescimento é o diagnóstico completo: a tua marca, o teu mercado e os teus concorrentes, para saberes que espaço podes ocupar e o que fazer nos próximos 6 meses.",
+    "nextCta": "Conhecer o Mapa de Crescimento"
+  }
+}

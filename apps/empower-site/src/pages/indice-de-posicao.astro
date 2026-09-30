@@ -1,0 +1,345 @@
+---
+import Base from '../layouts/Base.astro';
+import indice from '../data/indice.json';
+
+// Lead magnet "Índice de Posição": landing → 5 perguntas de qualificação →
+// 15 perguntas pontuadas → contacto → resultado. O contacto segue para o
+// Big Boss (função lead-intake), que arranca a sequência DIA.
+const { meta, landing, qualification, dimensions, capture, result } = indice;
+const scored = dimensions.flatMap((d) => d.questions.map((q) => ({ ...q, dimension: d.name })));
+const totalSteps = qualification.length + scored.length;
+const config = {
+  dimensions: dimensions.map(({ id, name, block }) => ({ id, name, block, questions: [0, 0, 0] })),
+  profiles: indice.profiles,
+  tieBreak: indice.tieBreak,
+  focusSectors: indice.focusSectors,
+  lead: indice.lead,
+  qualificationIds: qualification.map((q) => q.id),
+  sending: capture.sending,
+};
+---
+<Base title={meta.title} description={meta.description}>
+  <div class="indice" data-indice>
+    <section class="page-hero" data-screen="landing">
+      <div class="wrap">
+        <p class="eyebrow reveal">{landing.eyebrow}</p>
+        <h1 class="display page-title reveal">{landing.title}<br /><span class="accent">{landing.accent}</span></h1>
+        <p class="lead reveal">{landing.subtitle}</p>
+        <div class="ix-landing-grid reveal">
+          <div>
+            <p class="eyebrow">{landing.forWhoTitle}</p>
+            <p class="body-lg">{landing.forWho}</p>
+          </div>
+          <div>
+            <p class="eyebrow">{landing.getTitle}</p>
+            <ul class="ix-get">{landing.get.map((g) => <li>{g}</li>)}</ul>
+          </div>
+        </div>
+        <div class="reveal">
+          <button type="button" class="btn btn-light ix-btn" data-start data-track="indice_inicio">{landing.button}</button>
+          <p class="muted small ix-note">{landing.note}</p>
+        </div>
+        <noscript><p class="note">Para fazer o diagnóstico, ativa o JavaScript no teu browser.</p></noscript>
+      </div>
+    </section>
+
+    <section class="section ix-panel" data-screen="quiz" hidden>
+      <div class="wrap narrow">
+        <div class="ix-progress" role="progressbar" aria-label="Progresso do diagnóstico" aria-valuemin="0" aria-valuemax={totalSteps} aria-valuenow="1">
+          <span data-bar></span>
+        </div>
+        <p class="muted small ix-count" aria-live="polite"><span data-count>1</span> de {totalSteps}</p>
+
+        {qualification.map((q, i) => (
+          <fieldset class="ix-q" data-step={i} data-kind="qual" data-id={q.id} hidden>
+            <legend class="display ix-question">{q.question}</legend>
+            <div class="ix-options">
+              {q.options.map((o) => (
+                <label class="ix-option"><input type="radio" name={`a${i}`} value={o.value} /><span>{o.label}</span></label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+        {scored.map((q, j) => (
+          <fieldset class="ix-q" data-step={qualification.length + j} data-kind="score" hidden>
+            <legend class="display ix-question">{q.question}</legend>
+            <div class="ix-options">
+              {q.options.map((label, points) => (
+                <label class="ix-option"><input type="radio" name={`b${j}`} value={points} /><span>{label}</span></label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+
+        <button type="button" class="linklike muted ix-back" data-back>← Voltar</button>
+      </div>
+    </section>
+
+    <section class="section ix-panel" data-screen="capture" hidden>
+      <div class="wrap narrow">
+        <h2 class="display section-title-sm ix-capture-title">{capture.title}</h2>
+        <p class="body-lg">{capture.subtitle}</p>
+        <form class="ix-form" data-form novalidate>
+          <label>{capture.firstName}<input name="first_name" autocomplete="given-name" required maxlength="60" /></label>
+          <label>{capture.email}<input name="email" type="email" autocomplete="email" required maxlength="200" /></label>
+          <label>{capture.brand}<input name="brand" autocomplete="organization" required maxlength="120" /></label>
+          <label>{capture.site}<input name="site" maxlength="200" placeholder="www… ou @…" /></label>
+          <label class="ix-hp" aria-hidden="true">Não preencher<input name="website_url" tabindex="-1" autocomplete="off" /></label>
+          <label class="ix-check"><input type="checkbox" name="newsletter" /><span>{capture.newsletter}</span></label>
+          <p class="muted small">{capture.privacy} <a href="/politica-de-privacidade">Política de privacidade</a>.</p>
+          <p class="ix-error" role="alert" data-form-error hidden></p>
+          <button class="btn btn-light ix-btn" data-submit>{capture.button}</button>
+        </form>
+        <button type="button" class="linklike muted ix-back" data-back>← Voltar</button>
+      </div>
+    </section>
+
+    <section class="section ix-panel" data-screen="result" hidden>
+      <div class="wrap narrow">
+        <p class="eyebrow">{result.eyebrow}</p>
+        <p class="display ix-total"><span data-total>0</span><small>/100</small></p>
+        <h2 class="display section-title-sm" data-profile-name></h2>
+        <p class="body-lg" data-profile-text></p>
+
+        <h3 class="card-title ix-chart-title">{result.chartTitle}</h3>
+        <ul class="ix-chart" data-chart>
+          {dimensions.map((d) => (
+            <li data-dim={d.id}>
+              <span class="ix-dim">{d.name}</span>
+              <span class="ix-track"><span class="ix-fill"></span></span>
+              <span class="ix-score" data-score>0</span>
+            </li>
+          ))}
+        </ul>
+
+        <p class="note" data-email-note>{result.emailNote}</p>
+        <div class="ix-send-error" data-send-error hidden>
+          <p class="ix-error">{capture.error}</p>
+          <button type="button" class="btn btn-outline ix-btn" data-retry>{capture.retry}</button>
+        </div>
+
+        <div class="card card-outline ix-next">
+          <h3 class="card-title">{result.nextTitle}</h3>
+          <p>{result.nextText}</p>
+          <a class="btn btn-light" href="/mapadecrescimento" data-track="indice_mapa">{result.nextCta}</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="application/json" id="indice-config" set:html={JSON.stringify(config)} />
+</Base>
+
+<script>
+  import { buildLeadPayload, type IndiceConfig, type Qualification } from '../lib/indice';
+
+  type Config = IndiceConfig & { lead: { endpoint: string; token: string; source: string }; qualificationIds: string[]; sending: string };
+  const config: Config = JSON.parse(document.getElementById('indice-config')!.textContent!);
+  const root = document.querySelector<HTMLElement>('[data-indice]')!;
+  const screens = root.querySelectorAll<HTMLElement>('[data-screen]');
+  const steps = [...root.querySelectorAll<HTMLFieldSetElement>('.ix-q')];
+  const bar = root.querySelector<HTMLElement>('[data-bar]')!;
+  const progress = root.querySelector<HTMLElement>('[role=progressbar]')!;
+  const count = root.querySelector<HTMLElement>('[data-count]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+  const formError = root.querySelector<HTMLElement>('[data-form-error]')!;
+  let current = 0;
+  let lastPayload: Record<string, unknown> | null = null;
+
+  const track = (name: string) => {
+    (window as any).empowerTrack?.(name);
+  };
+
+  function show(name: string) {
+    screens.forEach((s) => (s.hidden = s.dataset.screen !== name));
+    window.scrollTo({ top: 0 });
+  }
+
+  function goTo(i: number) {
+    current = i;
+    steps.forEach((s, j) => (s.hidden = j !== i));
+    const n = i + 1;
+    bar.style.width = `${(n / steps.length) * 100}%`;
+    progress.setAttribute('aria-valuenow', String(n));
+    count.textContent = String(n);
+    const checked = steps[i].querySelector<HTMLInputElement>('input:checked');
+    (checked ?? steps[i].querySelector<HTMLInputElement>('input'))?.focus({ preventScroll: true });
+  }
+
+  root.querySelector('[data-start]')!.addEventListener('click', () => {
+    show('quiz');
+    goTo(0);
+  });
+
+  // Uma pergunta por ecrã: escolher uma opção avança sozinho.
+  steps.forEach((step, i) => {
+    step.addEventListener('change', () => {
+      setTimeout(() => {
+        if (i < steps.length - 1) goTo(i + 1);
+        else {
+          show('capture');
+          form.querySelector<HTMLInputElement>('input')?.focus({ preventScroll: true });
+        }
+      }, 220);
+    });
+  });
+
+  root.querySelectorAll('[data-back]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const onCapture = !root.querySelector<HTMLElement>('[data-screen=capture]')!.hidden;
+      if (onCapture) { show('quiz'); goTo(steps.length - 1); }
+      else if (current > 0) goTo(current - 1);
+      else show('landing');
+    }),
+  );
+
+  function answers() {
+    const qual = {} as Qualification;
+    const scores: number[] = [];
+    for (const s of steps) {
+      const v = s.querySelector<HTMLInputElement>('input:checked')?.value ?? '';
+      if (s.dataset.kind === 'qual') qual[s.dataset.id as keyof Qualification] = v;
+      else scores.push(v === '' ? NaN : Number(v));
+    }
+    return { qual, scores };
+  }
+
+  function renderResult(r: ReturnType<typeof buildLeadPayload>['result']) {
+    root.querySelector('[data-total]')!.textContent = String(r.total);
+    root.querySelector('[data-profile-name]')!.textContent = r.profile.name;
+    root.querySelector('[data-profile-text]')!.textContent = r.profile.text;
+    for (const d of r.byDimension) {
+      const li = root.querySelector<HTMLElement>(`[data-dim="${d.id}"]`)!;
+      li.querySelector<HTMLElement>('[data-score]')!.textContent = String(d.score);
+      li.querySelector<HTMLElement>('.ix-fill')!.style.width = `${d.score}%`;
+    }
+  }
+
+  async function send(payload: Record<string, unknown>) {
+    const { endpoint, token } = config.lead;
+    if (!endpoint || !token) {
+      console.warn('Índice de Posição: falta configurar lead.endpoint e lead.token em src/data/indice.json.');
+      return false;
+    }
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-lead-token': token },
+        body: JSON.stringify(payload),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  function showSendState(ok: boolean) {
+    root.querySelector<HTMLElement>('[data-email-note]')!.hidden = !ok;
+    root.querySelector<HTMLElement>('[data-send-error]')!.hidden = ok;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formError.hidden = true;
+    const data = new FormData(form);
+    const firstName = String(data.get('first_name') ?? '').trim();
+    const email = String(data.get('email') ?? '').trim();
+    const brand = String(data.get('brand') ?? '').trim();
+    if (!firstName || !brand || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      formError.textContent = 'Preenche o primeiro nome, um email válido e o nome da marca.';
+      formError.hidden = false;
+      return;
+    }
+    const { qual, scores } = answers();
+    let built;
+    try {
+      built = buildLeadPayload(config, qual, scores, {
+        firstName, email, brand,
+        site: String(data.get('site') ?? '').trim(),
+        newsletter: data.get('newsletter') === 'on',
+      }, config.lead.source);
+    } catch {
+      show('quiz');
+      goTo(Math.max(0, steps.findIndex((s) => !s.querySelector('input:checked'))));
+      return;
+    }
+    const { result, ...payload } = built;
+    lastPayload = { ...payload, website_url: String(data.get('website_url') ?? '') };
+
+    const button = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const label = button.textContent;
+    button.disabled = true;
+    button.textContent = config.sending;
+    const ok = await send(lastPayload);
+    button.disabled = false;
+    button.textContent = label;
+
+    renderResult(result);
+    showSendState(ok);
+    show('result');
+    track('lead');
+    (window as any).empowerConversion?.('lead');
+  });
+
+  root.querySelector('[data-retry]')!.addEventListener('click', async (e) => {
+    const b = e.currentTarget as HTMLButtonElement;
+    if (!lastPayload) return;
+    b.disabled = true;
+    showSendState(await send(lastPayload));
+    b.disabled = false;
+  });
+</script>
+
+<style>
+  .ix-landing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 2rem 4rem; margin: 1rem 0 2.8rem; max-width: 980px; }
+  .ix-landing-grid .body-lg { margin: 0; }
+  .ix-get { list-style: none; padding: 0; margin: 0; display: grid; gap: .7rem; }
+  .ix-get li { padding-left: 1.4rem; position: relative; }
+  .ix-get li::before { content: '—'; position: absolute; left: 0; color: var(--lilac); }
+  .ix-btn { border: 0; cursor: pointer; }
+  .ix-btn:disabled { opacity: .6; cursor: progress; }
+  .ix-note { margin: 1rem 0 0; max-width: 46ch; }
+
+  .ix-panel { min-height: 70vh; }
+  .ix-progress { height: 4px; background: rgba(242,239,245,.12); border-radius: 4px; overflow: hidden; }
+  .ix-progress span { display: block; height: 100%; width: 0; background: var(--lilac); transition: width .3s ease; }
+  .ix-count { margin: .7rem 0 2.4rem; }
+  .ix-q { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .ix-question { font-size: clamp(1.6rem, 3.6vw, 2.5rem); line-height: 1.15; padding: 0; margin-bottom: 2rem; }
+  .ix-options { display: grid; gap: .75rem; }
+  .ix-option { display: block; cursor: pointer; }
+  .ix-option input { position: absolute; opacity: 0; pointer-events: none; }
+  .ix-option span { display: block; padding: 1rem 1.2rem; border: 1px solid rgba(242,239,245,.3); border-radius: 12px; font-size: 1.1rem; transition: border-color .15s ease, background .15s ease; }
+  .ix-option:hover span { border-color: var(--lilac); }
+  .ix-option input:focus-visible + span { outline: 2px solid var(--lilac); outline-offset: 3px; }
+  .ix-option input:checked + span { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+  .ix-back { margin-top: 2rem; }
+
+  .ix-capture-title { margin-bottom: .6rem; }
+  .ix-form { display: grid; gap: 1.1rem; margin-top: 2rem; max-width: 560px; }
+  .ix-form label { display: grid; gap: .4rem; font-size: 1rem; }
+  .ix-form input:not([type=checkbox]) { background: rgba(242,239,245,.06); color: var(--paper); border: 1px solid rgba(242,239,245,.3); border-radius: 10px; padding: .8rem .9rem; font: inherit; font-family: var(--font-sans); }
+  .ix-form input:focus { outline: 2px solid var(--lilac); outline-offset: 1px; }
+  .ix-form .ix-check { grid-template-columns: auto 1fr; align-items: start; gap: .7rem; }
+  .ix-check input { width: 1.1rem; height: 1.1rem; margin-top: .2rem; accent-color: var(--lilac); }
+  .ix-form p { margin: 0; }
+  .ix-form .btn { justify-self: start; }
+  .ix-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .ix-error { color: #f0a8c0; }
+
+  .ix-total { font-size: clamp(5rem, 16vw, 9rem); line-height: 1; margin: 0 0 1rem; }
+  .ix-total small { font-size: .3em; color: var(--paper-muted); margin-left: .2em; }
+  .ix-chart-title { margin-top: 3rem; }
+  .ix-chart { list-style: none; padding: 0; margin: 0 0 2rem; display: grid; gap: 1rem; }
+  .ix-chart li { display: grid; grid-template-columns: minmax(9rem, 13rem) 1fr 2.5rem; align-items: center; gap: 1rem; }
+  .ix-track { height: 10px; background: rgba(242,239,245,.12); border-radius: 10px; overflow: hidden; }
+  .ix-fill { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--lilac)); border-radius: 10px; transition: width .8s ease; }
+  .ix-score { text-align: right; font-variant-numeric: tabular-nums; }
+  .ix-send-error { margin: 2rem 0; }
+  .ix-next { margin-top: 3rem; }
+  .ix-next p { color: var(--paper-muted); margin: 0 0 1.6rem; }
+  @media (max-width: 560px) {
+    .ix-chart li { grid-template-columns: 1fr 2.5rem; gap: .4rem 1rem; }
+    .ix-track { grid-column: 1 / -1; grid-row: 2; }
+  }
+</style>
