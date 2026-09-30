@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { postToBigBoss, tokenEnvKey } from '../../lib/leads';
 import { clientIp, originMatches, rateLimiter, siteFor } from '../../lib/sites';
 
 // Recebe leads dos sites (ex.: quiz do Índice de Posição) e passa-os à função
@@ -17,8 +18,6 @@ function cors(origin: string): Record<string, string> {
 const json = (body: unknown, status: number, headers: Record<string, string> = {}) =>
   new Response(JSON.stringify(body), { status, headers: { ...headers, 'Content-Type': 'application/json' } });
 
-const tokenEnvKey = (siteId: string) => `LEAD_TOKEN_${siteId.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`;
-
 export const OPTIONS: APIRoute = async ({ request, url }) => {
   const origin = request.headers.get('origin');
   const site = await siteFor(url.searchParams.get('site') ?? '');
@@ -29,7 +28,10 @@ export const OPTIONS: APIRoute = async ({ request, url }) => {
 export const POST: APIRoute = async ({ request, url, clientAddress }) => {
   const origin = request.headers.get('origin');
   const site = await siteFor(url.searchParams.get('site') ?? '');
-  if (!site || !originMatches(site, origin)) return json({ error: 'forbidden' }, 403);
+  if (!site || !originMatches(site, origin)) {
+    console.error('api/lead: pedido recusado', { site: url.searchParams.get('site'), origin, registered: site?.domain ?? 'site não existe no hub' });
+    return json({ error: 'forbidden' }, 403);
+  }
   const headers = cors(origin!);
 
   if (limited(clientIp(request.headers, clientAddress))) return json({ error: 'too_many' }, 429, headers);
@@ -43,22 +45,15 @@ export const POST: APIRoute = async ({ request, url, clientAddress }) => {
   }
   if (!data || typeof data !== 'object' || Array.isArray(data)) return json({ error: 'bad_request' }, 400, headers);
 
-  const endpoint = process.env.BIGBOSS_LEAD_URL;
-  const token = process.env[tokenEnvKey(site.id)];
-  if (!endpoint || !token) {
-    console.error(`api/lead: falta BIGBOSS_LEAD_URL ou ${tokenEnvKey(site.id)}`);
-    return json({ error: 'not_configured' }, 503, headers);
-  }
-
   try {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-lead-token': token },
-      body: JSON.stringify(data),
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!res.ok) console.error('api/lead: Big Boss respondeu', res.status, (await res.text()).slice(0, 300));
-    return json({ ok: res.ok }, res.ok ? 200 : 502, headers);
+    const r = await postToBigBoss(site.id, data);
+    if (r.status === 0) {
+      console.error(`api/lead: falta BIGBOSS_LEAD_URL ou ${tokenEnvKey(site.id)}`);
+      return json({ error: 'not_configured' }, 503, headers);
+    }
+    const ok = r.status >= 200 && r.status < 300;
+    if (!ok) console.error('api/lead: Big Boss respondeu', r.status, r.body);
+    return json(ok ? { ok } : { error: `bigboss_${r.status}` }, ok ? 200 : 502, headers);
   } catch (err) {
     console.error('api/lead: falha ao contactar o Big Boss', err);
     return json({ error: 'upstream' }, 502, headers);

@@ -2,6 +2,7 @@
 import Hub from '../layouts/Hub.astro';
 import { handleCrud } from '../lib/crud';
 import { list, type Client, type Site } from '../lib/db';
+import { leadConfig, probeBigBoss, tokenEnvKey } from '../lib/leads';
 
 const redirect = await handleCrud(Astro, 'sites');
 if (redirect) return redirect;
@@ -10,6 +11,9 @@ const sites = await list<Site>('sites');
 const clients = await list<Client>('clients');
 const editing = sites.find((s) => s.id === Astro.url.searchParams.get('edit'));
 const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? '—';
+// Teste da ligação ao Big Boss (não cria contactos): /sites?test=<id>.
+const testId = Astro.url.searchParams.get('test');
+const test = testId && sites.some((s) => s.id === testId) ? { id: testId, ...(await probeBigBoss(testId)) } : null;
 const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" data-site="${id}"></script>`;
 ---
 <Hub title="Sites">
@@ -42,6 +46,12 @@ const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" da
         <p class="muted" style="margin:.4rem 0">
           <a href={s.url} target="_blank" rel="noopener noreferrer">{s.url}</a> · Cliente: {clientName(s.client_id)}{s.repo && ` · ${s.repo}`}
         </p>
+        <p class="muted" style="margin:.4rem 0">
+          Id: <code>{s.id}</code> · Domínio: <code>{s.domain || '—'}</code> ·
+          Big Boss: {leadConfig(s.id).token ? 'token configurado' : <>sem <code>{tokenEnvKey(s.id)}</code></>} ·
+          <a href={`?test=${s.id}`}>Testar ligação</a>
+        </p>
+        {test?.id === s.id && <p class={test.ok ? 'ok' : 'err'} role="status">{test.message}</p>}
         <details>
           <summary>Código de tracking</summary>
           <p class="muted">Cola antes de <code>&lt;/head&gt;</code>. Para medir conversões, junta <code>data-track="lead"</code> ao botão ou link de contacto.</p>
@@ -51,3 +61,8 @@ const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" da
     ))}
   </div>
 </Hub>
+
+<style>
+  .ok { color: var(--good); margin: .4rem 0; }
+  .err { color: var(--bad); margin: .4rem 0; }
+</style>
