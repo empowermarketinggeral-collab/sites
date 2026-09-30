@@ -1,31 +1,9 @@
 import type { APIRoute } from 'astro';
-import { get, type Site } from '../../lib/db';
+import { clientIp, hostMatches, originMatches, rateLimiter, siteFor } from '../../lib/sites';
 import { record } from '../../lib/tracking';
 
 const EVENT_NAME = /^[a-z0-9_]{1,40}$/;
-const RATE_LIMIT = 60; // eventos por minuto por IP
-const hits = new Map<string, { count: number; reset: number }>();
-
-function limited(ip: string): boolean {
-  const now = Date.now();
-  const h = hits.get(ip);
-  if (!h || h.reset < now) {
-    if (hits.size > 10_000) hits.clear();
-    hits.set(ip, { count: 1, reset: now + 60_000 });
-    return false;
-  }
-  return ++h.count > RATE_LIMIT;
-}
-
-function siteFor(id: string): Promise<Site | undefined> {
-  return get<Site>('SELECT * FROM hub.sites WHERE id = ?', [id]);
-}
-
-function hostMatches(site: Site, host: string): boolean {
-  const domain = site.domain.replace(/^www\./, '').toLowerCase();
-  const h = host.replace(/^www\./, '').toLowerCase();
-  return !!domain && (h === domain || h.endsWith(`.${domain}`));
-}
+const limited = rateLimiter(60); // eventos por minuto por IP
 
 function cors(origin: string | null): Record<string, string> {
   return origin
@@ -53,12 +31,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const site = await siteFor(String(data.s ?? ''));
   const name = String(data.n ?? 'pageview');
   // Só aceitamos eventos vindos do domínio registado para o site.
-  if (!site || !hostMatches(site, url.hostname) || (origin && !hostMatches(site, URL.canParse(origin) ? new URL(origin).hostname : '')) || !EVENT_NAME.test(name)) {
+  if (!site || !hostMatches(site, url.hostname) || (origin && !originMatches(site, origin)) || !EVENT_NAME.test(name)) {
     return new Response(null, { status: 403, headers });
   }
 
   const h = request.headers;
-  const ip = h.get('cf-connecting-ip') ?? h.get('x-real-ip') ?? h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? clientAddress ?? '';
+  const ip = clientIp(h, clientAddress);
   if (limited(ip)) return new Response(null, { status: 429, headers });
   await record({
     siteId: site.id,

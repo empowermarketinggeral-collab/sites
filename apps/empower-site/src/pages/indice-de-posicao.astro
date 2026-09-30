@@ -4,7 +4,7 @@ import indice from '../data/indice.json';
 
 // Lead magnet "Índice de Posição": landing → 5 perguntas de qualificação →
 // 15 perguntas pontuadas → contacto → resultado. O contacto segue para o
-// Big Boss (função lead-intake), que arranca a sequência DIA.
+// Big Boss através do hub (/api/lead), que guarda o token e arranca a sequência DIA.
 const { meta, landing, qualification, dimensions, capture, result } = indice;
 const scored = dimensions.flatMap((d) => d.questions.map((q) => ({ ...q, dimension: d.name })));
 const totalSteps = qualification.length + scored.length;
@@ -133,7 +133,7 @@ const config = {
 <script>
   import { buildLeadPayload, type IndiceConfig, type Qualification } from '../lib/indice';
 
-  type Config = IndiceConfig & { lead: { endpoint: string; token: string; source: string }; qualificationIds: string[]; sending: string };
+  type Config = IndiceConfig & { lead: { endpoint: string; source: string }; qualificationIds: string[]; sending: string };
   const config: Config = JSON.parse(document.getElementById('indice-config')!.textContent!);
   const root = document.querySelector<HTMLElement>('[data-indice]')!;
   const screens = root.querySelectorAll<HTMLElement>('[data-screen]');
@@ -216,15 +216,15 @@ const config = {
   }
 
   async function send(payload: Record<string, unknown>) {
-    const { endpoint, token } = config.lead;
-    if (!endpoint || !token) {
-      console.warn('Índice de Posição: falta configurar lead.endpoint e lead.token em src/data/indice.json.');
+    const { endpoint } = config.lead;
+    if (!endpoint) {
+      console.warn('Índice de Posição: falta configurar lead.endpoint em src/data/indice.json.');
       return false;
     }
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-lead-token': token },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       return res.ok;
