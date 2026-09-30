@@ -6,7 +6,7 @@ import SectionHead from '../components/SectionHead.astro';
 import { linkAttrs } from '../lib/links';
 import home from '../data/home.json';
 
-const { hero, manifesto, method, audience, system, model } = home;
+const { hero, manifesto, method, audience, system, model, diagnostico } = home;
 ---
 <Base>
   <link slot="head" rel="preload" as="image" href="/images/hero.webp" type="image/webp" fetchpriority="high" />
@@ -92,4 +92,29 @@ const { hero, manifesto, method, audience, system, model } = home;
       </div>
     </div>
   </section>
+
+  <section id="diagnostico" class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={diagnostico.eyebrow} title={diagnostico.title} subtitle={diagnostico.subtitle} />
+      <div class="free-grid">
+        {diagnostico.cards.map((c, i) => (
+          <article class:list={['card reveal free-card', i === 0 ? 'card-paper' : 'card-outline']}>
+            <p class="eyebrow">{c.label}</p>
+            <h3 class="card-title">{c.title}</h3>
+            <p>{c.text}</p>
+            <Button href={c.cta.href} variant={i === 0 ? 'purple' : 'light'} track={i === 0 ? 'indice_home' : 'guia_home'}>{c.cta.label}</Button>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
 </Base>
+
+<style>
+  .free-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1.5rem; }
+  .free-card { display: flex; flex-direction: column; }
+  .free-card p:not(.eyebrow) { margin: 0 0 1.8rem; }
+  .free-card :global(.btn) { margin-top: auto; align-self: flex-start; }
+  .card-paper .eyebrow { color: var(--plum-2); }
+  .card-paper p:not(.eyebrow) { color: #2d2340; }
+</style>

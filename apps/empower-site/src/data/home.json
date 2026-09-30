@@ -118,5 +118,30 @@
         }
       }
     ]
+  },
+  "diagnostico": {
+    "eyebrow": "Diagnóstico gratuito",
+    "title": "Ainda não é o momento do Mapa?",
+    "subtitle": "Começa por aqui.",
+    "cards": [
+      {
+        "label": "4 minutos",
+        "title": "Índice de Posição",
+        "text": "20 perguntas sobre a tua marca. Recebes uma pontuação de 0 a 100 em 5 dimensões e as 3 prioridades para os próximos 90 dias.",
+        "cta": {
+          "label": "Fazer o diagnóstico",
+          "href": "/indice-de-posicao"
+        }
+      },
+      {
+        "label": "Guia · 21 páginas",
+        "title": "Da Estética à Posição",
+        "text": "Os 5 movimentos das marcas premium que crescem de forma sustentável, com um exercício prático por capítulo.",
+        "cta": {
+          "label": "Receber o guia",
+          "href": "/guia-da-estetica-a-posicao"
+        }
+      }
+    ]
   }
 }
