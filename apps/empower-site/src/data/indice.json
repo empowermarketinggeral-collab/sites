@@ -4,8 +4,7 @@
     "description": "Em 4 minutos, mede onde a tua marca premium está a perder valor: posição, diferenciação, canais, preço e ativos próprios. Recebe o índice de 0 a 100 e as 3 prioridades para os próximos 90 dias."
   },
   "lead": {
-    "endpoint": "",
-    "token": "",
+    "endpoint": "https://sites-fyz8.vercel.app/api/lead?site=empower-marketing",
     "source": "indice-de-posicao"
   },
   "landing": {
@@ -30,57 +29,132 @@
       "id": "setor",
       "question": "Em que setor está a tua marca?",
       "options": [
-        { "label": "Moda", "value": "moda" },
-        { "label": "Beleza", "value": "beleza" },
-        { "label": "Restauração/hospitality", "value": "restauracao" },
-        { "label": "Mobiliário e design", "value": "mobiliario" },
-        { "label": "Marca conceito/lifestyle", "value": "marca-conceito" },
-        { "label": "Marca pessoal", "value": "marca-pessoal" },
-        { "label": "Outro", "value": "outro" }
+        {
+          "label": "Moda",
+          "value": "moda"
+        },
+        {
+          "label": "Beleza",
+          "value": "beleza"
+        },
+        {
+          "label": "Restauração/hospitality",
+          "value": "restauracao"
+        },
+        {
+          "label": "Mobiliário e design",
+          "value": "mobiliario"
+        },
+        {
+          "label": "Marca conceito/lifestyle",
+          "value": "marca-conceito"
+        },
+        {
+          "label": "Marca pessoal",
+          "value": "marca-pessoal"
+        },
+        {
+          "label": "Outro",
+          "value": "outro"
+        }
       ]
     },
     {
       "id": "faturacao",
       "question": "Qual é a faturação anual aproximada?",
       "options": [
-        { "label": "Menos de 100 mil €", "value": "<100k" },
-        { "label": "100–250 mil €", "value": "100-250k" },
-        { "label": "250 mil–1 M€", "value": "250k-1M" },
-        { "label": "Mais de 1 M€", "value": ">1M" },
-        { "label": "Prefiro não dizer", "value": "prefiro-nao-dizer" }
+        {
+          "label": "Menos de 100 mil €",
+          "value": "<100k"
+        },
+        {
+          "label": "100–250 mil €",
+          "value": "100-250k"
+        },
+        {
+          "label": "250 mil–1 M€",
+          "value": "250k-1M"
+        },
+        {
+          "label": "Mais de 1 M€",
+          "value": ">1M"
+        },
+        {
+          "label": "Prefiro não dizer",
+          "value": "prefiro-nao-dizer"
+        }
       ]
     },
     {
       "id": "papel",
       "question": "Qual é o teu papel?",
       "options": [
-        { "label": "Fundador(a)/CEO", "value": "fundador" },
-        { "label": "Direção de marketing ou marca", "value": "direcao" },
-        { "label": "Outro", "value": "outro" }
+        {
+          "label": "Fundador(a)/CEO",
+          "value": "fundador"
+        },
+        {
+          "label": "Direção de marketing ou marca",
+          "value": "direcao"
+        },
+        {
+          "label": "Outro",
+          "value": "outro"
+        }
       ]
     },
     {
       "id": "objetivo_12m",
       "question": "Qual é o objetivo principal para os próximos 12 meses?",
       "options": [
-        { "label": "Lançar", "value": "Lançar" },
-        { "label": "Reposicionar", "value": "Reposicionar" },
-        { "label": "Escalar", "value": "Escalar" },
-        { "label": "Proteger a posição atual", "value": "Proteger a posição atual" }
+        {
+          "label": "Lançar",
+          "value": "Lançar"
+        },
+        {
+          "label": "Reposicionar",
+          "value": "Reposicionar"
+        },
+        {
+          "label": "Escalar",
+          "value": "Escalar"
+        },
+        {
+          "label": "Proteger a posição atual",
+          "value": "Proteger a posição atual"
+        }
       ]
     },
     {
       "id": "intencao",
       "question": "Se tivesses clareza total sobre o que fazer, quando gostarias de começar?",
       "options": [
-        { "label": "Este trimestre", "value": "Este trimestre" },
-        { "label": "Nos próximos 6 meses", "value": "Nos próximos 6 meses" },
-        { "label": "Sem pressa", "value": "Sem pressa" },
-        { "label": "Estou só a explorar", "value": "Estou só a explorar" }
+        {
+          "label": "Este trimestre",
+          "value": "Este trimestre"
+        },
+        {
+          "label": "Nos próximos 6 meses",
+          "value": "Nos próximos 6 meses"
+        },
+        {
+          "label": "Sem pressa",
+          "value": "Sem pressa"
+        },
+        {
+          "label": "Estou só a explorar",
+          "value": "Estou só a explorar"
+        }
       ]
     }
   ],
-  "focusSectors": ["moda", "beleza", "restauracao", "mobiliario", "marca-conceito"],
+  "focusSectors": [
+    "moda",
+    "beleza",
+    "restauracao",
+    "mobiliario",
+    "marca-conceito"
+  ],
   "dimensions": [
     {
       "id": "d1",
@@ -253,7 +327,13 @@
       ]
     }
   ],
-  "tieBreak": ["d1", "d2", "d4", "d3", "d5"],
+  "tieBreak": [
+    "d1",
+    "d2",
+    "d4",
+    "d3",
+    "d5"
+  ],
   "profiles": [
     {
       "min": 0,
