@@ -188,7 +188,8 @@
             "De uma posição definida que filtra o que fazemos e o que não fazemos."
           ]
         }
-      ]
+      ],
+      "explanation": "Posição é uma decisão, não uma descrição. A maioria das marcas premium descreve o que faz (qualidade, design, atenção ao detalhe) e acredita que isso é uma posição. Não é: é o que todo o setor diz. Uma posição escolhe um espaço e, por consequência, abdica de outros. Enquanto essa escolha não estiver escrita numa frase que toda a equipa repete, cada coleção, campanha e publicação é decidida do zero, e o cliente recebe sinais diferentes em cada contacto."
     },
     {
       "id": "d2",
@@ -222,7 +223,8 @@
             "Não. É difícil copiar-nos."
           ]
         }
-      ]
+      ],
+      "explanation": "A diferenciação começa no que deixas de dizer. Quando os teus concorrentes falam de qualidade, exclusividade e experiência, e tu também, o cliente fica sem outra forma de comparar a não ser o preço. O problema raramente é falta de diferença real: é que a diferença está enterrada debaixo das mesmas palavras que todo o setor usa. Tirar essas palavras é o que a deixa aparecer."
     },
     {
       "id": "d3",
@@ -256,7 +258,8 @@
             "Com pilares ligados à posição e a cada fase da decisão de compra."
           ]
         }
-      ]
+      ],
+      "explanation": "Cada canal deve ter uma função, e todos devem contar a mesma história. Quando o Instagram, o site, o espaço e o email são geridos como peças soltas, cada um puxa para o seu lado: um inspira, outro vende com desconto, outro não diz nada. O cliente passa por vários destes pontos antes de comprar, e cada incoerência é um motivo para adiar a decisão."
     },
     {
       "id": "d4",
@@ -290,7 +293,8 @@
             "No topo, e sustentado pela perceção da marca."
           ]
         }
-      ]
+      ],
+      "explanation": "Os descontos treinam o cliente errado. Cada promoção ensina quem compra a esperar pela próxima e atrai precisamente o cliente que escolhe pelo preço. Numa marca premium, o preço não se defende com argumentos no momento da venda: defende-se antes, na forma como a marca é percebida. Quando é preciso explicar longamente porque é caro, o problema está a montante."
     },
     {
       "id": "d5",
@@ -324,7 +328,8 @@
             "Sim, com base em dados e recorrência."
           ]
         }
-      ]
+      ],
+      "explanation": "O crescimento sustentável acontece em canais que controlas. Seguidores, alcance e anúncios são alugados: a plataforma muda o algoritmo ou o preço, e as vendas mudam com ela. Os ativos próprios (a lista de clientes, o email, as indicações, o espaço) são os únicos que acumulam valor ao longo do tempo e tornam as vendas previsíveis."
     }
   ],
   "tieBreak": [
