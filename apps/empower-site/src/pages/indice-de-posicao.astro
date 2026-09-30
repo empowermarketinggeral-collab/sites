@@ -115,6 +115,7 @@ const config = {
         <p class="note" data-email-note>{result.emailNote}</p>
         <div class="ix-send-error" data-send-error hidden>
           <p class="ix-error">{capture.error}</p>
+          <p class="muted small" data-error-code></p>
           <button type="button" class="btn btn-outline ix-btn" data-retry>{capture.retry}</button>
         </div>
 
@@ -215,27 +216,28 @@ const config = {
     }
   }
 
-  async function send(payload: Record<string, unknown>) {
+  // Devolve '' quando correu bem, ou um código curto do motivo (mostrado em pequeno para diagnóstico).
+  async function send(payload: Record<string, unknown>): Promise<string> {
     const { endpoint } = config.lead;
-    if (!endpoint) {
-      console.warn('Índice de Posição: falta configurar lead.endpoint em src/data/indice.json.');
-      return false;
-    }
+    if (!endpoint) return 'sem-endpoint';
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      return res.ok;
+      if (res.ok) return '';
+      const data = await res.json().catch(() => ({}));
+      return `${res.status}${data.error ? ` ${data.error}` : ''}`;
     } catch {
-      return false;
+      return 'sem-ligacao-ao-hub';
     }
   }
 
-  function showSendState(ok: boolean) {
-    root.querySelector<HTMLElement>('[data-email-note]')!.hidden = !ok;
-    root.querySelector<HTMLElement>('[data-send-error]')!.hidden = ok;
+  function showSendState(code: string) {
+    root.querySelector<HTMLElement>('[data-email-note]')!.hidden = !!code;
+    root.querySelector<HTMLElement>('[data-send-error]')!.hidden = !code;
+    root.querySelector<HTMLElement>('[data-error-code]')!.textContent = code ? `Código: ${code}` : '';
   }
 
   form.addEventListener('submit', async (e) => {
@@ -270,12 +272,12 @@ const config = {
     const label = button.textContent;
     button.disabled = true;
     button.textContent = config.sending;
-    const ok = await send(lastPayload);
+    const code = await send(lastPayload);
     button.disabled = false;
     button.textContent = label;
 
     renderResult(result);
-    showSendState(ok);
+    showSendState(code);
     show('result');
     track('lead');
     (window as any).empowerConversion?.('lead');
