@@ -13,6 +13,8 @@ const produtos = defineCollection({
   schema: z.object({
     meta: z.object({ title: z.string(), description: z.string() }),
     trainer: z.enum(['patricia', 'beatriz']),
+    // "negocio": página da área de Marketing & Negócio, com as cores roxas.
+    tema: z.enum(['negocio']).optional(),
     urgency: z.string().optional(),
     hero: z.object({
       eyebrow: z.string(),

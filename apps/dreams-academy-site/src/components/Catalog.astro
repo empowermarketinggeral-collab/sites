@@ -8,15 +8,16 @@ import ProgramCta from './ProgramCta.astro';
 interface Product { type: string; name: string; hook: string; items: string[]; cta: { label: string; href: string } }
 interface Props {
   page: {
+    tema?: string;
     meta: { title: string; description: string };
     hero: { eyebrow: string; title: string; accent: string; text: string };
     products: { eyebrow: string; title: string; items: Product[] };
     soon?: { title: string; items: string[]; cta: { label: string; href: string } };
   };
 }
-const { meta, hero, products, soon } = Astro.props.page;
+const { meta, hero, products, soon, tema } = Astro.props.page;
 ---
-<Base title={meta.title} description={meta.description}>
+<Base title={meta.title} description={meta.description} tema={tema === 'negocio' ? 'negocio' : undefined}>
   <section class="page-hero">
     <div class="hero-fabric" aria-hidden="true"></div>
     <div class="wrap page-hero-inner">

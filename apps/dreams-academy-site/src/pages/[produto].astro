@@ -24,7 +24,7 @@ const pad = (i: number) => String(i + 1).padStart(2, '0');
 // Os botões para o checkout (Hotmart) contam como "compra" na app central; os que levam à oferta não contam.
 const trackFor = (href: string) => (/^https?:\/\//.test(href) ? 'compra' : undefined);
 ---
-<Base title={p.meta.title} description={p.meta.description} landing schema={schema}>
+<Base title={p.meta.title} description={p.meta.description} landing schema={schema} tema={p.tema}>
   {p.urgency && <p class="urgency">{p.urgency}</p>}
 
   <section class="page-hero sales-hero">
