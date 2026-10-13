@@ -38,7 +38,7 @@ Estes cookies são necessários para o funcionamento básico do site e não pode
 
 Permitem analisar a utilização do site e melhorar o desempenho e conteúdos.
 
-**Ferramentas utilizadas:** Google Analytics
+**Ferramentas utilizadas:** Google Analytics e Metricool
 
 **Dados recolhidos:**
 
@@ -48,7 +48,7 @@ Permitem analisar a utilização do site e melhorar o desempenho e conteúdos.
 - Endereço IP anonimizado
 
 **Base legal:** Consentimento<br>
-**Retenção:** conforme políticas do Google<br>
+**Retenção:** conforme as políticas do Google e da Metricool<br>
 **Ativação:** apenas após aceitação do utilizador
 
 ### Cookies de Marketing
@@ -82,7 +82,7 @@ A revogação do consentimento não afeta a legalidade do tratamento efetuado an
 
 ## 5. Cookies de terceiros
 
-Alguns cookies são definidos por terceiros (Google, Meta, GoHighLevel, Hotmart). Esses terceiros são responsáveis pelo tratamento dos dados de acordo com as suas próprias políticas de privacidade.
+Alguns cookies são definidos por terceiros (Google, Meta, Metricool, GoHighLevel, Hotmart). Esses terceiros são responsáveis pelo tratamento dos dados de acordo com as suas próprias políticas de privacidade.
 
 ## 6. Alterações a esta Política
 
