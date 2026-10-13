@@ -3,12 +3,12 @@ import site from '../data/site.json';
 
 // Google (Analytics/Ads) e Meta Pixel só carregam depois do consentimento, por categoria.
 const tracking = site.tracking;
-const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tracking.metaPixelId);
+const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tracking.metaPixelId || tracking.metricoolHash);
 ---
 {enabled && (
   <div class="consent" id="consent" role="dialog" aria-modal="false" aria-labelledby="consent-title" hidden>
     <p id="consent-title" class="consent-title">Cookies</p>
-    <p>Usamos cookies de análise e de marketing (Google e Meta) para medir o site e as campanhas, apenas com a tua autorização. <a href="/politica-de-cookies">Política de Cookies</a></p>
+    <p>Usamos cookies de análise e de marketing (Google, Meta e Metricool) para medir o site e as campanhas, apenas com a tua autorização. <a href="/politica-de-cookies">Política de Cookies</a></p>
     <form class="consent-prefs" id="consent-prefs" hidden>
       <label><input type="checkbox" checked disabled /> Essenciais <small>(sempre ativos)</small></label>
       <label><input type="checkbox" name="analytics" /> Análise <small>(Google Analytics)</small></label>
@@ -72,9 +72,17 @@ const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tr
       loaded.meta = true;
     }
 
+    // Metricool: pixel de análise, uma imagem por página vista (só com consentimento de análise).
+    function loadMetricool() {
+      if (loaded.metricool || !tracking.metricoolHash) return;
+      new Image().src = 'https://tracker.metricool.com/c3po.jpg?hash=' + encodeURIComponent(tracking.metricoolHash);
+      loaded.metricool = true;
+    }
+
     function apply(c) {
       state = c;
       setTimeout(flush, 0);
+      if (c.analytics) loadMetricool();
       if (c.analytics || c.marketing) loadGoogle(c);
       if (c.marketing) loadMeta();
       if (!c.marketing && loaded.meta) fbq('consent', 'revoke');
