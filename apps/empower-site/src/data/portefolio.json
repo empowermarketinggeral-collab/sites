@@ -388,6 +388,42 @@
         "text": "De \"eu não sou de vídeos\" a um formato autêntico e sustentável, sem anúncios.",
         "href": "/insights/patricia-melo-tiktok"
       }
+    ],
+    "text": "Conteúdo com direção de arte, produção de vídeo e tráfego pago a acelerar o que já funciona no orgânico.",
+    "feeds": [
+      {
+        "src": "/images/portefolio/feed-clinica.webp",
+        "name": "Clínica de estética",
+        "detail": "Feed com linha editorial, antes e depois e autoridade da fundadora.",
+        "ratio": 0.573,
+        "stat": "+125k visualizações em 30 dias"
+      },
+      {
+        "src": "/images/portefolio/feed-astredik.webp",
+        "name": "Astredik · streetwear",
+        "detail": "Identidade de rua consistente: campanhas, provas sociais e manifesto da marca.",
+        "ratio": 0.496
+      }
+    ],
+    "videos": [
+      {
+        "src": "/videos/bastidores.mp4",
+        "poster": "/videos/bastidores.jpg",
+        "title": "Bastidores",
+        "text": "Produção de conteúdo em estúdio."
+      },
+      {
+        "src": "/videos/entrevista.mp4",
+        "poster": "/videos/entrevista.jpg",
+        "title": "Entrevista",
+        "text": "Vídeo de evento com legendas."
+      },
+      {
+        "src": "/videos/motion.mp4",
+        "poster": "/videos/motion.jpg",
+        "title": "Motion design",
+        "text": "Anúncio animado para campanha."
+      }
     ]
   },
   "closing": {

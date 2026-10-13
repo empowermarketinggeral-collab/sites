@@ -40,11 +40,6 @@
       "permanent": true
     },
     {
-      "source": "/portefolio",
-      "destination": "/insights",
-      "permanent": true
-    },
-    {
       "source": "/insights/category/:path*",
       "destination": "/insights",
       "permanent": true
