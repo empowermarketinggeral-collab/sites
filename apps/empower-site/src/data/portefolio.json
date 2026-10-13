@@ -1,197 +1,114 @@
 {
   "meta": {
-    "title": "Portefólio de Estratégia Digital, Branding e Ecossistemas | Empower",
-    "description": "Um portefólio que se lê como uma aula: estratégia digital, criação de marca e ecossistemas primeiro, redes sociais e tráfego pago depois. Com o caso da própria Empower e o rebranding da Dreams Academy."
+    "title": "Portefólio · Estratégia, Branding e Ecossistemas de Marca | Empower",
+    "description": "Projetos da Empower Marketing: estratégia digital, criação de marca, identidades visuais e ecossistemas completos, com redes sociais e tráfego pago a acelerar o que já funciona."
   },
   "hero": {
-    "eyebrow": "Portefólio · Empower Marketing",
-    "struck": "Portefólios mostram posts.",
-    "title": "Este mostra a ordem.",
-    "text": "Lê-o como uma aula em 4 capítulos. Cada um ensina uma etapa, mostra um caso real e deixa-te um exercício para aplicares à tua marca.",
-    "cta": { "label": "Começar pelo capítulo 1", "href": "#cap-1" }
+    "eyebrow": "Portefólio · Trabalho selecionado",
+    "title": "Marcas construídas para ocupar posição.",
+    "text": "Estratégia, identidade e ecossistema primeiro. Redes sociais e tráfego pago depois, quando já existe uma marca que merece ser amplificada. É assim em todos os projetos, incluindo o nosso.",
+    "primaryCta": { "label": "Ver os projetos", "href": "#projetos" },
+    "secondaryCta": { "label": "Agendar sessão de alinhamento", "href": "booking" }
   },
-  "order": {
-    "eyebrow": "Antes de começar",
-    "title": "A ordem é o método.",
-    "text": "A maioria das marcas começa pelo fim: anúncios e posts. É como acelerar um carro sem saber o destino. Aqui a ordem é sempre a mesma, e é por ela que este portefólio está organizado.",
-    "analogy": "Estratégia é o mapa. Marca é o carro. Ecossistema é a estrada. Redes sociais e tráfego pago são o combustível.",
-    "steps": [
-      { "short": "Estratégia digital", "question": "Para onde vamos e porquê?" },
-      { "short": "Criação de marca", "question": "Quem somos aos olhos do mercado?" },
-      { "short": "Ecossistema", "question": "Como é que as peças se ligam?" },
-      { "short": "Redes sociais e tráfego pago", "question": "Como pomos tudo a andar mais depressa?" }
+  "proof": [
+    { "value": "+125k", "label": "visualizações em 30 dias numa clínica de estética" },
+    { "value": "19,2k", "label": "views orgânicas num só vídeo" },
+    { "value": "14", "label": "áreas de serviço numa só arquitetura" },
+    { "value": "3", "label": "marcas no nosso próprio ecossistema" }
+  ],
+  "method": {
+    "eyebrow": "Como fazemos",
+    "title": "A mesma ordem, em todos os projetos.",
+    "text": "Começar pelos anúncios é acelerar sem direção. Cada fase só começa quando a anterior está sólida.",
+    "phases": [
+      { "title": "Estratégia digital", "text": "Onde a marca compete, contra quem e para quem.", "deliverables": ["Estudo de mercado", "Posicionamento", "Cliente ideal", "Roadmap"] },
+      { "title": "Criação de marca", "text": "A perceção que o mercado tem de ti quando não estás na sala.", "deliverables": ["Identidade verbal", "Identidade visual", "Guidelines"] },
+      { "title": "Ecossistema", "text": "As peças que levam uma pessoa de desconhecida a cliente.", "deliverables": ["Landing pages", "CRM", "Automações", "Email marketing"] },
+      { "title": "Redes sociais e tráfego pago", "text": "Amplificar o que já provou funcionar.", "deliverables": ["Conteúdo e vídeo", "Tráfego pago", "Captação de leads"] }
     ]
   },
-  "chapters": [
+  "projects": [
     {
-      "id": "cap-1",
-      "kicker": "Capítulo 1",
-      "title": "Estratégia digital",
-      "lesson": {
-        "definition": "Estratégia digital é decidir onde a marca vai competir, contra quem, para quem e com que mensagem, antes de decidir em que canais vai aparecer.",
-        "points": [
-          "Começa no negócio, não no Instagram: margem, ticket médio, capacidade de entrega.",
-          "Define um espaço que ninguém está a ocupar, em vez de copiar o líder.",
-          "Termina num roadmap com prioridades, e não numa lista de ideias."
-        ],
-        "mistake": "Erro comum: escolher canais (\"temos de estar no TikTok\") antes de escolher posição."
-      },
-      "case": {
-        "eyebrow": "Caso de estudo · a própria Empower",
-        "title": "Os passos de estratégia que aplicámos a nós próprios",
-        "text": "Não pedimos aos clientes nada que não tenhamos feito em casa. Este foi o processo que desenhou o nosso próprio ecossistema, o mesmo que hoje usamos no Mapa de Crescimento.",
-        "steps": [
-          { "title": "Diagnóstico de posição", "text": "A Empower estava a ser comparada com agências de posts. O problema não era execução: era categoria." },
-          { "title": "Mercado e concorrência", "text": "O mercado vendia peças soltas: um pack de posts, uma campanha. O espaço livre era a estratégia completa, com preço fechado." },
-          { "title": "Cliente ideal", "text": "Marcas premium de moda, beleza, restauração e design, com produto comprovado e vontade de questionar o modelo atual." },
-          { "title": "Auditoria de canais", "text": "Muito conteúdo, pouca captação. Faltava um caminho claro entre ver um vídeo e marcar uma reunião." },
-          { "title": "Recomendações", "text": "Separar papéis em três marcas com funções diferentes: uma pessoa, uma consultora e um software." },
-          { "title": "Roadmap", "text": "Primeiro a posição e a marca, depois o sistema que as liga, e só no fim os canais de aquisição." }
-        ]
-      },
-      "exercise": "Escreve numa frase: \"A minha marca é a única que ___ para ___ porque ___.\" Se não consegues completar, ainda não tens estratégia, tens atividade."
-    },
-    {
-      "id": "cap-2",
-      "kicker": "Capítulo 2",
-      "title": "Criação de marca",
-      "lesson": {
-        "definition": "Uma marca é a perceção que o mercado tem de ti quando não estás na sala. Logótipo e cores são a parte visível; categoria, inimigo e promessa são a parte que vende.",
-        "points": [
-          "Identidade verbal: o que dizes, como dizes e o que nunca dirias.",
-          "Identidade visual: cada cor e forma tem uma razão estratégica.",
-          "Guidelines: para que a marca seja igual em todo o lado, mesmo sem ti."
-        ],
-        "mistake": "Erro comum: fazer um logótipo bonito sem decidir primeiro que categoria a marca quer ocupar."
-      },
-      "case": {
-        "eyebrow": "Caso de estudo · rebranding",
-        "title": "Dreams Academy",
-        "text": "Uma academia de formação para profissionais de estética, com conhecimento de topo e uma marca que não o mostrava. Num mercado inteiro minimalista, a decisão foi ser o oposto.",
-        "compare": [
-          { "label": "Categoria", "before": "Escola de cursos", "after": "Academia premium de formação de beleza" },
-          { "label": "Formação", "before": "Técnica isolada", "after": "360º: técnica, gestão e marketing pessoal" },
-          { "label": "Logótipo", "before": "Placeholder", "after": "Espelho ornamental dourado a emoldurar o monograma" },
-          { "label": "Inimigo", "before": "Nenhum definido", "after": "Cursos superficiais que mantêm profissionais mal pagas" },
-          { "label": "Venda", "before": "A fundadora explicava o preço", "after": "A marca faz a pré-venda" }
-        ],
+      "id": "empower",
+      "name": "Ecossistema Empower",
+      "client": "Bia Melo · Empower Marketing · Empower Boss",
+      "scope": ["Estratégia", "Criação de marca", "Ecossistema"],
+      "summary": "O caso que aplicámos a nós próprios: separar uma pessoa, uma consultora e um software, cada um com uma só função, ligados pelo mesmo sistema.",
+      "challenge": "A Empower estava a ser comparada com agências de posts. Muito conteúdo, pouca captação, e nenhum caminho claro entre ver um vídeo e marcar uma reunião.",
+      "decision": "Sair da categoria de agência e ocupar a de consultora de crescimento estratégico, com preço fechado. Dividir o negócio em três marcas que não fazem o trabalho umas das outras.",
+      "identity": {
+        "logo": "/images/logo-300.png",
         "palette": [
-          { "name": "Azul marinho", "hex": "#1b2550", "why": "Autoridade de uma instituição de ensino séria." },
-          { "name": "Periwinkle acetinado", "hex": "#9ea9e0", "why": "A criatividade e a fluidez da estética." },
-          { "name": "Dourado", "hex": "#c9a54a", "why": "A excelência, o \"ouro\" que as alunas descobrem." }
+          { "name": "Tinta", "hex": "#111114" },
+          { "name": "Ameixa", "hex": "#2a1540" },
+          { "name": "Violeta", "hex": "#3a1d5c" },
+          { "name": "Lilás", "hex": "#b89ce0" },
+          { "name": "Papel", "hex": "#f2eff5" }
         ],
-        "quote": "É completamente diferente de tudo o que eu vi, nem conseguiria imaginar isto.",
-        "quoteBy": "Fundadora da Dreams Academy",
-        "link": { "label": "Ler o caso completo", "href": "/insights/dreams-academy-rebranding" }
+        "type": [
+          { "role": "Títulos", "font": "Gloock", "css": "var(--font-display)" },
+          { "role": "Destaques", "font": "Cormorant Garamond", "css": "var(--font-serif)" },
+          { "role": "Texto", "font": "Josefin Sans", "css": "var(--font-sans)" }
+        ],
+        "line": "Primeiro a estratégia, depois a estética."
       },
-      "exercise": "Olha para as 5 marcas que mais concorrem contigo. Se tapares os nomes, consegues distinguir a tua? Se não, o problema não é o design, é a posição."
+      "ecosystem": {
+        "nodes": [
+          { "id": "bia", "name": "Bia Melo", "role": "Estratega e formadora", "job": "Atrair", "text": "A marca pessoal. Ensina, mostra bastidores e dá a cara. É onde nasce a confiança: as pessoas seguem pessoas antes de contratarem empresas." },
+          { "id": "empower", "name": "Empower Marketing", "role": "Consultora", "job": "Converter", "text": "Transforma a confiança em projetos: Mapa de Crescimento, branding, conteúdo e tráfego, com equipa dedicada e preço fechado." },
+          { "id": "boss", "name": "Empower Boss", "role": "Software", "job": "Reter e medir", "text": "O sistema por trás de tudo: CRM, agendamentos, automações e métricas. Cada lead, venha da Bia ou dos sites da Empower, entra aqui." }
+        ]
+      }
     },
     {
-      "id": "cap-3",
-      "kicker": "Capítulo 3",
-      "title": "Ecossistemas",
-      "lesson": {
-        "definition": "Um ecossistema de marca é o conjunto de marcas, canais e ferramentas que trabalham juntos para levar uma pessoa de desconhecida a cliente, e de cliente a fã.",
-        "points": [
-          "Cada peça tem uma só função: atrair, converter ou reter.",
-          "As peças passam pessoas umas às outras, sem becos sem saída.",
-          "Tudo é medido num só sítio, para saber o que está a funcionar."
+      "id": "dreams",
+      "name": "Dreams Academy",
+      "client": "Academia de formação em estética",
+      "scope": ["Estratégia", "Rebranding", "Identidade visual"],
+      "summary": "De escola de cursos a academia premium de formação de beleza. Num mercado inteiro minimalista, a decisão foi ser o oposto.",
+      "challenge": "Conhecimento de topo, um logótipo placeholder e uma marca que não sustentava um ticket médio elevado. A fundadora tinha de explicar o preço em cada venda.",
+      "decision": "Mudar de categoria: formação 360º (técnica, gestão e marketing pessoal) e um inimigo claro, os cursos superficiais que mantêm profissionais mal pagas.",
+      "identity": {
+        "palette": [
+          { "name": "Azul marinho", "hex": "#1b2550" },
+          { "name": "Periwinkle", "hex": "#9ea9e0" },
+          { "name": "Dourado", "hex": "#c9a54a" }
         ],
-        "mistake": "Erro comum: ter Instagram, site, newsletter e WhatsApp que não sabem uns dos outros."
-      },
-      "case": {
-        "eyebrow": "Caso de estudo · o nosso próprio ecossistema",
-        "title": "Uma pessoa, uma consultora, um software",
-        "text": "Toca em cada peça para veres o seu papel. A regra: nenhuma marca faz o trabalho da outra.",
-        "nodes": [
-          {
-            "id": "bia",
-            "name": "Bia Melo",
-            "role": "Estratega e formadora",
-            "job": "Atrair",
-            "text": "A marca pessoal. Ensina, partilha bastidores e dá a cara. É onde nasce a confiança: as pessoas seguem pessoas antes de contratarem empresas.",
-            "gives": "Atenção e autoridade"
-          },
-          {
-            "id": "empower",
-            "name": "Empower Marketing",
-            "role": "Consultora e agência",
-            "job": "Converter",
-            "text": "Transforma a confiança em projetos: Mapa de Crescimento, branding, conteúdo e tráfego, com uma equipa dedicada e preço fechado.",
-            "gives": "Clientes e resultados"
-          },
-          {
-            "id": "boss",
-            "name": "Empower Boss",
-            "role": "Software",
-            "job": "Reter e medir",
-            "text": "O sistema por trás de tudo: CRM, agendamentos, automações e métricas. Cada lead, seja dos conteúdos da Bia ou dos sites da Empower, entra aqui.",
-            "gives": "Dados e previsibilidade"
-          }
-        ],
-        "flows": [
-          "A Bia Melo ensina e gera confiança.",
-          "Quem quer aplicar passa para a Empower Marketing.",
-          "Cada contacto e cada cliente vive no Empower Boss.",
-          "Os dados do Empower Boss dizem à Bia o que ensinar a seguir."
-        ],
-        "steps": [
-          { "title": "Separar papéis", "text": "Perguntámos: que trabalho faz uma pessoa melhor do que uma empresa? E um software melhor do que uma equipa?" },
-          { "title": "Uma função por marca", "text": "Atrair, converter, reter. Quando uma marca tenta fazer as três, faz todas pela metade." },
-          { "title": "Construir as pontes", "text": "Cada conteúdo tem um próximo passo; cada formulário cai no mesmo CRM." },
-          { "title": "Medir num só sítio", "text": "As métricas de todos os sites e campanhas são lidas no mesmo painel." }
+        "line": "Um espelho ornamental dourado, em estilo rococó, a emoldurar o monograma.",
+        "gallery": [
+          { "src": "", "caption": "Logótipo · espelho e monograma" },
+          { "src": "", "caption": "Aplicação no Instagram" },
+          { "src": "", "caption": "Papelaria e certificados" }
         ]
       },
-      "exercise": "Desenha o caminho de um cliente teu, do primeiro contacto à compra. Onde é que ele pode cair num beco sem saída?"
-    },
-    {
-      "id": "cap-4",
-      "kicker": "Capítulo 4",
-      "title": "Redes sociais e tráfego pago",
-      "lesson": {
-        "definition": "Com estratégia, marca e ecossistema no lugar, as redes sociais e os anúncios deixam de ser apostas: passam a ser aceleradores de algo que já funciona.",
-        "points": [
-          "Orgânico: prova que a mensagem funciona e constrói autoridade.",
-          "Tráfego pago: põe a mensagem que já provou à frente de mais pessoas certas.",
-          "Ambos alimentam o ecossistema: cada visita tem um próximo passo."
-        ],
-        "mistake": "Erro comum: pagar anúncios para uma mensagem que ainda não foi testada no orgânico."
-      },
-      "results": [
-        {
-          "value": "+125k",
-          "label": "visualizações em 30 dias",
-          "name": "Clínica de estética",
-          "text": "Auditoria do que já funcionava, frequência estratégica e tráfego pago como acelerador de precisão. Mais 148 seguidores no mês.",
-          "href": "/insights/clinica-de-estetica-125k-views-instagram"
-        },
-        {
-          "value": "19,2k",
-          "label": "views orgânicas num vídeo",
-          "name": "Patrícia Melo · TikTok",
-          "text": "De \"eu não sou de vídeos\" a um formato autêntico e sustentável, sem anúncios: primeiro o conforto, depois a câmara.",
-          "href": "/insights/patricia-melo-tiktok"
-        }
+      "compare": [
+        { "label": "Categoria", "before": "Escola de cursos", "after": "Academia premium de formação de beleza" },
+        { "label": "Logótipo", "before": "Placeholder", "after": "Espelho ornamental dourado" },
+        { "label": "Venda", "before": "A fundadora explicava o preço", "after": "A marca faz a pré-venda" }
       ],
-      "exercise": "Antes de impulsionar um post, pergunta: este conteúdo já teve bons resultados sem dinheiro? E quem clicar, para onde vai a seguir?"
+      "quote": "É completamente diferente de tudo o que eu vi, nem conseguiria imaginar isto.",
+      "quoteBy": "Fundadora da Dreams Academy",
+      "link": "/insights/dreams-academy-rebranding"
     }
   ],
-  "glossary": {
-    "eyebrow": "Glossário",
-    "title": "As palavras deste portefólio.",
+  "growth": {
+    "eyebrow": "Redes sociais e tráfego pago",
+    "title": "Quando a base está pronta, os números aparecem.",
     "items": [
-      { "term": "Posicionamento", "text": "O lugar que a tua marca ocupa na cabeça do cliente, em comparação com as alternativas." },
-      { "term": "Categoria", "text": "A \"prateleira\" onde o mercado te arruma. Mudar de categoria muda o preço que podes cobrar." },
-      { "term": "Ecossistema", "text": "Marcas, canais e ferramentas que trabalham juntos, cada um com uma função." },
-      { "term": "Funil", "text": "O caminho de desconhecido a cliente: descobrir, confiar, decidir, comprar." },
-      { "term": "CRM", "text": "O sistema onde vivem todos os contactos e o histórico de cada cliente." },
-      { "term": "Ticket médio", "text": "O valor médio que cada cliente gasta. Uma marca forte faz subir este número." }
+      { "value": "+125k", "label": "visualizações em 30 dias", "name": "Clínica de estética", "text": "Auditoria do que já funcionava, frequência estratégica e tráfego pago como acelerador. Mais 148 seguidores no mês.", "href": "/insights/clinica-de-estetica-125k-views-instagram" },
+      { "value": "19,2k", "label": "views orgânicas num vídeo", "name": "Patrícia Melo · TikTok", "text": "De \"eu não sou de vídeos\" a um formato autêntico e sustentável, sem anúncios.", "href": "/insights/patricia-melo-tiktok" }
     ]
   },
   "closing": {
-    "title": "Qual é o capítulo em que a tua marca está?",
-    "text": "Descobre em 4 minutos com o Índice de Posição, ou fala connosco diretamente.",
-    "primary": { "label": "Fazer o diagnóstico", "href": "/indice-de-posicao" },
-    "secondary": { "label": "Agendar sessão de alinhamento", "href": "booking" }
+    "eyebrow": "Para marcas prontas",
+    "title": "Se a tua marca já decidiu crescer, falamos a mesma língua.",
+    "items": [
+      "Tens um produto ou serviço comprovado por trás da imagem",
+      "Valorizas o posicionamento acima do preço baixo",
+      "Aceitas questionar o modelo de negócio atual",
+      "Procuras um projeto de 6 ou 12 meses, com preço fechado"
+    ],
+    "primary": { "label": "Agendar sessão de alinhamento", "href": "booking" },
+    "secondary": { "label": "Começar pelo Mapa de Crescimento", "href": "/mapadecrescimento" }
   }
 }
