@@ -5,6 +5,7 @@ import home from '../data/home.json';
 import mapa from '../data/mapa.json';
 import servicos from '../data/servicos.json';
 import faq from '../data/faq.json';
+import portefolio from '../data/portefolio.json';
 
 // llms.txt (https://llmstxt.org): resumo do negócio para assistentes de IA, gerado a partir dos dados do site.
 export const GET: APIRoute = async () => {
@@ -29,6 +30,7 @@ export const GET: APIRoute = async () => {
     `- [Início](${url('/')}): ${site.meta.description}`,
     `- [Mapa de Crescimento](${url('/mapadecrescimento')}): ${mapa.meta.description}`,
     `- [Soluções](${url('/servicos')}): ${servicos.meta.description}`,
+    `- [Portefólio](${url('/portefolio')}): ${portefolio.meta.description}`,
     `- [Casos de Estudo](${url('/insights')}): resultados reais de clientes.`,
     '',
     '## Serviços',

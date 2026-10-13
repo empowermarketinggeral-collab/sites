@@ -1,0 +1,319 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import SectionHead from '../components/SectionHead.astro';
+import p from '../data/portefolio.json';
+// Letras das marcas dos projetos, só para os quadros de identidade (carregadas apenas nesta página).
+import '@fontsource/cinzel/latin-400.css';
+import '@fontsource/playfair-display/latin-400.css';
+import '@fontsource/playfair-display/latin-600.css';
+import '@fontsource/montserrat/latin-400.css';
+import '@fontsource/bodoni-moda/latin-900.css';
+import '@fontsource/quicksand/latin-500.css';
+
+// Portefólio: cada projeto mostra a marca inteira (estratégia, identidade, ecossistema e resultados) num só bloco.
+const { meta, hero, proof, method, projects, growth, closing } = p;
+// Imagem de um quadro de identidade: bg e contain servem para logótipos com fundo transparente.
+type Shot = { src: string; caption: string; ratio: number; bg?: string; contain?: boolean };
+const n = (i: number) => String(i + 1).padStart(2, '0');
+// Texto escuro sobre cores claras, claro sobre cores escuras.
+const onColor = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map((k) => parseInt(hex.slice(k, k + 2), 16));
+  return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? 'var(--ink)' : 'var(--paper)';
+};
+---
+<Base title={meta.title} description={meta.description}>
+  <section class="pf-hero">
+    <div class="wrap">
+      <p class="eyebrow reveal">{hero.eyebrow}</p>
+      <h1 class="display pf-title reveal">{hero.title}</h1>
+      <p class="lead reveal">{hero.text}</p>
+      <div class="actions reveal">
+        <Button href={hero.primaryCta.href} variant="light">{hero.primaryCta.label}</Button>
+        <Button href={hero.secondaryCta.href} variant="outline" track="agendamento">{hero.secondaryCta.label}</Button>
+      </div>
+      <dl class="pf-proof">
+        {proof.map((s) => (
+          <div class="reveal"><dt class="display">{s.value}</dt><dd>{s.label}</dd></div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={method.eyebrow} title={method.title} small />
+      <p class="body-lg muted reveal">{method.text}</p>
+      <ol class="pf-method">
+        {method.phases.map((ph, i) => (
+          <li class="reveal">
+            <span class="eyebrow">Fase {i + 1}</span>
+            <h3 class="card-title">{ph.title}</h3>
+            <p class="muted">{ph.text}</p>
+            <ul class="pf-chips">{ph.deliverables.map((d) => <li>{d}</li>)}</ul>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <div id="projetos">
+    {projects.map((pr, i) => (
+      <section class="section pf-project" id={pr.id}>
+        <div class="wrap">
+          <header class="pf-project-head reveal">
+            <p class="eyebrow">Projeto {n(i)} · {pr.client}</p>
+            <h2 class="display section-title">{pr.name}</h2>
+            <ul class="pf-chips">{pr.scope.map((s) => <li>{s}</li>)}</ul>
+            <p class="body-lg pf-summary">{pr.summary}</p>
+          </header>
+
+          <div class="pf-brief reveal">
+            <div><p class="eyebrow">O desafio</p><p>{pr.challenge}</p></div>
+            <div><p class="eyebrow">A decisão estratégica</p><p>{pr.decision}</p></div>
+          </div>
+
+          <div class="pf-board reveal" aria-label={`Identidade visual · ${pr.name}`}>
+            <p class="eyebrow">Identidade visual</p>
+            {pr.identity.gallery.map((row) => (
+              <ul class="pf-row">
+                {(row as Shot[]).map((g) => (
+                  <li style={`--r:${g.ratio}`}>
+                    <span class:list={['pf-shot', { 'pf-contain': g.contain }]} style={g.bg ? `background:${g.bg}` : undefined}>
+                      <img src={g.src} alt={`${pr.name} · ${g.caption}`} loading="lazy" decoding="async" />
+                    </span>
+                    <span class="pf-caption">{g.caption}</span>
+                  </li>
+                ))}
+              </ul>
+            ))}
+            <ul class="pf-palette">
+              {pr.identity.palette.map((c) => (
+                <li style={`--sw:${c.hex};--on:${onColor(c.hex)}`}><span>{c.name}</span><code>{c.hex}</code></li>
+              ))}
+            </ul>
+            <ul class="pf-type">
+              {pr.identity.type.map((t) => (
+                <li><span class="pf-type-sample" style={`font-family:${t.css};font-weight:${t.weight}`}>Aa</span><span><strong>{t.font}</strong><small>{t.role}</small></span></li>
+              ))}
+            </ul>
+            <p class="pf-line">{pr.identity.line}</p>
+          </div>
+
+          {pr.ecosystem && (
+            <div class="pf-eco reveal">
+              <div>
+                <p class="eyebrow">O ecossistema</p>
+                <h3 class="card-title">Uma pessoa, uma consultora, um software.</h3>
+                <p class="muted">Cada marca tem uma só função. Toca em cada uma para veres o papel que cumpre.</p>
+                <div class="pf-panels">
+                  {pr.ecosystem.nodes.map((node, j) => (
+                    <article class="pf-panel" data-panel={node.id} hidden={j !== 0}>
+                      <p class="eyebrow">{node.role} · {node.job}</p>
+                      <h4 class="display pf-panel-title">{node.name}</h4>
+                      <p>{node.text}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+              <div class="pf-map">
+                <svg viewBox="0 0 400 340" aria-hidden="true">
+                  <defs>
+                    <marker id="pf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" />
+                    </marker>
+                  </defs>
+                  <path d="M240 78 Q 330 110 330 200" />
+                  <path d="M270 300 Q 200 330 130 300" />
+                  <path d="M70 200 Q 70 110 160 78" />
+                </svg>
+                {pr.ecosystem.nodes.map((node, j) => (
+                  <button type="button" class:list={['pf-node', `pf-node-${node.id}`]} data-node={node.id} aria-pressed={j === 0 ? 'true' : 'false'}>
+                    <span class="pf-node-job">{node.job}</span>
+                    <strong>{node.name}</strong>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {pr.compare && (
+            <div class="pf-ba reveal" role="table" aria-label={`${pr.name}: antes e depois`}>
+              <div class="pf-ba-row pf-ba-head" role="row">
+                <span role="columnheader"></span><span role="columnheader">Antes</span><span role="columnheader">Depois</span>
+              </div>
+              {pr.compare.map((r) => (
+                <div class="pf-ba-row" role="row">
+                  <span role="rowheader" class="eyebrow">{r.label}</span>
+                  <span role="cell" class="pf-before">{r.before}</span>
+                  <span role="cell" class="pf-after">{r.after}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {pr.quote && (
+            <blockquote class="quote reveal">“{pr.quote}”<footer class="eyebrow">{pr.quoteBy}</footer></blockquote>
+          )}
+          {pr.link && <p class="center reveal"><a class="link-arrow" href={pr.link}>Ler o caso completo →</a></p>}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <section class="section" id="resultados">
+    <div class="wrap">
+      <SectionHead eyebrow={growth.eyebrow} title={growth.title} small />
+      <div class="pf-growth">
+        {growth.items.map((r) => (
+          <a class="pf-result reveal" href={r.href}>
+            <span class="display pf-result-n">{r.value}</span>
+            <span class="pf-result-label">{r.label}</span>
+            <p class="eyebrow">{r.name}</p>
+            <p>{r.text}</p>
+            <span class="link-arrow">Ver o caso →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section closing">
+    <div class="wrap pf-closing">
+      <div>
+        <p class="eyebrow reveal">{closing.eyebrow}</p>
+        <h2 class="display section-title-sm reveal">{closing.title}</h2>
+      </div>
+      <div class="reveal">
+        <ul class="services">{closing.items.map((it) => <li>{it}</li>)}</ul>
+        <div class="actions">
+          <Button href={closing.primary.href} variant="light" track="agendamento">{closing.primary.label}</Button>
+          <Button href={closing.secondary.href} variant="outline">{closing.secondary.label}</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Ecossistema: mostra o papel da marca escolhida.
+  const nodes = document.querySelectorAll<HTMLButtonElement>('.pf-node');
+  const panels = document.querySelectorAll<HTMLElement>('.pf-panel');
+  nodes.forEach((btn) => btn.addEventListener('click', () => {
+    nodes.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    panels.forEach((panel) => { panel.hidden = panel.dataset.panel !== btn.dataset.node; });
+  }));
+</script>
+
+<style>
+  .pf-hero { padding: clamp(4rem, 10vw, 8rem) 0 clamp(3rem, 6vw, 5rem); background: radial-gradient(70% 90% at 85% 0%, rgba(90,50,140,.4), transparent 70%); }
+  .pf-title { font-size: clamp(3rem, 8.4vw, 7rem); max-width: 13ch; margin: 0 0 1.8rem; text-wrap: balance; }
+  .pf-proof { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin: clamp(3.5rem, 7vw, 5.5rem) 0 0; padding-top: 2rem; border-top: 1px solid rgba(184,156,224,.25); }
+  .pf-proof dt { font-size: clamp(2.6rem, 5vw, 3.8rem); color: var(--lilac); line-height: 1; }
+  .pf-proof dd { margin: .6rem 0 0; color: var(--paper-muted); font-size: .98rem; max-width: 22ch; }
+
+  .pf-chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .pf-chips li { border: 1px solid rgba(184,156,224,.35); border-radius: 99px; padding: .25rem .8rem; font-size: .85rem; color: var(--paper); }
+
+  .pf-method { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .pf-method > li { border-top: 1px solid var(--accent); padding-top: 1.4rem; display: flex; flex-direction: column; gap: .7rem; }
+  .pf-method .card-title, .pf-method p { margin: 0; }
+  .pf-method .pf-chips { margin-top: auto; padding-top: .6rem; }
+  .pf-method > li:last-child { border-top-style: dashed; }
+
+  .pf-project-head { display: grid; gap: 1.2rem; margin-bottom: 3rem; }
+  .pf-project-head .eyebrow, .pf-project-head .display { margin: 0; }
+  .pf-summary { max-width: 46rem; margin: .4rem 0 0; }
+  .pf-brief { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; margin-bottom: 3rem; }
+  .pf-brief p:last-child { margin: 0; font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.45rem); line-height: 1.35; }
+
+  /* Quadro de identidade visual */
+  .pf-board { display: grid; gap: 1rem; padding: clamp(1rem, 3vw, 2rem); border-radius: var(--radius); background: linear-gradient(160deg, #1d1428, #16131b); border: 1px solid rgba(184,156,224,.18); }
+  .pf-board > .eyebrow { margin: 0; }
+  /* Linha de imagens com a mesma altura: cada uma ocupa a largura proporcional à sua forma (--r = largura / altura). */
+  .pf-row { display: flex; gap: 1rem; }
+  .pf-row li { flex: var(--r) 1 0; min-width: 0; display: grid; gap: .5rem; align-content: start; }
+  .pf-shot { display: block; aspect-ratio: var(--r); border-radius: 14px; overflow: hidden; }
+  .pf-shot img { width: 100%; height: 100%; object-fit: cover; }
+  .pf-contain { display: grid; place-items: center; }
+  .pf-contain img { width: auto; height: 62%; object-fit: contain; }
+  .pf-caption { font-size: .85rem; color: var(--paper-muted); }
+  .pf-palette { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .6rem; }
+  .pf-palette li { flex: 1 1 0; background: var(--sw); border-radius: 12px; min-height: 7rem; padding: .8rem; display: flex; flex-direction: column; justify-content: flex-end; gap: .15rem; border: 1px solid rgba(255,255,255,.08); min-width: 0; }
+  .pf-palette span { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; line-height: 1.1; color: var(--on); }
+  .pf-palette code { font-size: .75rem; color: var(--on); opacity: .75; }
+  .pf-type { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+  .pf-type li { display: flex; align-items: center; gap: 1rem; background: var(--paper); color: var(--ink); border-radius: 12px; padding: 1rem 1.2rem; min-width: 0; }
+  .pf-type-sample { font-size: 2.6rem; line-height: 1; color: var(--plum-2); flex: 0 0 3.6rem; text-align: center; }
+  .pf-type strong { display: block; font-weight: 400; font-size: .98rem; line-height: 1.2; }
+  .pf-type small { color: #6d6677; font-size: .8rem; }
+  .pf-line { margin: .4rem 0 0; font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.5rem); }
+
+  /* Ecossistema */
+  .pf-eco { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; align-items: center; margin-top: clamp(3rem, 6vw, 4.5rem); }
+  .pf-eco .card-title { font-size: clamp(1.7rem, 3vw, 2.3rem); margin: 0 0 .6rem; }
+  .pf-panels { margin-top: 2rem; }
+  .pf-panel { border-left: 2px solid var(--lilac); padding-left: 1.4rem; }
+  .pf-panel p { margin: 0 0 .8rem; }
+  .pf-panel-title { font-size: clamp(2rem, 4vw, 2.8rem); margin: 0 0 .8rem; }
+  .pf-map { position: relative; aspect-ratio: 400 / 340; max-width: 520px; width: 100%; margin: 0 auto; }
+  .pf-map svg { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--accent); }
+  .pf-map svg > path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 5 6; marker-end: url(#pf-arrow); animation: pf-dash 1.6s linear infinite; }
+  @keyframes pf-dash { to { stroke-dashoffset: -22; } }
+  .pf-node { position: absolute; width: 36%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; display: grid; place-content: center; gap: .2rem; text-align: center; cursor: pointer; padding: .5rem; color: var(--paper); font-family: var(--font-sans); font-weight: 300; background: radial-gradient(circle at 30% 25%, var(--plum-2), var(--ink-deep)); border: 1px solid rgba(184,156,224,.35); transition: background .25s ease, box-shadow .25s ease; }
+  .pf-node[aria-pressed='true'] { background: var(--lilac); color: var(--ink-deep); border-color: var(--lilac); box-shadow: 0 0 0 8px rgba(184,156,224,.15); }
+  .pf-node:focus-visible { outline: 2px solid var(--lilac); outline-offset: 4px; }
+  .pf-node strong { font-family: var(--font-serif); font-weight: 600; font-size: clamp(1rem, 2.2vw, 1.35rem); line-height: 1.05; }
+  .pf-node-job { font-size: clamp(.6rem, 1.2vw, .72rem); letter-spacing: .18em; text-transform: uppercase; opacity: .8; }
+  .pf-node-bia { left: 50%; top: 20%; }
+  .pf-node-empower { left: 80%; top: 76%; }
+  .pf-node-boss { left: 20%; top: 76%; }
+
+  /* Antes / depois */
+  .pf-ba { margin-top: clamp(3rem, 6vw, 4rem); border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(255,255,255,.1); }
+  .pf-ba-row { display: grid; grid-template-columns: 10rem 1fr 1fr; gap: 1rem; padding: 1rem 1.4rem; align-items: baseline; }
+  .pf-ba-row + .pf-ba-row { border-top: 1px solid rgba(255,255,255,.08); }
+  .pf-ba-head { background: rgba(255,255,255,.04); font-size: .85rem; letter-spacing: .2em; text-transform: uppercase; color: var(--paper-muted); }
+  .pf-ba-row .eyebrow { margin: 0; font-size: .75rem; }
+  .pf-before { color: var(--paper-muted); text-decoration: line-through; text-decoration-color: rgba(189,183,196,.5); }
+  .pf-after { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500; }
+  blockquote.quote footer { margin-top: 1rem; }
+
+  /* Resultados */
+  .pf-growth { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .pf-result { display: flex; flex-direction: column; gap: .6rem; text-decoration: none; background: var(--paper); color: var(--ink); border-radius: var(--radius) 0 var(--radius) var(--radius); padding: clamp(1.6rem, 4vw, 2.6rem); transition: transform .25s ease, box-shadow .25s ease; }
+  .pf-result:hover, .pf-result:focus-visible { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,.4); }
+  .pf-result p { margin: 0; color: #4d4755; }
+  .pf-result .eyebrow { color: var(--plum-2); margin-top: 1rem; }
+  .pf-result-n { font-size: clamp(4rem, 9vw, 6.5rem); line-height: .9; color: var(--plum-2); }
+  .pf-result-label { color: #6d6677; }
+  .pf-result .link-arrow { color: var(--plum-2); margin-top: auto; padding-top: .6rem; }
+
+  .pf-closing { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2rem 4rem; align-items: start; }
+  .pf-closing .services { margin: 0 0 2rem; }
+
+  @media (max-width: 900px) {
+    .pf-proof { grid-template-columns: 1fr 1fr; }
+    .pf-method { grid-template-columns: 1fr 1fr; }
+    .pf-brief, .pf-eco, .pf-growth, .pf-closing { grid-template-columns: 1fr; }
+    /* 3 por linha; a última linha estica para não deixar buracos. */
+    .pf-palette li { flex-basis: 28%; min-height: 5.5rem; }
+    .pf-type { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .pf-method { grid-template-columns: 1fr; }
+    /* No telemóvel: a primeira imagem de cada linha ocupa a largura toda, as outras partilham a linha seguinte. */
+    .pf-row { flex-wrap: wrap; gap: .8rem; }
+    .pf-row li:first-child { flex-basis: 100%; }
+    .pf-palette { gap: .5rem; }
+    .pf-palette li { padding: .6rem; }
+    .pf-palette span { font-size: .95rem; }
+    .pf-ba-row { grid-template-columns: 1fr 1fr; }
+    .pf-ba-row > :first-child { grid-column: 1 / -1; }
+    .pf-ba-head > :first-child { display: none; }
+    .pf-node { width: 40%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pf-map svg > path { animation: none; }
+  }
+</style>
