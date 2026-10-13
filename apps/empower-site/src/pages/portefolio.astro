@@ -3,13 +3,18 @@ import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
 import SectionHead from '../components/SectionHead.astro';
 import p from '../data/portefolio.json';
-// Letras da Dreams Academy, só para o quadro de identidade (carregadas apenas nesta página).
+// Letras das marcas dos projetos, só para os quadros de identidade (carregadas apenas nesta página).
 import '@fontsource/cinzel/latin-400.css';
 import '@fontsource/playfair-display/latin-400.css';
+import '@fontsource/playfair-display/latin-600.css';
 import '@fontsource/montserrat/latin-400.css';
+import '@fontsource/bodoni-moda/latin-900.css';
+import '@fontsource/quicksand/latin-500.css';
 
 // Portefólio: cada projeto mostra a marca inteira (estratégia, identidade, ecossistema e resultados) num só bloco.
 const { meta, hero, proof, method, projects, growth, closing } = p;
+// Imagem de um quadro de identidade: bg e contain servem para logótipos com fundo transparente.
+type Shot = { src: string; caption: string; ratio: number; bg?: string; contain?: boolean };
 const n = (i: number) => String(i + 1).padStart(2, '0');
 // Texto escuro sobre cores claras, claro sobre cores escuras.
 const onColor = (hex: string) => {
@@ -69,36 +74,29 @@ const onColor = (hex: string) => {
           </div>
 
           <div class="pf-board reveal" aria-label={`Identidade visual · ${pr.name}`}>
-            <p class="eyebrow pf-board-label">Identidade visual</p>
-            {pr.identity.logo && (
-              <div class="pf-logo"><img src={pr.identity.logo} alt={`Logótipo ${pr.name}`} width="300" height="253" loading="lazy" /></div>
-            )}
-            {pr.identity.palette && (
-              <ul class="pf-palette">
-                {pr.identity.palette.map((c) => (
-                  <li style={`--sw:${c.hex};--on:${onColor(c.hex)}`}><span>{c.name}</span><code>{c.hex}</code></li>
-                ))}
-              </ul>
-            )}
-            {pr.identity.type && (
-              <ul class:list={['pf-type', { 'pf-type-wide': !pr.identity.logo }]}>
-                {pr.identity.type.map((t) => (
-                  <li><span class="pf-type-sample" style={`font-family:${t.css}`}>Aa</span><span><strong>{t.font}</strong><small>{t.role}</small></span></li>
-                ))}
-              </ul>
-            )}
-            {pr.identity.gallery && (
-              <ul class="pf-gallery">
-                {pr.identity.gallery.map((g) => (
-                  <li>
-                    {g.src
-                      ? <img src={g.src} alt={g.caption} loading="lazy" />
-                      : <span class="pf-slot" aria-hidden="true">Imagem a adicionar</span>}
+            <p class="eyebrow">Identidade visual</p>
+            {pr.identity.gallery.map((row) => (
+              <ul class="pf-row">
+                {(row as Shot[]).map((g) => (
+                  <li style={`--r:${g.ratio}`}>
+                    <span class:list={['pf-shot', { 'pf-contain': g.contain }]} style={g.bg ? `background:${g.bg}` : undefined}>
+                      <img src={g.src} alt={`${pr.name} · ${g.caption}`} loading="lazy" decoding="async" />
+                    </span>
                     <span class="pf-caption">{g.caption}</span>
                   </li>
                 ))}
               </ul>
-            )}
+            ))}
+            <ul class="pf-palette">
+              {pr.identity.palette.map((c) => (
+                <li style={`--sw:${c.hex};--on:${onColor(c.hex)}`}><span>{c.name}</span><code>{c.hex}</code></li>
+              ))}
+            </ul>
+            <ul class="pf-type">
+              {pr.identity.type.map((t) => (
+                <li><span class="pf-type-sample" style={`font-family:${t.css};font-weight:${t.weight}`}>Aa</span><span><strong>{t.font}</strong><small>{t.role}</small></span></li>
+              ))}
+            </ul>
             <p class="pf-line">{pr.identity.line}</p>
           </div>
 
@@ -230,28 +228,26 @@ const onColor = (hex: string) => {
   .pf-brief p:last-child { margin: 0; font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.45rem); line-height: 1.35; }
 
   /* Quadro de identidade visual */
-  .pf-board { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; padding: clamp(1.2rem, 3vw, 2rem); border-radius: var(--radius); background: linear-gradient(160deg, #1d1428, #16131b); border: 1px solid rgba(184,156,224,.18); }
-  .pf-board-label { grid-column: 1 / -1; margin: 0; }
-  .pf-logo { grid-column: span 2; grid-row: span 2; display: grid; place-items: center; background: var(--plum); border-radius: 16px; padding: 2rem; min-height: 16rem; }
-  .pf-logo img { width: min(70%, 220px); height: auto; }
-  .pf-palette { grid-column: span 4; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: .6rem; }
-  .pf-board-label + .pf-palette { grid-column: 1 / -1; }
-  .pf-palette li { background: var(--sw); border-radius: 12px; min-height: 8rem; padding: .8rem; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid rgba(255,255,255,.08); }
-  .pf-palette span { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; color: var(--on); }
-  .pf-palette code { font-size: .75rem; color: var(--on); opacity: .75; }
-  .pf-type { grid-column: span 4; display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
-  .pf-type li { display: flex; align-items: center; gap: 1rem; background: var(--paper); color: var(--ink); border-radius: 12px; padding: 1rem 1.2rem; min-width: 0; }
-  .pf-type-sample { font-size: 2.6rem; line-height: 1; color: var(--plum-2); }
-  .pf-type strong { display: block; font-weight: 400; font-size: .98rem; }
-  .pf-type small { color: #6d6677; font-size: .8rem; }
-  .pf-type-wide { grid-column: 1 / -1; }
-  .pf-gallery { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1.9fr; gap: 1rem; align-items: start; }
-  .pf-gallery li { display: grid; gap: .5rem; min-width: 0; }
-  .pf-gallery img, .pf-slot { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 14px; }
-  .pf-gallery li:nth-child(3) img, .pf-gallery li:nth-child(3) .pf-slot { aspect-ratio: 1.9; }
-  .pf-slot { display: grid; place-items: center; color: rgba(242,239,245,.55); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; background: radial-gradient(circle at 50% 40%, rgba(184,156,224,.22), transparent 60%), var(--ink-deep); border: 1px dashed rgba(184,156,224,.45); }
+  .pf-board { display: grid; gap: 1rem; padding: clamp(1rem, 3vw, 2rem); border-radius: var(--radius); background: linear-gradient(160deg, #1d1428, #16131b); border: 1px solid rgba(184,156,224,.18); }
+  .pf-board > .eyebrow { margin: 0; }
+  /* Linha de imagens com a mesma altura: cada uma ocupa a largura proporcional à sua forma (--r = largura / altura). */
+  .pf-row { display: flex; gap: 1rem; }
+  .pf-row li { flex: var(--r) 1 0; min-width: 0; display: grid; gap: .5rem; align-content: start; }
+  .pf-shot { display: block; aspect-ratio: var(--r); border-radius: 14px; overflow: hidden; }
+  .pf-shot img { width: 100%; height: 100%; object-fit: cover; }
+  .pf-contain { display: grid; place-items: center; }
+  .pf-contain img { width: auto; height: 62%; object-fit: contain; }
   .pf-caption { font-size: .85rem; color: var(--paper-muted); }
-  .pf-line { grid-column: 1 / -1; margin: .4rem 0 0; font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.5rem); }
+  .pf-palette { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .6rem; }
+  .pf-palette li { flex: 1 1 0; background: var(--sw); border-radius: 12px; min-height: 7rem; padding: .8rem; display: flex; flex-direction: column; justify-content: flex-end; gap: .15rem; border: 1px solid rgba(255,255,255,.08); min-width: 0; }
+  .pf-palette span { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; line-height: 1.1; color: var(--on); }
+  .pf-palette code { font-size: .75rem; color: var(--on); opacity: .75; }
+  .pf-type { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+  .pf-type li { display: flex; align-items: center; gap: 1rem; background: var(--paper); color: var(--ink); border-radius: 12px; padding: 1rem 1.2rem; min-width: 0; }
+  .pf-type-sample { font-size: 2.6rem; line-height: 1; color: var(--plum-2); flex: 0 0 3.6rem; text-align: center; }
+  .pf-type strong { display: block; font-weight: 400; font-size: .98rem; line-height: 1.2; }
+  .pf-type small { color: #6d6677; font-size: .8rem; }
+  .pf-line { margin: .4rem 0 0; font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.5rem); }
 
   /* Ecossistema */
   .pf-eco { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; align-items: center; margin-top: clamp(3rem, 6vw, 4.5rem); }
@@ -300,17 +296,18 @@ const onColor = (hex: string) => {
     .pf-proof { grid-template-columns: 1fr 1fr; }
     .pf-method { grid-template-columns: 1fr 1fr; }
     .pf-brief, .pf-eco, .pf-growth, .pf-closing { grid-template-columns: 1fr; }
-    .pf-board { grid-template-columns: 1fr; }
-    .pf-logo, .pf-palette, .pf-type { grid-column: 1 / -1; grid-row: auto; }
-    .pf-logo { min-height: 12rem; }
+    /* 3 por linha; a última linha estica para não deixar buracos. */
+    .pf-palette li { flex-basis: 28%; min-height: 5.5rem; }
     .pf-type { grid-template-columns: 1fr; }
-    .pf-palette li { min-height: 6rem; }
   }
   @media (max-width: 560px) {
     .pf-method { grid-template-columns: 1fr; }
-    .pf-palette { grid-auto-flow: row; grid-template-columns: 1fr 1fr; }
-    .pf-gallery { grid-template-columns: 1fr 1fr; }
-    .pf-gallery li:nth-child(3) { grid-column: 1 / -1; }
+    /* No telemóvel: a primeira imagem de cada linha ocupa a largura toda, as outras partilham a linha seguinte. */
+    .pf-row { flex-wrap: wrap; gap: .8rem; }
+    .pf-row li:first-child { flex-basis: 100%; }
+    .pf-palette { gap: .5rem; }
+    .pf-palette li { padding: .6rem; }
+    .pf-palette span { font-size: .95rem; }
     .pf-ba-row { grid-template-columns: 1fr 1fr; }
     .pf-ba-row > :first-child { grid-column: 1 / -1; }
     .pf-ba-head > :first-child { display: none; }

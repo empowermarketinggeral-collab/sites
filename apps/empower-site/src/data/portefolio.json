@@ -93,7 +93,6 @@
       "challenge": "A Empower estava a ser comparada com agências de posts. Muito conteúdo, pouca captação, e nenhum caminho claro entre ver um vídeo e marcar uma reunião.",
       "decision": "Sair da categoria de agência e ocupar a de consultora de crescimento estratégico, com preço fechado. Dividir o negócio em três marcas que não fazem o trabalho umas das outras.",
       "identity": {
-        "logo": "/images/logo-300.png",
         "palette": [
           {
             "name": "Tinta",
@@ -120,20 +119,39 @@
           {
             "role": "Títulos",
             "font": "Gloock",
-            "css": "var(--font-display)"
+            "css": "var(--font-display)",
+            "weight": 400
           },
           {
             "role": "Destaques",
             "font": "Cormorant Garamond",
-            "css": "var(--font-serif)"
+            "css": "var(--font-serif)",
+            "weight": 600
           },
           {
             "role": "Texto",
             "font": "Josefin Sans",
-            "css": "var(--font-sans)"
+            "css": "var(--font-sans)",
+            "weight": 300
           }
         ],
-        "line": "Primeiro a estratégia, depois a estética."
+        "line": "Primeiro a estratégia, depois a estética.",
+        "gallery": [
+          [
+            {
+              "src": "/images/logo-300.png",
+              "caption": "Logótipo",
+              "ratio": 1.5,
+              "bg": "#2a1540",
+              "contain": true
+            },
+            {
+              "src": "/images/portefolio/empower-aplicacao.webp",
+              "caption": "Aplicação · site e partilha",
+              "ratio": 1.905
+            }
+          ]
+        ]
       },
       "ecosystem": {
         "nodes": [
@@ -200,33 +218,41 @@
           {
             "role": "Logótipo",
             "font": "Cinzel",
-            "css": "'Cinzel', serif"
+            "css": "'Cinzel', serif",
+            "weight": 400
           },
           {
             "role": "Títulos",
             "font": "Playfair Display",
-            "css": "'Playfair Display', serif"
+            "css": "'Playfair Display', serif",
+            "weight": 400
           },
           {
             "role": "Texto",
             "font": "Montserrat",
-            "css": "'Montserrat', sans-serif"
+            "css": "'Montserrat', sans-serif",
+            "weight": 400
           }
         ],
         "line": "Um espelho ornamental dourado, em estilo rococó, a emoldurar o monograma. A marca parece ter décadas de história.",
         "gallery": [
-          {
-            "src": "/images/portefolio/dreams-logo.webp",
-            "caption": "Logótipo completo"
-          },
-          {
-            "src": "/images/portefolio/dreams-espelho.webp",
-            "caption": "Símbolo · espelho e monograma"
-          },
-          {
-            "src": "/images/portefolio/dreams-aplicacao.webp",
-            "caption": "Aplicação · site e partilha"
-          }
+          [
+            {
+              "src": "/images/portefolio/dreams-logo.webp",
+              "caption": "Logótipo completo",
+              "ratio": 1
+            },
+            {
+              "src": "/images/portefolio/dreams-espelho.webp",
+              "caption": "Símbolo · espelho e monograma",
+              "ratio": 1
+            },
+            {
+              "src": "/images/portefolio/dreams-aplicacao.webp",
+              "caption": "Aplicação · site e partilha",
+              "ratio": 1.905
+            }
+          ]
         ]
       },
       "compare": [
@@ -253,31 +279,94 @@
     {
       "id": "empower-boss",
       "name": "Empower Boss",
-      "client": "Software da Empower",
+      "client": "Software da Empower · Big Boss e Bússola",
       "scope": [
         "Naming",
         "Identidade visual",
-        "Produto digital"
+        "Família de produtos"
       ],
-      "summary": "A marca do software que sustenta o ecossistema: CRM, agendamentos, automações e métricas, com uma identidade própria, separada da consultora.",
-      "challenge": "Um produto técnico precisa de inspirar a mesma confiança que a consultora, sem se confundir com ela.",
-      "decision": "Dar ao software nome, identidade e produtos próprios, ligados à Empower pelo nome e separados pela função.",
+      "summary": "Ferramentas para quem manda num negócio deixar de ser o gargalo e passar a gerir com método. Uma marca-mãe e dois produtos, Big Boss e Bússola, com uma só regra visual.",
+      "challenge": "O patrão é o gargalo, as ferramentas estão soltas e não se sabe o que publicar. Um software para este cliente tinha de parecer premium sem parecer complicado.",
+      "decision": "Promessa: ser o boss do teu negócio, não o empregado dele. Tom próximo e com atitude, visual contido. Cada produto escreve o nome como a marca-mãe, usa a sua cor e assina \"by Empower Boss\".",
       "identity": {
-        "line": "Identidade e produtos da Empower Boss.",
         "gallery": [
+          [
+            {
+              "src": "/images/portefolio/boss-wordmark-preto.webp",
+              "caption": "Logótipo",
+              "ratio": 1.5
+            },
+            {
+              "src": "/images/portefolio/boss-lockup.webp",
+              "caption": "Com slogan · Run it like one.",
+              "ratio": 1.093
+            },
+            {
+              "src": "/images/portefolio/boss-icone.webp",
+              "caption": "Ícone",
+              "ratio": 0.981
+            }
+          ],
+          [
+            {
+              "src": "/images/portefolio/big-boss.webp",
+              "caption": "Big Boss",
+              "ratio": 1.649
+            },
+            {
+              "src": "/images/portefolio/bussola.webp",
+              "caption": "Bússola",
+              "ratio": 1.651
+            }
+          ]
+        ],
+        "palette": [
           {
-            "src": "",
-            "caption": "Logótipo"
+            "name": "Preto Boss",
+            "hex": "#121212"
           },
           {
-            "src": "",
-            "caption": "Interface"
+            "name": "Papel",
+            "hex": "#f5f1ea"
           },
           {
-            "src": "",
-            "caption": "Produtos"
+            "name": "Dourado",
+            "hex": "#b8913a"
+          },
+          {
+            "name": "Grafite",
+            "hex": "#4a4642"
+          },
+          {
+            "name": "Roxo Big Boss",
+            "hex": "#30154c"
+          },
+          {
+            "name": "Norte Bússola",
+            "hex": "#1f5c5a"
           }
-        ]
+        ],
+        "type": [
+          {
+            "role": "Nomes da marca",
+            "font": "Bodoni Moda",
+            "css": "'Bodoni Moda', serif",
+            "weight": 900
+          },
+          {
+            "role": "Títulos",
+            "font": "Playfair Display",
+            "css": "'Playfair Display', serif",
+            "weight": 600
+          },
+          {
+            "role": "Texto",
+            "font": "Quicksand",
+            "css": "'Quicksand', sans-serif",
+            "weight": 500
+          }
+        ],
+        "line": "O ponto final. Quem manda é quem põe o ponto final: o ponto dourado fecha o nome, o símbolo e os títulos, uma vez por peça."
       }
     }
   ],
