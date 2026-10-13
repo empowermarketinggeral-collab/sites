@@ -164,6 +164,43 @@ const onColor = (hex: string) => {
   <section class="section" id="resultados">
     <div class="wrap">
       <SectionHead eyebrow={growth.eyebrow} title={growth.title} small />
+      <p class="body-lg muted reveal">{growth.text}</p>
+
+      <p class="eyebrow pf-sub reveal">Gestão de feed</p>
+      <ul class="pf-feeds">
+        {growth.feeds.map((f) => (
+          <li class="reveal">
+            <div class="pf-phone">
+              <div class="pf-screen">
+                <img class="pf-feed" src={f.src} alt={`Feed de Instagram · ${f.name}`} loading="lazy" decoding="async" />
+              </div>
+            </div>
+            <div class="pf-feed-text">
+              <h3 class="card-title">{f.name}</h3>
+              <p class="muted">{f.detail}</p>
+              {f.stat && <p class="pf-stat">{f.stat}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <p class="eyebrow pf-sub reveal">Produção de vídeo</p>
+      <ul class="pf-videos" aria-label="Vídeos produzidos">
+        {growth.videos.map((v) => (
+          <li class="reveal">
+            <div class="pf-video">
+              <video src={v.src} poster={v.poster} muted loop playsinline preload="none" aria-label={`${v.title}: ${v.text}`}></video>
+              <button type="button" class="pf-sound" aria-pressed="false" aria-label="Ligar o som">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" /><path class="on" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" /><path class="off" d="M16.5 9.5l5 5M21.5 9.5l-5 5" /></svg>
+              </button>
+            </div>
+            <h3 class="card-title pf-video-title">{v.title}</h3>
+            <p class="muted pf-video-text">{v.text}</p>
+          </li>
+        ))}
+      </ul>
+
+      <p class="eyebrow pf-sub reveal">Resultados</p>
       <div class="pf-growth">
         {growth.items.map((r) => (
           <a class="pf-result reveal" href={r.href}>
@@ -196,6 +233,31 @@ const onColor = (hex: string) => {
 </Base>
 
 <script>
+  // Vídeos: só descarregam e tocam (sem som) quando estão no ecrã; o botão liga o som de um de cada vez.
+  const videos = [...document.querySelectorAll<HTMLVideoElement>('.pf-video video')];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if ('IntersectionObserver' in window && !calm) {
+    const vio = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
+      }
+    }, { threshold: 0.4 });
+    videos.forEach((v) => vio.observe(v));
+  }
+  document.querySelectorAll<HTMLButtonElement>('.pf-sound').forEach((btn) => btn.addEventListener('click', () => {
+    const v = btn.parentElement!.querySelector('video')!;
+    const on = v.muted;
+    videos.forEach((o) => { o.muted = true; });
+    document.querySelectorAll('.pf-sound').forEach((b) => { b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', 'Ligar o som'); });
+    if (on) {
+      v.muted = false;
+      v.play().catch(() => {});
+      btn.setAttribute('aria-pressed', 'true');
+      btn.setAttribute('aria-label', 'Desligar o som');
+    }
+  }));
+
   // Ecossistema: mostra o papel da marca escolhida.
   const nodes = document.querySelectorAll<HTMLButtonElement>('.pf-node');
   const panels = document.querySelectorAll<HTMLElement>('.pf-panel');
@@ -280,6 +342,31 @@ const onColor = (hex: string) => {
   blockquote.quote footer { margin-top: 1rem; }
 
   /* Resultados */
+  .pf-sub { margin: 3.5rem 0 0; }
+  /* Feeds dentro de um telemóvel */
+  .pf-feeds { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.2rem; }
+  .pf-feeds > li { display: grid; grid-template-columns: auto 1fr; gap: 1.6rem; align-items: center; }
+  .pf-phone { width: clamp(200px, 22vw, 270px); padding: 9px; border-radius: 38px; background: #0b0a0e; border: 1px solid rgba(184,156,224,.25); box-shadow: 0 30px 60px rgba(0,0,0,.45); }
+  .pf-screen { aspect-ratio: 9 / 18; border-radius: 30px; overflow: hidden; background: #000; }
+  .pf-feed { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .pf-feed-text { display: grid; gap: .6rem; min-width: 0; }
+  .pf-feed-text .card-title, .pf-feed-text p { margin: 0; }
+  .pf-stat { justify-self: start; border: 1px solid var(--lilac); color: var(--lilac); border-radius: 99px; padding: .3rem .9rem; font-size: .9rem; }
+
+  /* Vídeos verticais */
+  .pf-videos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 1.2rem 0 1rem; }
+  .pf-videos > li { display: grid; gap: .5rem; align-content: start; min-width: 0; }
+  .pf-video { position: relative; aspect-ratio: 9 / 16; border-radius: var(--radius); overflow: hidden; background: #000; border: 1px solid rgba(184,156,224,.18); }
+  .pf-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pf-sound { position: absolute; right: .8rem; bottom: .8rem; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 0; background: rgba(17,17,20,.7); color: var(--paper); display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(6px); }
+  .pf-sound svg { width: 1.2rem; height: 1.2rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .pf-sound svg path:first-child { fill: currentColor; }
+  .pf-sound .on, .pf-sound[aria-pressed='true'] .off { display: none; }
+  .pf-sound[aria-pressed='true'] .on { display: inline; }
+  .pf-sound:focus-visible { outline: 2px solid var(--lilac); outline-offset: 3px; }
+  .pf-video-title { font-size: 1.35rem; margin: .4rem 0 0; }
+  .pf-video-text { margin: 0; font-size: 1rem; }
+
   .pf-growth { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   .pf-result { display: flex; flex-direction: column; gap: .6rem; text-decoration: none; background: var(--paper); color: var(--ink); border-radius: var(--radius) 0 var(--radius) var(--radius); padding: clamp(1.6rem, 4vw, 2.6rem); transition: transform .25s ease, box-shadow .25s ease; }
   .pf-result:hover, .pf-result:focus-visible { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,.4); }
@@ -296,12 +383,20 @@ const onColor = (hex: string) => {
     .pf-proof { grid-template-columns: 1fr 1fr; }
     .pf-method { grid-template-columns: 1fr 1fr; }
     .pf-brief, .pf-eco, .pf-growth, .pf-closing { grid-template-columns: 1fr; }
+    .pf-feeds { grid-template-columns: 1fr; gap: 3rem; }
+    .pf-phone { width: min(270px, 62vw); }
     /* 3 por linha; a última linha estica para não deixar buracos. */
     .pf-palette li { flex-basis: 28%; min-height: 5.5rem; }
     .pf-type { grid-template-columns: 1fr; }
   }
   @media (max-width: 560px) {
     .pf-method { grid-template-columns: 1fr; }
+    /* Feed: telemóvel ao centro, texto por baixo. Vídeos: deslizam para o lado. */
+    .pf-feeds > li { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .pf-feed-text { justify-items: center; }
+    .pf-stat { justify-self: center; }
+    .pf-videos { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1rem; padding-bottom: .6rem; scrollbar-width: thin; }
+    .pf-videos > li { flex: 0 0 72%; scroll-snap-align: start; }
     /* No telemóvel: a primeira imagem de cada linha ocupa a largura toda, as outras partilham a linha seguinte. */
     .pf-row { flex-wrap: wrap; gap: .8rem; }
     .pf-row li:first-child { flex-basis: 100%; }
