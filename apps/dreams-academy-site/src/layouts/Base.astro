@@ -15,10 +15,12 @@ import site from '../data/site.json';
 
 // landing: páginas de venda de produto — cabeçalho só com o logótipo, para não desviar do checkout.
 // noindex: páginas que não devem aparecer no Google.
+// tema: "negocio" pinta a área de Marketing & Negócio de roxo (ligação à Beatriz Melo / Empower);
+//   cabeçalho, rodapé, dourado e letras ficam iguais ao resto do site.
 // fabric: a página abre com o tecido de fundo (pré-carregado, é a maior imagem do topo).
 // schema: dados estruturados extra (Curso, FAQ…) para o Google perceber o conteúdo.
-interface Props { title?: string; description?: string; landing?: boolean; noindex?: boolean; fabric?: boolean; schema?: Record<string, unknown>[] }
-const { title = site.meta.title, description = site.meta.description, landing = false, noindex = false, fabric = true, schema = [] } = Astro.props;
+interface Props { title?: string; description?: string; landing?: boolean; noindex?: boolean; fabric?: boolean; schema?: Record<string, unknown>[]; tema?: 'negocio' }
+const { title = site.meta.title, description = site.meta.description, landing = false, noindex = false, fabric = true, schema = [], tema } = Astro.props;
 // No build o caminho vem como /tecnicadecabelos.html; o endereço público é /tecnicadecabelos.
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
 const canonical = new URL(path, site.meta.url).href;
@@ -63,11 +65,11 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [org, { '@type': 'W
     <meta name="twitter:description" content={description} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
-    {fabric && <link rel="preload" as="image" href="/images/tecido.webp" type="image/webp" fetchpriority="high" />}
+    {fabric && <link rel="preload" as="image" href={tema === 'negocio' ? '/images/tecido-roxo.webp' : '/images/tecido.webp'} type="image/webp" fetchpriority="high" />}
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     {site.analytics.hubUrl && <script is:inline defer src={`${site.analytics.hubUrl}/t.js`} data-site={site.analytics.siteId}></script>}
   </head>
-  <body>
+  <body class:list={[tema && `tema-${tema}`]}>
     <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
     {landing
       ? <header class="topbar topbar-landing"><a href="/" class="brand"><Logo /></a></header>
