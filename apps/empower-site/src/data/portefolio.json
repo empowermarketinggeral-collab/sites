@@ -7,24 +7,76 @@
     "eyebrow": "Portefólio · Trabalho selecionado",
     "title": "Marcas construídas para ocupar posição.",
     "text": "Estratégia, identidade e ecossistema primeiro. Redes sociais e tráfego pago depois, quando já existe uma marca que merece ser amplificada. É assim em todos os projetos, incluindo o nosso.",
-    "primaryCta": { "label": "Ver os projetos", "href": "#projetos" },
-    "secondaryCta": { "label": "Agendar sessão de alinhamento", "href": "booking" }
+    "primaryCta": {
+      "label": "Ver os projetos",
+      "href": "#projetos"
+    },
+    "secondaryCta": {
+      "label": "Agendar sessão de alinhamento",
+      "href": "booking"
+    }
   },
   "proof": [
-    { "value": "+125k", "label": "visualizações em 30 dias numa clínica de estética" },
-    { "value": "19,2k", "label": "views orgânicas num só vídeo" },
-    { "value": "14", "label": "áreas de serviço numa só arquitetura" },
-    { "value": "3", "label": "marcas no nosso próprio ecossistema" }
+    {
+      "value": "+125k",
+      "label": "visualizações em 30 dias numa clínica de estética"
+    },
+    {
+      "value": "19,2k",
+      "label": "views orgânicas num só vídeo"
+    },
+    {
+      "value": "14",
+      "label": "áreas de serviço numa só arquitetura"
+    },
+    {
+      "value": "3",
+      "label": "marcas no nosso próprio ecossistema"
+    }
   ],
   "method": {
     "eyebrow": "Como fazemos",
     "title": "A mesma ordem, em todos os projetos.",
     "text": "Começar pelos anúncios é acelerar sem direção. Cada fase só começa quando a anterior está sólida.",
     "phases": [
-      { "title": "Estratégia digital", "text": "Onde a marca compete, contra quem e para quem.", "deliverables": ["Estudo de mercado", "Posicionamento", "Cliente ideal", "Roadmap"] },
-      { "title": "Criação de marca", "text": "A perceção que o mercado tem de ti quando não estás na sala.", "deliverables": ["Identidade verbal", "Identidade visual", "Guidelines"] },
-      { "title": "Ecossistema", "text": "As peças que levam uma pessoa de desconhecida a cliente.", "deliverables": ["Landing pages", "CRM", "Automações", "Email marketing"] },
-      { "title": "Redes sociais e tráfego pago", "text": "Amplificar o que já provou funcionar.", "deliverables": ["Conteúdo e vídeo", "Tráfego pago", "Captação de leads"] }
+      {
+        "title": "Estratégia digital",
+        "text": "Onde a marca compete, contra quem e para quem.",
+        "deliverables": [
+          "Estudo de mercado",
+          "Posicionamento",
+          "Cliente ideal",
+          "Roadmap"
+        ]
+      },
+      {
+        "title": "Criação de marca",
+        "text": "A perceção que o mercado tem de ti quando não estás na sala.",
+        "deliverables": [
+          "Identidade verbal",
+          "Identidade visual",
+          "Guidelines"
+        ]
+      },
+      {
+        "title": "Ecossistema",
+        "text": "As peças que levam uma pessoa de desconhecida a cliente.",
+        "deliverables": [
+          "Landing pages",
+          "CRM",
+          "Automações",
+          "Email marketing"
+        ]
+      },
+      {
+        "title": "Redes sociais e tráfego pago",
+        "text": "Amplificar o que já provou funcionar.",
+        "deliverables": [
+          "Conteúdo e vídeo",
+          "Tráfego pago",
+          "Captação de leads"
+        ]
+      }
     ]
   },
   "projects": [
@@ -32,31 +84,80 @@
       "id": "empower",
       "name": "Ecossistema Empower",
       "client": "Bia Melo · Empower Marketing · Empower Boss",
-      "scope": ["Estratégia", "Criação de marca", "Ecossistema"],
+      "scope": [
+        "Estratégia",
+        "Criação de marca",
+        "Ecossistema"
+      ],
       "summary": "O caso que aplicámos a nós próprios: separar uma pessoa, uma consultora e um software, cada um com uma só função, ligados pelo mesmo sistema.",
       "challenge": "A Empower estava a ser comparada com agências de posts. Muito conteúdo, pouca captação, e nenhum caminho claro entre ver um vídeo e marcar uma reunião.",
       "decision": "Sair da categoria de agência e ocupar a de consultora de crescimento estratégico, com preço fechado. Dividir o negócio em três marcas que não fazem o trabalho umas das outras.",
       "identity": {
         "logo": "/images/logo-300.png",
         "palette": [
-          { "name": "Tinta", "hex": "#111114" },
-          { "name": "Ameixa", "hex": "#2a1540" },
-          { "name": "Violeta", "hex": "#3a1d5c" },
-          { "name": "Lilás", "hex": "#b89ce0" },
-          { "name": "Papel", "hex": "#f2eff5" }
+          {
+            "name": "Tinta",
+            "hex": "#111114"
+          },
+          {
+            "name": "Ameixa",
+            "hex": "#2a1540"
+          },
+          {
+            "name": "Violeta",
+            "hex": "#3a1d5c"
+          },
+          {
+            "name": "Lilás",
+            "hex": "#b89ce0"
+          },
+          {
+            "name": "Papel",
+            "hex": "#f2eff5"
+          }
         ],
         "type": [
-          { "role": "Títulos", "font": "Gloock", "css": "var(--font-display)" },
-          { "role": "Destaques", "font": "Cormorant Garamond", "css": "var(--font-serif)" },
-          { "role": "Texto", "font": "Josefin Sans", "css": "var(--font-sans)" }
+          {
+            "role": "Títulos",
+            "font": "Gloock",
+            "css": "var(--font-display)"
+          },
+          {
+            "role": "Destaques",
+            "font": "Cormorant Garamond",
+            "css": "var(--font-serif)"
+          },
+          {
+            "role": "Texto",
+            "font": "Josefin Sans",
+            "css": "var(--font-sans)"
+          }
         ],
         "line": "Primeiro a estratégia, depois a estética."
       },
       "ecosystem": {
         "nodes": [
-          { "id": "bia", "name": "Bia Melo", "role": "Estratega e formadora", "job": "Atrair", "text": "A marca pessoal. Ensina, mostra bastidores e dá a cara. É onde nasce a confiança: as pessoas seguem pessoas antes de contratarem empresas." },
-          { "id": "empower", "name": "Empower Marketing", "role": "Consultora", "job": "Converter", "text": "Transforma a confiança em projetos: Mapa de Crescimento, branding, conteúdo e tráfego, com equipa dedicada e preço fechado." },
-          { "id": "boss", "name": "Empower Boss", "role": "Software", "job": "Reter e medir", "text": "O sistema por trás de tudo: CRM, agendamentos, automações e métricas. Cada lead, venha da Bia ou dos sites da Empower, entra aqui." }
+          {
+            "id": "bia",
+            "name": "Bia Melo",
+            "role": "Estratega e formadora",
+            "job": "Atrair",
+            "text": "A marca pessoal. Ensina, mostra bastidores e dá a cara. É onde nasce a confiança: as pessoas seguem pessoas antes de contratarem empresas."
+          },
+          {
+            "id": "empower",
+            "name": "Empower Marketing",
+            "role": "Consultora",
+            "job": "Converter",
+            "text": "Transforma a confiança em projetos: Mapa de Crescimento, branding, conteúdo e tráfego, com equipa dedicada e preço fechado."
+          },
+          {
+            "id": "boss",
+            "name": "Empower Boss",
+            "role": "Software",
+            "job": "Reter e medir",
+            "text": "O sistema por trás de tudo: CRM, agendamentos, automações e métricas. Cada lead, venha da Bia ou dos sites da Empower, entra aqui."
+          }
         ]
       }
     },
@@ -64,39 +165,140 @@
       "id": "dreams",
       "name": "Dreams Academy",
       "client": "Academia de formação em estética",
-      "scope": ["Estratégia", "Rebranding", "Identidade visual"],
+      "scope": [
+        "Estratégia",
+        "Rebranding",
+        "Identidade visual"
+      ],
       "summary": "De escola de cursos a academia premium de formação de beleza. Num mercado inteiro minimalista, a decisão foi ser o oposto.",
       "challenge": "Conhecimento de topo, um logótipo placeholder e uma marca que não sustentava um ticket médio elevado. A fundadora tinha de explicar o preço em cada venda.",
       "decision": "Mudar de categoria: formação 360º (técnica, gestão e marketing pessoal) e um inimigo claro, os cursos superficiais que mantêm profissionais mal pagas.",
       "identity": {
         "palette": [
-          { "name": "Azul marinho", "hex": "#1b2550" },
-          { "name": "Periwinkle", "hex": "#9ea9e0" },
-          { "name": "Dourado", "hex": "#c9a54a" }
+          {
+            "name": "Azul marinho",
+            "hex": "#05204e"
+          },
+          {
+            "name": "Azul ardósia",
+            "hex": "#7085ab"
+          },
+          {
+            "name": "Dourado",
+            "hex": "#b89a58"
+          },
+          {
+            "name": "Dourado claro",
+            "hex": "#e6cf94"
+          },
+          {
+            "name": "Marfim",
+            "hex": "#f7f4ee"
+          }
         ],
-        "line": "Um espelho ornamental dourado, em estilo rococó, a emoldurar o monograma.",
+        "type": [
+          {
+            "role": "Logótipo",
+            "font": "Cinzel",
+            "css": "'Cinzel', serif"
+          },
+          {
+            "role": "Títulos",
+            "font": "Playfair Display",
+            "css": "'Playfair Display', serif"
+          },
+          {
+            "role": "Texto",
+            "font": "Montserrat",
+            "css": "'Montserrat', sans-serif"
+          }
+        ],
+        "line": "Um espelho ornamental dourado, em estilo rococó, a emoldurar o monograma. A marca parece ter décadas de história.",
         "gallery": [
-          { "src": "", "caption": "Logótipo · espelho e monograma" },
-          { "src": "", "caption": "Aplicação no Instagram" },
-          { "src": "", "caption": "Papelaria e certificados" }
+          {
+            "src": "/images/portefolio/dreams-logo.webp",
+            "caption": "Logótipo completo"
+          },
+          {
+            "src": "/images/portefolio/dreams-espelho.webp",
+            "caption": "Símbolo · espelho e monograma"
+          },
+          {
+            "src": "/images/portefolio/dreams-aplicacao.webp",
+            "caption": "Aplicação · site e partilha"
+          }
         ]
       },
       "compare": [
-        { "label": "Categoria", "before": "Escola de cursos", "after": "Academia premium de formação de beleza" },
-        { "label": "Logótipo", "before": "Placeholder", "after": "Espelho ornamental dourado" },
-        { "label": "Venda", "before": "A fundadora explicava o preço", "after": "A marca faz a pré-venda" }
+        {
+          "label": "Categoria",
+          "before": "Escola de cursos",
+          "after": "Academia premium de formação de beleza"
+        },
+        {
+          "label": "Logótipo",
+          "before": "Placeholder",
+          "after": "Espelho rococó dourado com monograma"
+        },
+        {
+          "label": "Venda",
+          "before": "A fundadora explicava o preço",
+          "after": "A marca faz a pré-venda"
+        }
       ],
       "quote": "É completamente diferente de tudo o que eu vi, nem conseguiria imaginar isto.",
       "quoteBy": "Fundadora da Dreams Academy",
       "link": "/insights/dreams-academy-rebranding"
+    },
+    {
+      "id": "empower-boss",
+      "name": "Empower Boss",
+      "client": "Software da Empower",
+      "scope": [
+        "Naming",
+        "Identidade visual",
+        "Produto digital"
+      ],
+      "summary": "A marca do software que sustenta o ecossistema: CRM, agendamentos, automações e métricas, com uma identidade própria, separada da consultora.",
+      "challenge": "Um produto técnico precisa de inspirar a mesma confiança que a consultora, sem se confundir com ela.",
+      "decision": "Dar ao software nome, identidade e produtos próprios, ligados à Empower pelo nome e separados pela função.",
+      "identity": {
+        "line": "Identidade e produtos da Empower Boss.",
+        "gallery": [
+          {
+            "src": "",
+            "caption": "Logótipo"
+          },
+          {
+            "src": "",
+            "caption": "Interface"
+          },
+          {
+            "src": "",
+            "caption": "Produtos"
+          }
+        ]
+      }
     }
   ],
   "growth": {
     "eyebrow": "Redes sociais e tráfego pago",
     "title": "Quando a base está pronta, os números aparecem.",
     "items": [
-      { "value": "+125k", "label": "visualizações em 30 dias", "name": "Clínica de estética", "text": "Auditoria do que já funcionava, frequência estratégica e tráfego pago como acelerador. Mais 148 seguidores no mês.", "href": "/insights/clinica-de-estetica-125k-views-instagram" },
-      { "value": "19,2k", "label": "views orgânicas num vídeo", "name": "Patrícia Melo · TikTok", "text": "De \"eu não sou de vídeos\" a um formato autêntico e sustentável, sem anúncios.", "href": "/insights/patricia-melo-tiktok" }
+      {
+        "value": "+125k",
+        "label": "visualizações em 30 dias",
+        "name": "Clínica de estética",
+        "text": "Auditoria do que já funcionava, frequência estratégica e tráfego pago como acelerador. Mais 148 seguidores no mês.",
+        "href": "/insights/clinica-de-estetica-125k-views-instagram"
+      },
+      {
+        "value": "19,2k",
+        "label": "views orgânicas num vídeo",
+        "name": "Patrícia Melo · TikTok",
+        "text": "De \"eu não sou de vídeos\" a um formato autêntico e sustentável, sem anúncios.",
+        "href": "/insights/patricia-melo-tiktok"
+      }
     ]
   },
   "closing": {
@@ -108,7 +310,13 @@
       "Aceitas questionar o modelo de negócio atual",
       "Procuras um projeto de 6 ou 12 meses, com preço fechado"
     ],
-    "primary": { "label": "Agendar sessão de alinhamento", "href": "booking" },
-    "secondary": { "label": "Começar pelo Mapa de Crescimento", "href": "/mapadecrescimento" }
+    "primary": {
+      "label": "Agendar sessão de alinhamento",
+      "href": "booking"
+    },
+    "secondary": {
+      "label": "Começar pelo Mapa de Crescimento",
+      "href": "/mapadecrescimento"
+    }
   }
 }
