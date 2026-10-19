@@ -423,3 +423,12 @@ a:focus-visible, .btn:focus-visible, button:focus-visible { outline: 2px solid v
 /* Na página inicial, o cartão do pilar II já mostra o roxo da área de negócio. */
 .pillar-negocio { background: linear-gradient(160deg, rgba(67, 32, 106, .85), rgba(28, 15, 46, .75)); border-color: rgba(184, 156, 224, .45); }
 .pillar-negocio .pillar-n { color: #b89ce0; }
+/* Formadora em cinza claro (cinza do manual de marca): evita três secções roxas seguidas
+   (solução → formadora → oferta) e mantém a alternância roxo / claro. */
+.tema-negocio .trainer { background: linear-gradient(160deg, #ececee 0%, #dcdce0 100%); color: var(--ink); }
+.tema-negocio .trainer .eyebrow { color: #7a5d24; }
+.tema-negocio .trainer .section-title { color: var(--navy); }
+.tema-negocio .trainer-role { color: var(--ink-muted); }
+.tema-negocio .trainer .quote { color: var(--navy-2); }
+.tema-negocio .trainer-facts li::before { color: #7a5d24; }
+.tema-negocio .trainer-mark { box-shadow: 0 25px 50px rgba(42, 21, 64, .25); }
