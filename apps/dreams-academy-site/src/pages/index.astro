@@ -55,7 +55,7 @@ const { hero, proof, principle, pillars, freebie } = home;
       <SectionHead eyebrow={pillars.eyebrow} title={pillars.title} accent={pillars.accent} center />
       <div class="pillars">
         {pillars.items.map((p) => (
-          <article class="pillar reveal">
+          <article class:list={['pillar reveal', p.tema && `pillar-${p.tema}`]}>
             <span class="display pillar-n">{p.number}</span>
             <h3 class="card-title">{p.title}</h3>
             <p>{p.text}</p>

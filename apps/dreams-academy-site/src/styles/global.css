@@ -393,3 +393,33 @@ a:focus-visible, .btn:focus-visible, button:focus-visible { outline: 2px solid v
   .btn { transition: none; }
 }
 .closing .title-line { margin-bottom: 2rem; }
+
+/* Área de Marketing & Negócio: roxo (ligação à Beatriz Melo / Empower Marketing).
+   Só o conteúdo muda; cabeçalho, rodapé, dourado, letras e espelho mantêm-se, para não desligar do resto do site. */
+.tema-negocio main {
+  --navy: #2a1540;
+  --navy-2: #43206a;
+  --navy-deep: #1c0f2e;
+  --ivory: #f6f2f8;
+  --ink: #1f1230;
+  --ink-muted: #5b4e69;
+  --text-muted: #cfc2de;
+  --lilac: #b89ce0;
+  background: var(--navy);
+}
+.tema-negocio .hero-fabric { background-image: url('/images/tecido-roxo.webp'); }
+.tema-negocio .hero-fabric::after { background: linear-gradient(180deg, var(--navy) 0%, rgba(42, 21, 64, .55) 45%, rgba(42, 21, 64, .85) 100%); }
+.tema-negocio .notice { background: rgba(28, 15, 46, .45); }
+.tema-negocio .faq details { background: rgba(28, 15, 46, .4); }
+.tema-negocio .pain-grid li, .tema-negocio .card, .tema-negocio .testimonial, .tema-negocio .module { border-color: rgba(42, 21, 64, .12); }
+.tema-negocio .eyebrow { color: var(--lilac); }
+.tema-negocio .section-light .eyebrow { color: #7a5d24; }
+.tema-negocio .program-cta .eyebrow { color: var(--gold); }
+/* O bloco do Programa (que junta os dois pilares) volta ao azul: é a ponte para o resto da academia. */
+.tema-negocio .program-cta {
+  --navy: #05204e; --navy-2: #0c2a66; --navy-deep: #03133a; --text-muted: #b9c3d8;
+  border-top-color: rgba(184, 154, 88, .45);
+}
+/* Na página inicial, o cartão do pilar II já mostra o roxo da área de negócio. */
+.pillar-negocio { background: linear-gradient(160deg, rgba(67, 32, 106, .85), rgba(28, 15, 46, .75)); border-color: rgba(184, 156, 224, .45); }
+.pillar-negocio .pillar-n { color: #b89ce0; }
