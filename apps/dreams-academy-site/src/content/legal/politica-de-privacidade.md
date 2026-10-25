@@ -1,6 +1,6 @@
 ---
 title: "Política de Privacidade"
-updated: "28 de setembro de 2026"
+updated: "25 de outubro de 2026"
 ---
 
 A sua privacidade é importante para nós.
@@ -8,6 +8,8 @@ A sua privacidade é importante para nós.
 ## 1. Dados Recolhidos
 
 Recolhemos dados como nome, email e informações necessárias para acesso aos produtos.
+
+As estatísticas de visitas ao site são medidas por uma ferramenta própria, sem cookies, com um identificador anónimo que muda todos os dias. Quando preenche um formulário, os dados que envia ficam associados à visita em que o fez (páginas vistas, origem da visita, cidade e tipo de dispositivo), para sabermos como chegou até nós e respondermos ao seu pedido. Estes dados ficam guardados nas nossas próprias ferramentas e são apagados a seu pedido.
 
 ## 2. Pagamentos
 

@@ -1,6 +1,6 @@
 ---
 title: "Política de Privacidade"
-updated: "28 de setembro de 2026"
+updated: "25 de outubro de 2026"
 ---
 
 A presente Política de Privacidade descreve como Beatriz Carneiro de Melo Francisco Malheiro, Empresária em Nome Individual, recolhe, utiliza e protege os dados pessoais dos utilizadores que acedem e utilizam este website e os seus serviços.
@@ -40,6 +40,8 @@ Podemos recolher e tratar as seguintes categorias de dados pessoais, consoante a
 - Páginas visitadas
 - Duração da visita
 - Cookies e identificadores online
+
+As estatísticas de visitas são medidas por uma ferramenta própria, sem cookies, com um identificador anónimo que muda todos os dias. Quando preenche um formulário, os dados que envia ficam associados à visita em que o fez (páginas vistas, origem da visita, cidade e tipo de dispositivo), para sabermos como chegou até nós e respondermos ao seu pedido. Estes dados ficam guardados nas nossas próprias ferramentas e são apagados a seu pedido.
 
 ### d) Dados de Comunicação
 
