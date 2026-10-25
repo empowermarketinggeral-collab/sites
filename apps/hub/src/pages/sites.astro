@@ -38,6 +38,7 @@ const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" da
         <div class="head" style="margin:0">
           <h2 class="card-title" style="margin:0">{s.name}</h2>
           <div>
+            <a href={`/leads?site=${s.id}`}>Leads</a> ·
             <a href={`/analytics?site=${s.id}`}>Análises</a> ·
             <a href={`?edit=${s.id}`}>Editar</a>
             <form method="post" style="display:inline"><input type="hidden" name="id" value={s.id} /><button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este site? As métricas ficam guardadas.')">Apagar</button></form>
@@ -56,6 +57,9 @@ const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" da
           <summary>Código de tracking</summary>
           <p class="muted">Cola antes de <code>&lt;/head&gt;</code>. Para medir conversões, junta <code>data-track="lead"</code> ao botão ou link de contacto.</p>
           <pre>{snippet(s.id)}</pre>
+          <p class="muted">Formulários: com este código no site, qualquer <code>&lt;form data-hub-form="newsletter"&gt;</code> passa a enviar para a página Leads (e para o Big Boss, se houver token).
+            Usa campos com <code>name="email"</code>, <code>name</code>, <code>phone</code>, <code>company</code>, <code>consent_email</code>; os outros ficam como respostas.
+            Opcional: <code>data-tags="newsletter:ativo"</code>, <code>data-success="Obrigado!"</code> ou <code>data-redirect="/obrigado"</code>.</p>
         </details>
       </section>
     ))}

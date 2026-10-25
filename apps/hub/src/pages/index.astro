@@ -4,6 +4,8 @@ import Delta from '../components/Delta.astro';
 import { daysUntil, list, type Client, type Domain, type Site } from '../lib/db';
 import { report } from '../lib/analytics';
 import { checkStatus } from '../lib/status';
+import { leadStats } from '../lib/backoffice';
+import { periods } from '../lib/analytics';
 
 const sites = await list<Site>('sites');
 const clients = await list<Client>('clients');
@@ -15,6 +17,7 @@ const cards = await Promise.all(
     client: clients.find((c) => c.id === site.client_id),
     status: await checkStatus(site.url),
     kpis: (await report(site.id, 30)).kpis,
+    leads: await leadStats(site.id, periods(30).current.from, periods(30).previous.from),
   })),
 );
 const total = (await report('all', 30)).kpis;
@@ -54,7 +57,7 @@ const nf = new Intl.NumberFormat('pt-PT');
     )}
 
     <div class="grid-3">
-      {cards.map(({ site, client, status, kpis }) => (
+      {cards.map(({ site, client, status, kpis, leads }) => (
         <section class="card">
           <h2 class="card-title">{site.name}</h2>
           <p style="margin:0 0 .6rem">
@@ -67,9 +70,10 @@ const nf = new Intl.NumberFormat('pt-PT');
               <tr><td class="muted">Sessões (30d)</td><td class="num">{nf.format(kpis.current.sessions)}</td><td class="num"><Delta current={kpis.current.sessions} previous={kpis.previous.sessions} /></td></tr>
               <tr><td class="muted">Visitantes</td><td class="num">{nf.format(kpis.current.visitors)}</td><td class="num"><Delta current={kpis.current.visitors} previous={kpis.previous.visitors} /></td></tr>
               <tr><td class="muted">Conversões</td><td class="num">{nf.format(kpis.current.conversions)}</td><td class="num"><Delta current={kpis.current.conversions} previous={kpis.previous.conversions} /></td></tr>
+              <tr><td class="muted">Leads</td><td class="num">{nf.format(leads.current.total)}</td><td class="num"><Delta current={leads.current.total} previous={leads.previous.total} /></td></tr>
             </tbody>
           </table>
-          <p style="margin:.6rem 0 0"><a href={`/analytics?site=${site.id}`}>Ver análises →</a></p>
+          <p style="margin:.6rem 0 0"><a href={`/leads?site=${site.id}`}>Ver leads →</a> &nbsp; <a href={`/analytics?site=${site.id}`}>Ver análises →</a></p>
         </section>
       ))}
     </div>

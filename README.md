@@ -16,6 +16,7 @@ Painel privado, no estilo das Análises da Shopify:
 - **Início** — sessões e conversões de todos os sites, estado (online/offline) de cada site, alertas de domínios a expirar.
 - **Análises** — por site ou todos juntos, 7/30/90 dias, sempre comparado com o período anterior:
   sessões ao longo do tempo, dispositivo, local (país · cidade), referenciador (canal · origem), redes sociais, canal, página de destino e funil de conversão.
+- **Leads** — o back-office de cada site: quem preencheu cada formulário (nome, email, telefone, empresa, respostas), se aceitou emails, de onde veio (canal, origem, campanha, cidade, dispositivo) e o percurso no site antes de enviar. Estado (novo, contactado, cliente, descartado) e notas por lead, procura, filtros por site/formulário/estado e exportação CSV. Mostra os leads que não chegaram ao Big Boss, com botão para reenviar.
 - **Sites** — registo de cada site e o código de tracking para colar no `<head>`.
 - **Clientes** e **Domínios** — contactos, notas, datas de expiração, ligação a cada site.
 
@@ -28,6 +29,12 @@ Os dados ficam na tua base de dados (Supabase), não em serviços de análise de
 - Outros eventos: `data-track="nome_do_evento"` ou `window.empowerTrack('nome_do_evento')`.
 - País/cidade vêm dos cabeçalhos do CDN/proxy (Cloudflare `cf-ipcountry`/`cf-ipcity`, Vercel, ou `x-country`/`x-city`). Sem CDN aparecem como "Desconhecido".
 - O hub só aceita eventos vindos do domínio registado para o site, ignora bots e limita pedidos por IP.
+
+### Formulários e leads
+
+- Todos os pedidos para `/api/lead?site=<id>` ficam guardados no hub (`hub.leads`) **antes** de seguirem para o Big Boss. Se o Big Boss falhar, o lead não se perde: aparece como "Falhou envio" e reenvia-se na ficha. Sem token do Big Boss para o site, fica só no hub e o site recebe "ok".
+- Formulário novo num site com o código de tracking: `<form data-hub-form="newsletter">` com campos `name`, `email`, `phone`, `company`, `consent_email`; os restantes campos aparecem como respostas. Opcional: `data-tags`, `data-success`, `data-redirect`, `data-error`. Conta também como conversão (`lead`).
+- O lead fica ligado à visita em que foi enviado (mesmo IP e browser no mesmo dia), por isso o hash da visita passa a estar associado a uma pessoa: refere isto na política de privacidade de cada site. "Apagar lead" remove os dados do hub (o contacto no Big Boss apaga-se lá).
 
 ### Correr localmente
 
