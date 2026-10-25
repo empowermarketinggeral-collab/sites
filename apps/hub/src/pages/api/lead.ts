@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { saveLead, setBigBossResult } from '../../lib/backoffice';
 import { postToBigBoss, tokenEnvKey } from '../../lib/leads';
 import { clientIp, originMatches, rateLimiter, siteFor } from '../../lib/sites';
 
@@ -7,6 +8,8 @@ import { clientIp, originMatches, rateLimiter, siteFor } from '../../lib/sites';
 //   BIGBOSS_LEAD_URL                 https://<projeto>.supabase.co/functions/v1/lead-intake
 //   LEAD_TOKEN_<ID_DO_SITE>          ex.: LEAD_TOKEN_EMPOWER_MARKETING
 // Só aceita pedidos vindos do domínio registado para o site no hub.
+// Cada lead fica guardado no back-office do hub (página Leads) antes de seguir
+// para o Big Boss; sem token configurado fica só no hub e o site recebe "ok".
 
 const MAX_BODY = 20_000;
 const limited = rateLimiter(10); // leads por minuto por IP
@@ -45,17 +48,40 @@ export const POST: APIRoute = async ({ request, url, clientAddress }) => {
   }
   if (!data || typeof data !== 'object' || Array.isArray(data)) return json({ error: 'bad_request' }, 400, headers);
 
+  const fields = data as Record<string, unknown>;
+  // Campo-armadilha preenchido = robô: responde ok sem guardar nem reencaminhar.
+  if (String(fields._honeypot ?? '').trim()) return json({ ok: true }, 200, headers);
+
+  const h = request.headers;
+  let leadId: string | null = null;
   try {
-    const r = await postToBigBoss(site.id, data);
+    leadId = await saveLead({
+      siteId: site.id,
+      data: fields,
+      ip: clientIp(h, clientAddress),
+      ua: h.get('user-agent') ?? '',
+      country: h.get('cf-ipcountry') ?? h.get('x-vercel-ip-country') ?? h.get('x-country') ?? '',
+      city: decodeURIComponent(h.get('cf-ipcity') ?? h.get('x-vercel-ip-city') ?? h.get('x-city') ?? ''),
+    });
+  } catch (err) {
+    console.error('api/lead: não foi possível guardar o lead no hub', err);
+  }
+  const remember = (status: number, error = '') => (leadId ? setBigBossResult(leadId, status, error).catch(() => {}) : undefined);
+
+  try {
+    const r = await postToBigBoss(site.id, fields);
     if (r.status === 0) {
+      if (leadId) return json({ ok: true, stored: true }, 200, headers);
       console.error(`api/lead: falta BIGBOSS_LEAD_URL ou ${tokenEnvKey(site.id)}`);
       return json({ error: 'not_configured' }, 503, headers);
     }
     const ok = r.status >= 200 && r.status < 300;
+    await remember(r.status, ok ? '' : r.body);
     if (!ok) console.error('api/lead: Big Boss respondeu', r.status, r.body);
     return json(ok ? { ok } : { error: `bigboss_${r.status}` }, ok ? 200 : 502, headers);
   } catch (err) {
     console.error('api/lead: falha ao contactar o Big Boss', err);
+    await remember(-1, (err as Error).message);
     return json({ error: 'upstream' }, 502, headers);
   }
 };

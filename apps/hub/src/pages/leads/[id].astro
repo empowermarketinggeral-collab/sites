@@ -1,0 +1,167 @@
+---
+import Hub from '../../layouts/Hub.astro';
+import { siteFor } from '../../lib/sites';
+import { postToBigBoss } from '../../lib/leads';
+import { STATUSES, bigBossState, deleteLead, historyOf, journey, leadById, setBigBossResult, statusLabel, updateLead } from '../../lib/backoffice';
+
+const lead = await leadById(Astro.params.id ?? '');
+if (!lead) return Astro.redirect('/leads', 303);
+
+let notice = '';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const action = String(form.get('_action') ?? '');
+  if (action === 'delete') {
+    await deleteLead(lead.id);
+    return Astro.redirect(`/leads?site=${encodeURIComponent(lead.site_id)}`, 303);
+  }
+  if (action === 'resend') {
+    try {
+      const r = await postToBigBoss(lead.site_id, JSON.parse(lead.payload));
+      const ok = r.status >= 200 && r.status < 300;
+      if (r.status !== 0) await setBigBossResult(lead.id, r.status, ok ? '' : r.body);
+      notice = r.status === 0 ? 'Este site ainda não tem token do Big Boss (ver Sites).' : ok ? 'Enviado para o Big Boss.' : `O Big Boss respondeu ${r.status}.`;
+    } catch (e) {
+      await setBigBossResult(lead.id, -1, (e as Error).message);
+      notice = 'Não foi possível contactar o Big Boss.';
+    }
+  } else {
+    await updateLead(lead.id, String(form.get('status') ?? lead.status), String(form.get('notes') ?? ''));
+    return Astro.redirect(Astro.url.pathname, 303);
+  }
+}
+
+const current = (await leadById(lead.id))!;
+const site = await siteFor(current.site_id);
+const [steps, history] = await Promise.all([journey(current), historyOf(current)]);
+const bb = bigBossState(current);
+
+let payload: Record<string, unknown> = {};
+try { payload = JSON.parse(current.payload); } catch { /* fica vazio */ }
+// Respostas do formulário: campos de topo que não estão já no cabeçalho + custom_fields.
+const SHOWN = new Set(['email', 'name', 'nome', 'full_name', 'first_name', 'last_name', 'phone', 'telefone', 'telemovel', 'whatsapp', 'company', 'empresa', 'brand', 'marca', 'source', 'form', 'tags', 'custom_fields', 'consent', 'consent_email']);
+const show = (v: unknown) => (v === true ? 'sim' : v === false ? 'não' : typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v ?? ''));
+const answers: [string, string][] = [
+  ...Object.entries(payload).filter(([k]) => !SHOWN.has(k)),
+  ...Object.entries((payload.custom_fields ?? {}) as Record<string, unknown>),
+].map(([k, v]) => [k.replace(/^cf_/, '').replace(/_/g, ' '), show(v)] as [string, string]).filter(([, v]) => v !== '');
+
+const full = new Intl.DateTimeFormat('pt-PT', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Lisbon' });
+const time = new Intl.DateTimeFormat('pt-PT', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Lisbon' });
+const short = new Intl.DateTimeFormat('pt-PT', { dateStyle: 'short', timeZone: 'Europe/Lisbon' });
+const title = current.name || current.email || current.phone || 'Lead';
+// Telemóvel sem indicativo (9 dígitos) assume Portugal.
+const digits = current.phone.replace(/^00/, '').replace(/[^\d]/g, '');
+const waNumber = digits.length === 9 ? `351${digits}` : digits;
+---
+<Hub title={title}>
+  <a slot="actions" class="chip" href={`/leads?site=${encodeURIComponent(current.site_id)}`}>Voltar aos leads</a>
+
+  <div class="stack">
+    {notice && <p class="card" role="status">{notice}</p>}
+
+    <div class="grid-3">
+      <section class="card">
+        <h2 class="card-title">Contacto</h2>
+        <dl>
+          {current.email && <><dt>Email</dt><dd><a href={`mailto:${current.email}`}>{current.email}</a></dd></>}
+          {current.phone && <><dt>Telefone</dt><dd><a href={`tel:${current.phone}`}>{current.phone}</a>{waNumber.length >= 11 && <> · <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp</a></>}</dd></>}
+          {current.company && <><dt>Empresa / marca</dt><dd>{current.company}</dd></>}
+          <dt>Aceitou emails</dt><dd>{current.consent_email ? 'Sim' : 'Não'}</dd>
+          {current.tags && <><dt>Tags</dt><dd>{current.tags}</dd></>}
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Pedido</h2>
+        <dl>
+          <dt>Site</dt><dd>{site?.name ?? current.site_id}</dd>
+          <dt>Formulário</dt><dd>{current.form}</dd>
+          <dt>Quando</dt><dd>{full.format(current.ts)}</dd>
+          <dt>Big Boss</dt>
+          <dd>
+            <span class={`pill ${bb.tone}`}>{bb.label}</span>
+            {current.bigboss_error && <span class="muted"> {current.bigboss_status > 0 ? current.bigboss_status : ''} {current.bigboss_error}</span>}
+          </dd>
+        </dl>
+        {bb.tone !== 'good' && (
+          <form method="post"><button name="_action" value="resend">Enviar para o Big Boss</button></form>
+        )}
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Seguimento</h2>
+        <form method="post" class="follow">
+          <label>Estado
+            <select name="status">{STATUSES.map((x) => <option value={x.id} selected={x.id === current.status}>{x.label}</option>)}</select>
+          </label>
+          <label>Notas <textarea name="notes" rows="4" placeholder="Ex.: liguei a 12/11, quer proposta em janeiro">{current.notes}</textarea></label>
+          <button>Guardar</button>
+        </form>
+      </section>
+    </div>
+
+    {answers.length > 0 && (
+      <section class="card">
+        <h2 class="card-title">Respostas do formulário</h2>
+        <div class="table-wrap"><table><tbody>{answers.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}</tbody></table></div>
+      </section>
+    )}
+
+    <div class="grid-3">
+      <section class="card">
+        <h2 class="card-title">De onde veio</h2>
+        {current.channel ? (
+          <dl>
+            <dt>Canal</dt><dd>{current.channel}</dd>
+            <dt>Origem</dt><dd>{current.source}</dd>
+            {current.utm_campaign && <><dt>Campanha</dt><dd>{current.utm_campaign}</dd></>}
+            <dt>Enviou na página</dt><dd><code>{current.page || '—'}</code></dd>
+            <dt>Local</dt><dd>{[current.city, current.country].filter(Boolean).join(', ') || 'Desconhecido'}</dd>
+            <dt>Dispositivo</dt><dd>{current.device}</dd>
+          </dl>
+        ) : (
+          <p class="muted">Sem visita associada: o site não tem o código de tracking nesta página, ou o pedido chegou de outro sítio.</p>
+        )}
+      </section>
+
+      <section class="card span-2">
+        <h2 class="card-title">Percurso no site antes de enviar</h2>
+        {steps.length === 0 ? <p class="muted">Sem páginas registadas nesta visita.</p> : (
+          <ol class="journey">
+            {steps.map((e) => (
+              <li class={e.name === 'pageview' ? '' : 'event'}>
+                <span class="muted">{time.format(e.ts)}</span>
+                {e.name === 'pageview' ? <code>{e.path}</code> : <span><strong>{e.name}</strong> <span class="muted">em</span> <code>{e.path}</code></span>}
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
+    </div>
+
+    {history.length > 0 && (
+      <section class="card">
+        <h2 class="card-title">Outros pedidos deste email</h2>
+        <ul>
+          {history.map((h) => <li><a href={`/leads/${h.id}`}>{short.format(h.ts)}</a> · {h.form} <span class="muted">({h.site_id}, {statusLabel(h.status)})</span></li>)}
+        </ul>
+      </section>
+    )}
+
+    <form method="post">
+      <button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este lead do hub? (Pedido de eliminação de dados. O contacto no Big Boss apaga-se lá.)')">Apagar lead</button>
+    </form>
+  </div>
+</Hub>
+
+<style>
+  dl { display: grid; grid-template-columns: auto 1fr; gap: .35rem .9rem; margin: 0 0 .8rem; }
+  dt { color: var(--muted); }
+  dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .follow { display: grid; gap: .7rem; }
+  th[scope='row'] { width: 30%; text-transform: capitalize; }
+  .journey { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+  .journey li { display: grid; grid-template-columns: 5.5rem 1fr; gap: .6rem; padding-left: .6rem; border-left: 2px solid var(--line); }
+  .journey li.event { border-left-color: var(--accent); }
+</style>

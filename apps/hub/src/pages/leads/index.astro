@@ -1,0 +1,126 @@
+---
+import Hub from '../../layouts/Hub.astro';
+import BarList from '../../components/BarList.astro';
+import Stat from '../../components/Stat.astro';
+import { list, type Site } from '../../lib/db';
+import { periods, report } from '../../lib/analytics';
+import { STATUSES, bigBossState, formsOf, leadStats, listLeads, statusLabel } from '../../lib/backoffice';
+
+const PERIODS = [
+  { days: 7, label: 'Últimos 7 dias' },
+  { days: 30, label: 'Últimos 30 dias' },
+  { days: 90, label: 'Últimos 90 dias' },
+  { days: 365, label: 'Último ano' },
+];
+const sites = await list<Site>('sites');
+const q = Astro.url.searchParams;
+const days = PERIODS.find((p) => p.days === Number(q.get('days')))?.days ?? 30;
+const siteId = sites.some((s) => s.id === q.get('site')) ? q.get('site')! : 'all';
+const forms = await formsOf(siteId);
+const form = forms.includes(q.get('form') ?? '') ? q.get('form')! : '';
+const status = STATUSES.some((s) => s.id === q.get('status')) ? q.get('status')! : '';
+const search = (q.get('q') ?? '').trim().slice(0, 100);
+
+const p = periods(days);
+const [leads, stats, visits] = await Promise.all([
+  listLeads({ siteId, form, status, q: search, from: p.current.from }),
+  leadStats(siteId, p.current.from, p.previous.from),
+  report(siteId, days),
+]);
+const { current: s, previous: sp } = stats;
+const sessions = visits.kpis.current.sessions;
+const prevSessions = visits.kpis.previous.sessions;
+const rate = (n: number, d: number) => (d ? (n / d) * 100 : 0);
+
+const siteName = (id: string) => sites.find((x) => x.id === id)?.name ?? id;
+const nf = new Intl.NumberFormat('pt-PT');
+const pct = (v: number) => `${v.toFixed(1).replace('.', ',')}%`;
+const when = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon' });
+const exportQuery = new URLSearchParams({ site: siteId, days: String(days), ...(form && { form }), ...(status && { status }), ...(search && { q: search }) });
+const tab = (id: string) => `?${new URLSearchParams({ site: id, days: String(days) })}`;
+---
+<Hub title="Leads">
+  <a slot="actions" class="chip" href={`/leads/export?${exportQuery}`} download>Exportar CSV</a>
+
+  <div class="stack">
+    <nav class="tabs" aria-label="Site">
+      <a href={tab('all')} aria-current={siteId === 'all' ? 'page' : undefined}>Todos os sites</a>
+      {sites.map((x) => <a href={tab(x.id)} aria-current={siteId === x.id ? 'page' : undefined}>{x.name}</a>)}
+    </nav>
+
+    <form class="filters" method="get">
+      <input type="hidden" name="site" value={siteId} />
+      <select name="days" aria-label="Período" onchange="this.form.submit()">
+        {PERIODS.map((x) => <option value={x.days} selected={x.days === days}>{x.label}</option>)}
+      </select>
+      <select name="form" aria-label="Formulário" onchange="this.form.submit()">
+        <option value="">Todos os formulários</option>
+        {forms.map((f) => <option value={f} selected={f === form}>{f}</option>)}
+      </select>
+      <select name="status" aria-label="Estado" onchange="this.form.submit()">
+        <option value="">Todos os estados</option>
+        {STATUSES.map((x) => <option value={x.id} selected={x.id === status}>{x.label}</option>)}
+      </select>
+      <input type="search" name="q" value={search} placeholder="Procurar nome, email, empresa…" aria-label="Procurar" />
+      <button class="ghost">Procurar</button>
+    </form>
+
+    <div class="grid-stats">
+      <Stat label="Leads" value={nf.format(s.total)} current={s.total} previous={sp.total} />
+      <Stat label="Pessoas (emails únicos)" value={nf.format(s.unique)} current={s.unique} previous={sp.unique} />
+      <Stat label="Aceitaram emails" value={nf.format(s.consent)} current={s.consent} previous={sp.consent} />
+      <Stat label="Leads por 100 sessões" value={pct(rate(s.total, sessions))} current={rate(s.total, sessions)} previous={rate(sp.total, prevSessions)} />
+      {s.failed > 0 && <div class="card stat"><span class="muted">Não chegaram ao Big Boss</span><b style="color:var(--bad)">{s.failed}</b><span class="muted">abre o lead para reenviar</span></div>}
+    </div>
+
+    <div class="grid-3">
+      <BarList title="Leads por formulário" rows={s.byForm} empty="Ainda sem leads neste período." />
+      <section class="card span-2" id="lista">
+        <h2 class="card-title">{leads.length === 500 ? 'Últimos 500 leads' : `${nf.format(leads.length)} ${leads.length === 1 ? 'lead' : 'leads'}`}</h2>
+        {leads.length === 0 ? (
+          <p class="muted">
+            Ainda sem leads com estes filtros. Os formulários dos sites que enviam para <code>/api/lead</code> aparecem aqui.
+            Para um formulário novo basta <code>data-hub-form="nome"</code> (ver Sites → Código de tracking).
+          </p>
+        ) : (
+          <div class="table-wrap">
+            <table class="leads">
+              <thead><tr><th>Quando</th><th>Pessoa</th><th>Formulário</th><th>Veio de</th><th>Estado</th></tr></thead>
+              <tbody>
+                {leads.map((l) => {
+                  const bb = bigBossState(l);
+                  return (
+                    <tr>
+                      <td class="nowrap"><a href={`/leads/${l.id}`}>{when.format(l.ts)}</a></td>
+                      <td>
+                        <a href={`/leads/${l.id}`}><strong>{l.name || l.email || l.phone || 'Sem nome'}</strong></a>
+                        <br /><span class="muted">{[l.email, l.company].filter(Boolean).join(' · ')}</span>
+                      </td>
+                      <td>{l.form}{siteId === 'all' && <><br /><span class="muted">{siteName(l.site_id)}</span></>}</td>
+                      <td>{l.channel ? <>{l.channel}<br /><span class="muted">{l.source}{l.utm_campaign && ` · ${l.utm_campaign}`}</span></> : <span class="muted">Sem visita</span>}</td>
+                      <td>
+                        <span class="pill">{statusLabel(l.status)}</span>
+                        {bb.tone !== 'good' && <><br /><span class={`pill ${bb.tone}`} title="Envio para o Big Boss">{bb.label}</span></>}
+                        {l.consent_email ? <><br /><span class="pill good">Aceitou emails</span></> : null}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  </div>
+</Hub>
+
+<style>
+  .tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .tabs a { padding: .4rem .8rem; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
+  .tabs a[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .filters input[type='search'] { min-width: min(260px, 100%); background: var(--surface); }
+  table.leads td { font-size: .9rem; }
+  table.leads .pill { margin-top: .15rem; }
+  .nowrap { white-space: nowrap; }
+</style>

@@ -1,7 +1,7 @@
 // Partilhado entre a app e os scripts (ex.: seed-demo). Uma instrução por item.
 // Tudo fica no schema privado "hub" (a API pública do Supabase só expõe "public"),
 // e com RLS ativo sem políticas: só a ligação direta da app consegue ler/escrever.
-const TABLES = ['sites', 'clients', 'domains', 'events', 'login_attempts'];
+const TABLES = ['sites', 'clients', 'domains', 'events', 'leads', 'login_attempts'];
 
 export const SCHEMA = [
   `CREATE SCHEMA IF NOT EXISTS hub`,
@@ -36,6 +36,38 @@ export const SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS events_site_ts ON hub.events (site_id, ts)`,
   `CREATE INDEX IF NOT EXISTS events_visitor ON hub.events (visitor_id, ts)`,
+  // Back-office: cada pedido de um formulário dos sites (guardado mesmo que o Big Boss falhe).
+  // session_id/visitor_id ligam o lead às visitas (mesmo hash diário do tracking).
+  // bigboss_status: código HTTP da resposta; 0 = sem token configurado; -1 = sem ligação.
+  `CREATE TABLE IF NOT EXISTS hub.leads (
+    id TEXT PRIMARY KEY,
+    site_id TEXT NOT NULL,
+    ts DOUBLE PRECISION NOT NULL,
+    updated_ts DOUBLE PRECISION NOT NULL,
+    form TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    name TEXT NOT NULL DEFAULT '',
+    phone TEXT NOT NULL DEFAULT '',
+    company TEXT NOT NULL DEFAULT '',
+    tags TEXT NOT NULL DEFAULT '',
+    consent_email INTEGER NOT NULL DEFAULT 0,
+    payload TEXT NOT NULL DEFAULT '{}',
+    session_id TEXT NOT NULL DEFAULT '',
+    visitor_id TEXT NOT NULL DEFAULT '',
+    page TEXT NOT NULL DEFAULT '',
+    channel TEXT NOT NULL DEFAULT '',
+    source TEXT NOT NULL DEFAULT '',
+    utm_campaign TEXT NOT NULL DEFAULT '',
+    country TEXT NOT NULL DEFAULT '',
+    city TEXT NOT NULL DEFAULT '',
+    device TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'novo',
+    notes TEXT NOT NULL DEFAULT '',
+    bigboss_status INTEGER NOT NULL DEFAULT 0,
+    bigboss_error TEXT NOT NULL DEFAULT ''
+  )`,
+  `CREATE INDEX IF NOT EXISTS leads_site_ts ON hub.leads (site_id, ts)`,
+  `CREATE INDEX IF NOT EXISTS leads_email ON hub.leads (site_id, email)`,
   `CREATE TABLE IF NOT EXISTS hub.login_attempts (
     ip TEXT PRIMARY KEY, count INTEGER NOT NULL, until DOUBLE PRECISION NOT NULL
   )`,

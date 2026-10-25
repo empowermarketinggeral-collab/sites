@@ -5,6 +5,7 @@ const path = Astro.url.pathname;
 const links = [
   { href: '/', label: 'Início', icon: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z' },
   { href: '/analytics', label: 'Análises', icon: 'M5 20V10M12 20V4M19 20v-7' },
+  { href: '/leads', label: 'Leads', icon: 'M4 6h16v12H4zM4 7l8 6 8-6' },
   { href: '/sites', label: 'Sites', icon: 'M3 5h18v14H3zM3 9h18' },
   { href: '/clients', label: 'Clientes', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0' },
   { href: '/domains', label: 'Domínios', icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18' },
@@ -24,7 +25,7 @@ const links = [
       <a href="/" class="brand"><span aria-hidden="true">✦</span> Empower Hub</a>
       <nav aria-label="Principal">
         {links.map((l) => (
-          <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>
+          <a href={l.href} aria-current={path === l.href || (l.href !== '/' && path.startsWith(`${l.href}/`)) ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d={l.icon} /></svg>{l.label}
           </a>
         ))}
