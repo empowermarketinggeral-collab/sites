@@ -111,6 +111,7 @@
     "googleAnalyticsId": "",
     "googleAdsId": "",
     "googleAdsLeadLabel": "",
-    "metaPixelId": ""
+    "metaPixelId": "",
+    "clarityId": ""
   }
 }

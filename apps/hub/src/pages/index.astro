@@ -5,6 +5,7 @@ import { daysUntil, list, type Client, type Domain, type Site } from '../lib/db'
 import { report } from '../lib/analytics';
 import { checkStatus } from '../lib/status';
 import { leadStats } from '../lib/backoffice';
+import { money, salesStats, syncSales } from '../lib/sales';
 import { periods } from '../lib/analytics';
 
 const sites = await list<Site>('sites');
@@ -18,6 +19,7 @@ const cards = await Promise.all(
     status: await checkStatus(site.url),
     kpis: (await report(site.id, 30)).kpis,
     leads: await leadStats(site.id, periods(30).current.from, periods(30).previous.from),
+    sales: site.bigboss_brand_id && (await syncSales(site)) === null ? await salesStats(site.id, periods(30).current.from, periods(30).previous.from) : null,
   })),
 );
 const total = (await report('all', 30)).kpis;
@@ -57,7 +59,7 @@ const nf = new Intl.NumberFormat('pt-PT');
     )}
 
     <div class="grid-3">
-      {cards.map(({ site, client, status, kpis, leads }) => (
+      {cards.map(({ site, client, status, kpis, leads, sales }) => (
         <section class="card">
           <h2 class="card-title">{site.name}</h2>
           <p style="margin:0 0 .6rem">
@@ -71,6 +73,7 @@ const nf = new Intl.NumberFormat('pt-PT');
               <tr><td class="muted">Visitantes</td><td class="num">{nf.format(kpis.current.visitors)}</td><td class="num"><Delta current={kpis.current.visitors} previous={kpis.previous.visitors} /></td></tr>
               <tr><td class="muted">Conversões</td><td class="num">{nf.format(kpis.current.conversions)}</td><td class="num"><Delta current={kpis.current.conversions} previous={kpis.previous.conversions} /></td></tr>
               <tr><td class="muted">Leads</td><td class="num">{nf.format(leads.current.total)}</td><td class="num"><Delta current={leads.current.total} previous={leads.previous.total} /></td></tr>
+              {sales && <tr><td class="muted"><a href={`/vendas?site=${site.id}`}>Vendas</a></td><td class="num">{nf.format(sales.current.purchases)} · {money(sales.current.revenue, sales.current.currency)}</td><td class="num"><Delta current={sales.current.revenue} previous={sales.previous.revenue} /></td></tr>}
             </tbody>
           </table>
           <p style="margin:.6rem 0 0"><a href={`/leads?site=${site.id}`}>Ver leads →</a> &nbsp; <a href={`/analytics?site=${site.id}`}>Ver análises →</a></p>

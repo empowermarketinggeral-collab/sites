@@ -8,6 +8,8 @@ export interface Site {
   domain: string;
   repo: string;
   client_id: string;
+  bigboss_brand_id: string;
+  clarity_id: string;
 }
 
 export interface Client {
@@ -69,7 +71,7 @@ export async function run(sql: string, args: Value[] = []): Promise<void> {
 }
 
 const TABLES = {
-  sites: ['name', 'url', 'domain', 'repo', 'client_id'],
+  sites: ['name', 'url', 'domain', 'repo', 'client_id', 'bigboss_brand_id', 'clarity_id'],
   clients: ['name', 'company', 'email', 'phone', 'notes'],
   domains: ['name', 'registrar', 'expires_at', 'site_id', 'notes'],
 } as const;
@@ -86,6 +88,8 @@ export async function upsert(table: Table, form: FormData): Promise<void> {
   const values = fields.map((f) => String(form.get(f) ?? '').trim().slice(0, 2000));
   // Só guardamos URLs http(s): evita links javascript: no painel.
   if (table === 'sites' && !/^https?:\/\//i.test(values[fields.indexOf('url' as never)])) throw new Error('URL inválido');
+  if (table === 'sites' && !/^([0-9a-f-]{36})?$/i.test(values[fields.indexOf('bigboss_brand_id' as never)])) throw new Error('Id da marca no Big Boss inválido');
+  if (table === 'sites' && !/^[a-z0-9]{0,20}$/i.test(values[fields.indexOf('clarity_id' as never)])) throw new Error('Id do Clarity inválido');
   const cols = ['id', ...fields].join(', ');
   const marks = ['?', ...fields.map(() => '?')].join(', ');
   const updates = fields.map((f) => `${f} = excluded.${f}`).join(', ');

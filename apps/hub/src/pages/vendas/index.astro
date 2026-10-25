@@ -1,0 +1,144 @@
+---
+import Hub from '../../layouts/Hub.astro';
+import BarList from '../../components/BarList.astro';
+import Stat from '../../components/Stat.astro';
+import { list, type Site } from '../../lib/db';
+import { periods } from '../../lib/analytics';
+import { KINDS, kindOf, listSales, money, productsOf, salesStats, syncSales } from '../../lib/sales';
+
+const PERIODS = [
+  { days: 7, label: 'Últimos 7 dias' },
+  { days: 30, label: 'Últimos 30 dias' },
+  { days: 90, label: 'Últimos 90 dias' },
+  { days: 365, label: 'Último ano' },
+];
+const sites = (await list<Site>('sites')).filter((s) => s.bigboss_brand_id);
+const q = Astro.url.searchParams;
+const site = sites.find((s) => s.id === q.get('site')) ?? sites[0];
+const days = PERIODS.find((p) => p.days === Number(q.get('days')))?.days ?? 30;
+
+let syncError: string | null = null;
+let data = null;
+if (site) {
+  syncError = await syncSales(site, Astro.request.method === 'POST');
+  if (Astro.request.method === 'POST' && !syncError) return Astro.redirect(`${Astro.url.pathname}${Astro.url.search}`, 303);
+  const products = await productsOf(site.id);
+  const kind = KINDS.some((k) => k.id === q.get('kind')) ? q.get('kind')! : '';
+  const product = products.includes(q.get('product') ?? '') ? q.get('product')! : '';
+  const search = (q.get('q') ?? '').trim().slice(0, 100);
+  const p = periods(days);
+  const [sales, stats] = await Promise.all([
+    listSales({ siteId: site.id, kind, product, q: search, from: p.current.from }),
+    salesStats(site.id, p.current.from, p.previous.from),
+  ]);
+  data = { products, kind, product, search, sales, stats };
+}
+
+const s = data?.stats.current;
+const sp = data?.stats.previous;
+const nf = new Intl.NumberFormat('pt-PT');
+const pct = (v: number) => `${v.toFixed(1).replace('.', ',')}%`;
+const when = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon' });
+const tab = (id: string) => `?${new URLSearchParams({ site: id, days: String(days) })}`;
+const exportQuery = site && data ? new URLSearchParams({ site: site.id, days: String(days), ...(data.kind && { kind: data.kind }), ...(data.product && { product: data.product }), ...(data.search && { q: data.search }) }) : '';
+---
+<Hub title="Vendas">
+  {site && <a slot="actions" class="chip" href={`/vendas/export?${exportQuery}`} download>Exportar CSV</a>}
+
+  {!site ? (
+    <section class="card">
+      <h2 class="card-title">Ligar as vendas da Hotmart</h2>
+      <p>As vendas chegam ao Big Boss pelo webhook da Hotmart; o hub vai buscá-las lá. Para ligar um site:</p>
+      <ol>
+        <li>No Big Boss (Supabase): publicar a função <code>hub-hotmart-feed</code> com "Verify JWT" desligado e criar o segredo <code>HUB_FEED_SECRET</code> (Edge Function Secrets).</li>
+        <li>No Vercel do hub: a mesma <code>HUB_FEED_SECRET</code> (e <code>BIGBOSS_LEAD_URL</code>, que já existe).</li>
+        <li>Em <a href="/sites">Sites</a> → Editar: colar o id da marca no Big Boss.</li>
+      </ol>
+    </section>
+  ) : (
+    <div class="stack">
+      <nav class="tabs" aria-label="Site">
+        {sites.map((x) => <a href={tab(x.id)} aria-current={site.id === x.id ? 'page' : undefined}>{x.name}</a>)}
+      </nav>
+
+      {syncError && <p class="card err" role="alert">{syncError}</p>}
+
+      <form class="filters" method="get">
+        <input type="hidden" name="site" value={site.id} />
+        <select name="days" aria-label="Período" onchange="this.form.submit()">
+          {PERIODS.map((x) => <option value={x.days} selected={x.days === days}>{x.label}</option>)}
+        </select>
+        <select name="kind" aria-label="Tipo" onchange="this.form.submit()">
+          <option value="">Tudo</option>
+          {KINDS.map((k) => <option value={k.id} selected={k.id === data!.kind}>{k.label}</option>)}
+        </select>
+        <select name="product" aria-label="Produto" onchange="this.form.submit()">
+          <option value="">Todos os produtos</option>
+          {data!.products.map((p) => <option value={p} selected={p === data!.product}>{p}</option>)}
+        </select>
+        <input type="search" name="q" value={data!.search} placeholder="Procurar nome, email, transação…" aria-label="Procurar" />
+        <button class="ghost">Procurar</button>
+      </form>
+      <form method="post" class="sync"><button class="ghost">Atualizar da Hotmart</button> <span class="muted">Atualiza sozinho a cada minuto ao abrir esta página.</span></form>
+
+      {s && sp && (
+          <>
+            <div class="grid-stats">
+              <Stat label="Vendas" value={nf.format(s.purchases)} current={s.purchases} previous={sp.purchases} />
+              <Stat label="Faturação" value={money(s.revenue, s.currency)} current={s.revenue} previous={sp.revenue} />
+              <Stat label="Compradoras" value={nf.format(s.buyers)} current={s.buyers} previous={sp.buyers} />
+              <Stat label="Ticket médio" value={money(s.purchases ? s.revenue / s.purchases : 0, s.currency)} current={s.purchases ? s.revenue / s.purchases : 0} previous={sp.purchases ? sp.revenue / sp.purchases : 0} />
+              <Stat label="Reembolsos" value={`${nf.format(s.refunds)} · ${money(s.refundValue, s.currency)}`} current={s.refunds} previous={sp.refunds} invert />
+              <Stat label="Carrinhos abandonados" value={nf.format(s.carts)} current={s.carts} previous={sp.carts} invert />
+              <div class="card stat"><span class="muted">Carrinhos recuperados</span><b>{s.carts ? pct((s.recovered / s.carts) * 100) : '—'}</b><span class="muted">{nf.format(s.recovered)} compraram depois</span></div>
+              <div class="card stat"><span class="muted">Cliques no checkout (site)</span><b>{nf.format(s.checkouts)}</b><span class="muted">{s.checkouts ? `${pct((s.fromSite / s.checkouts) * 100)} acabaram em compra` : 'com o t.js atualizado'}</span></div>
+            </div>
+            <div class="grid-3">
+              <BarList title="Vendas por produto" rows={s.byProduct} empty="Sem vendas neste período." />
+              <BarList title="Vendas por origem" rows={s.byChannel} empty="Sem vendas neste período." />
+              <section class="card">
+                <h2 class="card-title">Como ler a origem</h2>
+                <p class="muted">"Canal · origem" = a compra começou num clique no site (sabemos o percurso). "Link · …" = veio de um link com <code>src</code> (ex.: bio do Instagram). "Sem ligação ao site" = checkout aberto fora do site, ou antes de o tracking das vendas existir.</p>
+              </section>
+            </div>
+          </>
+      )}
+
+      <section class="card">
+        <h2 class="card-title">{data!.sales.length === 500 ? 'Últimos 500 eventos' : `${nf.format(data!.sales.length)} eventos`}</h2>
+        {data!.sales.length === 0 ? <p class="muted">Sem eventos da Hotmart com estes filtros.</p> : (
+          <div class="table-wrap">
+            <table class="sales">
+              <thead><tr><th>Quando</th><th>Pessoa</th><th>O quê</th><th>Produto</th><th class="num">Valor</th></tr></thead>
+              <tbody>
+                {data!.sales.map((s) => {
+                  const k = kindOf(s.kind);
+                  return (
+                    <tr>
+                      <td class="nowrap"><a href={`/vendas/${s.id}`}>{when.format(s.ts)}</a></td>
+                      <td><a href={`/vendas/${s.id}`}><strong>{s.name || s.email || 'Sem nome'}</strong></a><br /><span class="muted">{s.email}</span></td>
+                      <td><span class={`pill ${k.tone}`}>{k.label}</span>{s.session_id && <><br /><span class="muted">veio do site</span></>}{s.module && <><br /><span class="muted">{s.module}</span></>}</td>
+                      <td>{s.product_name || s.product_id}</td>
+                      <td class="num">{s.kind === 'compra' || s.kind === 'reembolso' || s.kind === 'carrinho' ? money(s.value, s.currency) : ''}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  )}
+</Hub>
+
+<style>
+  .tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .tabs a { padding: .4rem .8rem; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
+  .tabs a[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .filters input[type='search'] { min-width: min(260px, 100%); background: var(--surface); }
+  .sync { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+  .err { color: var(--bad); margin: 0; }
+  table.sales td { font-size: .9rem; }
+  .nowrap { white-space: nowrap; }
+</style>
