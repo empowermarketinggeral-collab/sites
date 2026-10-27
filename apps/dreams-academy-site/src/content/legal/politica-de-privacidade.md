@@ -11,6 +11,8 @@ Recolhemos dados como nome, email e informações necessárias para acesso aos p
 
 As estatísticas de visitas ao site são medidas por uma ferramenta própria, sem cookies, com um identificador anónimo que muda todos os dias. Quando preenche um formulário, os dados que envia ficam associados à visita em que o fez (páginas vistas, origem da visita, cidade e tipo de dispositivo), para sabermos como chegou até nós e respondermos ao seu pedido. Estes dados ficam guardados nas nossas próprias ferramentas e são apagados a seu pedido.
 
+Com a sua autorização para cookies de análise, usamos também o Microsoft Clarity, que grava de forma anónima a navegação no site (cliques, deslocamento e mapas de calor, sem o que é escrito nos campos) para melhorarmos as páginas. Nas compras feitas a partir do site, o link de pagamento leva um código que nos permite saber de que visita veio a compra.
+
 ## 2. Pagamentos
 
 Os pagamentos são processados exclusivamente pela Hotmart.

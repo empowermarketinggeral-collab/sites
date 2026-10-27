@@ -3,6 +3,7 @@ import { clientIp, hostMatches, originMatches, rateLimiter, siteFor } from '../.
 import { record } from '../../lib/tracking';
 
 const EVENT_NAME = /^[a-z0-9_]{1,40}$/;
+const REF = /^[a-z0-9]{8,24}$/; // referência de um clique (ex.: checkout Hotmart com sck=hub_<ref>)
 const limited = rateLimiter(60); // eventos por minuto por IP
 
 function cors(origin: string | null): Record<string, string> {
@@ -19,7 +20,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const body = await request.text();
   if (body.length > 2000) return new Response(null, { status: 413, headers });
 
-  let data: { s?: string; n?: string; u?: string; r?: string };
+  let data: { s?: string; n?: string; u?: string; r?: string; k?: string };
   let url: URL;
   try {
     data = JSON.parse(body);
@@ -43,6 +44,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     name,
     url,
     referrer: String(data.r ?? ''),
+    ref: REF.test(String(data.k ?? '')) ? String(data.k) : '',
     ip,
     ua: h.get('user-agent') ?? '',
     country: h.get('cf-ipcountry') ?? h.get('x-vercel-ip-country') ?? h.get('x-country') ?? '',

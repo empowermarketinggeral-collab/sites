@@ -8,13 +8,13 @@
   var endpoint = new URL('/api/collect', s.src).href;
   var lastPath = null;
 
-  function send(name) {
+  function send(name, ref) {
     try {
       fetch(endpoint, {
         method: 'POST',
         keepalive: true,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ s: site, n: name, u: location.href, r: document.referrer }),
+        body: JSON.stringify({ s: site, n: name, u: location.href, r: document.referrer, k: ref }),
       }).catch(function () {});
     } catch (e) {}
   }
@@ -48,6 +48,8 @@
     }).then(function (res) {
       if (!res.ok) throw new Error(res.status);
       send('lead');
+      // Microsoft Clarity (se o site o carregar): permite procurar as gravações desta pessoa pelo email.
+      if (window.clarity && data.email) window.clarity('identify', String(data.email).toLowerCase());
       var to = form.getAttribute('data-redirect');
       if (to) { location.href = to; return; }
       var done = document.createElement('p');
@@ -64,10 +66,29 @@
     });
   });
 
+  // Checkout Hotmart: junta sck=hub_<ref> ao link e regista o clique com a mesma
+  // referência. A Hotmart devolve o sck na venda, e o hub liga a venda a esta visita.
+  function hotmartCheckout(a) {
+    if (!a || !a.href) return;
+    var u;
+    try { u = new URL(a.href); } catch (err) { return; }
+    if (!/(^|\.)hotmart\.com$/.test(u.hostname) || !/^(pay|go)\./.test(u.hostname) || u.searchParams.get('sck')) return;
+    var ref = '';
+    var bytes = new Uint8Array(9);
+    crypto.getRandomValues(bytes);
+    for (var i = 0; i < bytes.length; i++) ref += (bytes[i] % 36).toString(36);
+    u.searchParams.set('sck', 'hub_' + ref);
+    a.href = u.href;
+    send('checkout', ref);
+    if (window.clarity) window.clarity('set', 'hotmart_ref', 'hub_' + ref);
+  }
+
   window.empowerTrack = send;
   document.addEventListener('click', function (e) {
-    var el = e.target.closest && e.target.closest('[data-track]');
+    if (!e.target.closest) return;
+    var el = e.target.closest('[data-track]');
     if (el) send(el.getAttribute('data-track'));
+    hotmartCheckout(e.target.closest('a[href]'));
   });
   var push = history.pushState;
   history.pushState = function () { push.apply(this, arguments); pageview(); };

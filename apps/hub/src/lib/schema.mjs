@@ -1,7 +1,7 @@
 // Partilhado entre a app e os scripts (ex.: seed-demo). Uma instrução por item.
 // Tudo fica no schema privado "hub" (a API pública do Supabase só expõe "public"),
 // e com RLS ativo sem políticas: só a ligação direta da app consegue ler/escrever.
-const TABLES = ['sites', 'clients', 'domains', 'events', 'leads', 'login_attempts'];
+const TABLES = ['sites', 'clients', 'domains', 'events', 'leads', 'sales', 'login_attempts'];
 
 export const SCHEMA = [
   `CREATE SCHEMA IF NOT EXISTS hub`,
@@ -68,6 +68,40 @@ export const SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS leads_site_ts ON hub.leads (site_id, ts)`,
   `CREATE INDEX IF NOT EXISTS leads_email ON hub.leads (site_id, email)`,
+  // Vendas e comportamentos da Hotmart, copiados do Big Boss (função hub-hotmart-feed).
+  // id = id do evento no Big Boss. session_id liga a venda à visita quando o
+  // checkout foi aberto a partir do site (sck=hub_<ref>, ver t.js).
+  `CREATE TABLE IF NOT EXISTS hub.sales (
+    id TEXT PRIMARY KEY,
+    site_id TEXT NOT NULL,
+    ts DOUBLE PRECISION NOT NULL,
+    event TEXT NOT NULL,
+    kind TEXT NOT NULL,
+    product_id TEXT NOT NULL DEFAULT '',
+    product_name TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    name TEXT NOT NULL DEFAULT '',
+    phone TEXT NOT NULL DEFAULT '',
+    transaction_id TEXT NOT NULL DEFAULT '',
+    value DOUBLE PRECISION,
+    currency TEXT NOT NULL DEFAULT '',
+    payment_type TEXT NOT NULL DEFAULT '',
+    installments INTEGER,
+    offer TEXT NOT NULL DEFAULT '',
+    recurrence INTEGER,
+    src TEXT NOT NULL DEFAULT '',
+    sck TEXT NOT NULL DEFAULT '',
+    country TEXT NOT NULL DEFAULT '',
+    module TEXT NOT NULL DEFAULT '',
+    session_id TEXT NOT NULL DEFAULT ''
+  )`,
+  `CREATE INDEX IF NOT EXISTS sales_site_ts ON hub.sales (site_id, ts)`,
+  `CREATE INDEX IF NOT EXISTS sales_email ON hub.sales (email)`,
+  // Colunas acrescentadas depois da primeira versão.
+  `ALTER TABLE hub.sites ADD COLUMN IF NOT EXISTS bigboss_brand_id TEXT NOT NULL DEFAULT ''`,
+  `ALTER TABLE hub.sites ADD COLUMN IF NOT EXISTS clarity_id TEXT NOT NULL DEFAULT ''`,
+  `ALTER TABLE hub.events ADD COLUMN IF NOT EXISTS ref TEXT NOT NULL DEFAULT ''`,
+  `CREATE INDEX IF NOT EXISTS events_ref ON hub.events (ref) WHERE ref <> ''`,
   `CREATE TABLE IF NOT EXISTS hub.login_attempts (
     ip TEXT PRIMARY KEY, count INTEGER NOT NULL, until DOUBLE PRECISION NOT NULL
   )`,

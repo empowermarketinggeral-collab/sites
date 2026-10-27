@@ -2,6 +2,8 @@
 import Hub from '../../layouts/Hub.astro';
 import { siteFor } from '../../lib/sites';
 import { postToBigBoss } from '../../lib/leads';
+import { clarityLink } from '../../lib/clarity';
+import { kindOf, money, salesByEmail } from '../../lib/sales';
 import { STATUSES, bigBossState, deleteLead, historyOf, journey, leadById, setBigBossResult, statusLabel, updateLead } from '../../lib/backoffice';
 
 const lead = await leadById(Astro.params.id ?? '');
@@ -33,7 +35,8 @@ if (Astro.request.method === 'POST') {
 
 const current = (await leadById(lead.id))!;
 const site = await siteFor(current.site_id);
-const [steps, history] = await Promise.all([journey(current), historyOf(current)]);
+const [steps, history, purchases] = await Promise.all([journey(current), historyOf(current), salesByEmail(current.email)]);
+const clarity = site ? clarityLink(site) : null;
 const bb = bigBossState(current);
 
 let payload: Record<string, unknown> = {};
@@ -132,13 +135,25 @@ const waNumber = digits.length === 9 ? `351${digits}` : digits;
             {steps.map((e) => (
               <li class={e.name === 'pageview' ? '' : 'event'}>
                 <span class="muted">{time.format(e.ts)}</span>
-                {e.name === 'pageview' ? <code>{e.path}</code> : <span><strong>{e.name}</strong> <span class="muted">em</span> <code>{e.path}</code></span>}
+                {e.name === 'pageview' ? <code>{e.path}</code> : <span><strong>{e.name === 'checkout' ? 'abriu o checkout' : e.name}</strong> <span class="muted">em</span> <code>{e.path}</code></span>}
               </li>
             ))}
           </ol>
         )}
       </section>
     </div>
+
+    {(purchases.length > 0 || clarity) && (
+      <section class="card">
+        <h2 class="card-title">Hotmart e gravações</h2>
+        {purchases.length > 0 && (
+          <ul>
+            {purchases.map((p) => <li><span class={`pill ${kindOf(p.kind).tone}`}>{kindOf(p.kind).label}</span> <a href={`/vendas/${p.id}`}>{p.product_name || p.product_id}</a> <span class="muted">{short.format(p.ts)} · {money(p.value, p.currency)}</span></li>)}
+          </ul>
+        )}
+        {clarity && <p class="muted">Gravações desta pessoa: <a href={clarity} target="_blank" rel="noopener noreferrer">abrir o Clarity</a> e filtrar por "ID de utilizador personalizado" = <code>{current.email}</code> (a partir de formulários com <code>data-hub-form</code>).</p>}
+      </section>
+    )}
 
     {history.length > 0 && (
       <section class="card">

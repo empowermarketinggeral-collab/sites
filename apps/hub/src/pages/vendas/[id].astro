@@ -1,0 +1,133 @@
+---
+import Hub from '../../layouts/Hub.astro';
+import { all } from '../../lib/db';
+import { siteFor } from '../../lib/sites';
+import { kindOf, money, saleById, timelineOf } from '../../lib/sales';
+import type { Lead } from '../../lib/backoffice';
+import { clarityLink } from '../../lib/clarity';
+
+const sale = await saleById(Astro.params.id ?? '');
+if (!sale) return Astro.redirect('/vendas', 303);
+
+const site = await siteFor(sale.site_id);
+const timeline = await timelineOf(sale);
+// Os dados da pessoa vêm do evento mais recente que os tenha (acessos ao curso não trazem telefone).
+const latest = (key: 'name' | 'phone' | 'country') => [...timeline].reverse().find((s) => s[key])?.[key] ?? '';
+const person = { name: latest('name'), phone: latest('phone'), country: latest('country') };
+const leads = sale.email ? await all<Lead>('SELECT * FROM hub.leads WHERE email = ? ORDER BY ts DESC LIMIT 20', [sale.email]) : [];
+
+// Percurso no site de cada visita que acabou num checkout (venda ligada por sck=hub_<ref>).
+const sessions = [...new Set(timeline.map((s) => s.session_id).filter(Boolean))];
+const journeys = await Promise.all(
+  sessions.map(async (id) => ({
+    id,
+    steps: await all<{ ts: number; name: string; path: string; channel: string; source: string; utm_campaign: string; city: string; device: string }>(
+      'SELECT ts, name, path, channel, source, utm_campaign, city, device FROM hub.events WHERE session_id = ? AND site_id = ? ORDER BY ts LIMIT 200',
+      [id, sale.site_id],
+    ),
+  })),
+);
+
+const spent = timeline.filter((s) => s.kind === 'compra').reduce((t, s) => t + (s.value ?? 0), 0)
+  - timeline.filter((s) => s.kind === 'reembolso').reduce((t, s) => t + (s.value ?? 0), 0);
+const currency = timeline.find((s) => s.currency)?.currency ?? 'EUR';
+const full = new Intl.DateTimeFormat('pt-PT', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Lisbon' });
+const time = new Intl.DateTimeFormat('pt-PT', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Lisbon' });
+const digits = person.phone.replace(/^00/, '').replace(/[^\d]/g, '');
+const waNumber = digits.length === 9 ? `351${digits}` : digits;
+const clarity = site ? clarityLink(site) : null;
+---
+<Hub title={person.name || sale.email || 'Compradora'}>
+  <a slot="actions" class="chip" href={`/vendas?site=${encodeURIComponent(sale.site_id)}`}>Voltar às vendas</a>
+
+  <div class="stack">
+    <div class="grid-3">
+      <section class="card">
+        <h2 class="card-title">Pessoa</h2>
+        <dl>
+          {sale.email && <><dt>Email</dt><dd><a href={`mailto:${sale.email}`}>{sale.email}</a></dd></>}
+          {person.phone && <><dt>Telefone</dt><dd><a href={`tel:${person.phone}`}>{person.phone}</a>{waNumber.length >= 11 && <> · <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp</a></>}</dd></>}
+          {person.country && <><dt>País</dt><dd>{person.country}</dd></>}
+          <dt>Compras</dt><dd>{timeline.filter((s) => s.kind === 'compra').length}</dd>
+          <dt>Total gasto</dt><dd>{money(spent, currency)} <span class="muted">(menos reembolsos)</span></dd>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Este evento</h2>
+        <dl>
+          <dt>Tipo</dt><dd><span class={`pill ${kindOf(sale.kind).tone}`}>{kindOf(sale.kind).label}</span> <span class="muted">{sale.event}</span></dd>
+          <dt>Quando</dt><dd>{full.format(sale.ts)}</dd>
+          <dt>Produto</dt><dd>{sale.product_name || sale.product_id}</dd>
+          {sale.value !== null && <><dt>Valor</dt><dd>{money(sale.value, sale.currency)}{sale.installments && sale.installments > 1 ? ` em ${sale.installments}x` : ''}</dd></>}
+          {sale.payment_type && <><dt>Pagamento</dt><dd>{sale.payment_type}</dd></>}
+          {sale.transaction_id && <><dt>Transação</dt><dd><code>{sale.transaction_id}</code></dd></>}
+          {sale.offer && <><dt>Oferta</dt><dd><code>{sale.offer}</code></dd></>}
+          {(sale.src || sale.sck) && <><dt>Origem do link</dt><dd>{[sale.src && `src=${sale.src}`, sale.sck && `sck=${sale.sck}`].filter(Boolean).join(' · ')}</dd></>}
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Também no hub</h2>
+        {leads.length === 0 ? <p class="muted">Não preencheu nenhum formulário dos sites com este email.</p> : (
+          <ul>{leads.map((l) => <li><a href={`/leads/${l.id}`}>{l.form}</a> <span class="muted">({l.site_id}, {full.format(l.ts)})</span></li>)}</ul>
+        )}
+        {clarity && (
+          <p class="muted">Gravações das visitas: <a href={clarity} target="_blank" rel="noopener noreferrer">abrir o Clarity</a>
+            {sale.sck.startsWith('hub_') ? <> e filtrar por <code>hotmart_ref</code> = <code>{sale.sck}</code>.</> : '.'}</p>
+        )}
+      </section>
+    </div>
+
+    <section class="card">
+      <h2 class="card-title">Tudo o que fez na Hotmart</h2>
+      <ol class="timeline">
+        {timeline.map((s) => {
+          const k = kindOf(s.kind);
+          return (
+            <li class={s.id === sale.id ? 'here' : ''}>
+              <span class="muted">{full.format(s.ts)}</span>
+              <span><span class={`pill ${k.tone}`}>{k.label}</span> <a href={`/vendas/${s.id}`}>{s.product_name || s.product_id}</a>
+                {s.module && <span class="muted"> · {s.module}</span>}
+                {(s.kind === 'compra' || s.kind === 'reembolso' || s.kind === 'carrinho') && <span class="muted"> · {money(s.value, s.currency)}</span>}
+                {s.session_id && <span class="muted"> · veio do site</span>}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    {journeys.length === 0 ? (
+      <section class="card">
+        <h2 class="card-title">Percurso no site</h2>
+        <p class="muted">Nenhuma destas compras começou num clique no {site?.name ?? 'site'} (ou foi antes de o tracking das vendas existir). Compras por links diretos da Hotmart, anúncios ou email não têm percurso.</p>
+      </section>
+    ) : journeys.map((j) => (
+      <section class="card">
+        <h2 class="card-title">Percurso no site antes do checkout</h2>
+        {j.steps[0] && <p class="muted">Chegou por {j.steps[0].channel} · {j.steps[0].source}{j.steps[0].utm_campaign && ` (campanha ${j.steps[0].utm_campaign})`}, {j.steps[0].device}{j.steps[0].city && `, ${j.steps[0].city}`}.</p>}
+        <ol class="journey">
+          {j.steps.map((e) => (
+            <li class={e.name === 'pageview' ? '' : 'event'}>
+              <span class="muted">{time.format(e.ts)}</span>
+              {e.name === 'pageview' ? <code>{e.path}</code> : <span><strong>{e.name === 'checkout' ? 'abriu o checkout' : e.name}</strong> <span class="muted">em</span> <code>{e.path}</code></span>}
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+</Hub>
+
+<style>
+  dl { display: grid; grid-template-columns: auto 1fr; gap: .35rem .9rem; margin: 0 0 .8rem; }
+  dt { color: var(--muted); }
+  dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .timeline, .journey { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
+  .timeline li { display: grid; grid-template-columns: minmax(9rem, auto) 1fr; gap: .8rem; padding-left: .6rem; border-left: 2px solid var(--line); }
+  .timeline li.here { border-left-color: var(--accent); }
+  .journey li { display: grid; grid-template-columns: 5.5rem 1fr; gap: .6rem; padding-left: .6rem; border-left: 2px solid var(--line); }
+  .journey li.event { border-left-color: var(--accent); }
+  @media (max-width: 560px) { .timeline li { grid-template-columns: 1fr; gap: .1rem; } }
+</style>

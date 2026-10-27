@@ -90,6 +90,7 @@ Os dados podem ser tratados por terceiros estritamente necessários à prestaç�
 - **Meta (Facebook/Instagram Ads & Pixel)** – remarketing e anúncios
 - **GoHighLevel** – CRM, automação e formulários
 - **Hotmart** – venda e entrega de produtos digitais
+- **Microsoft Clarity** – gravações anónimas da navegação e mapas de calor (só com consentimento de cookies de análise)
 
 Estes terceiros tratam os dados de acordo com as suas próprias políticas de privacidade e mediante contratos que garantem conformidade com o RGPD.
 

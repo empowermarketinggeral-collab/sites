@@ -3,6 +3,7 @@ import Hub from '../layouts/Hub.astro';
 import { handleCrud } from '../lib/crud';
 import { list, type Client, type Site } from '../lib/db';
 import { leadConfig, probeBigBoss, tokenEnvKey } from '../lib/leads';
+import { clarityLink } from '../lib/clarity';
 
 const redirect = await handleCrud(Astro, 'sites');
 if (redirect) return redirect;
@@ -30,6 +31,8 @@ const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" da
           {clients.map((c) => <option value={c.id} selected={editing?.client_id === c.id}>{c.name}</option>)}
         </select>
       </label>
+      <label>Id da marca no Big Boss (vendas Hotmart) <input name="bigboss_brand_id" placeholder="00000000-0000-…" pattern="[0-9a-fA-F\-]{36}" value={editing?.bigboss_brand_id} /></label>
+      <label>Id do projeto Microsoft Clarity <input name="clarity_id" placeholder="ex.: abc123xyz" pattern="[a-zA-Z0-9]{4,20}" value={editing?.clarity_id} /></label>
       <button>{editing ? 'Guardar' : 'Adicionar site'}</button>
     </form>
 
@@ -39,6 +42,8 @@ const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" da
           <h2 class="card-title" style="margin:0">{s.name}</h2>
           <div>
             <a href={`/leads?site=${s.id}`}>Leads</a> ·
+            {s.bigboss_brand_id && <><a href={`/vendas?site=${s.id}`}>Vendas</a> ·</>}
+            {clarityLink(s) && <><a href={clarityLink(s)!} target="_blank" rel="noopener noreferrer">Clarity</a> ·</>}
             <a href={`/analytics?site=${s.id}`}>Análises</a> ·
             <a href={`?edit=${s.id}`}>Editar</a>
             <form method="post" style="display:inline"><input type="hidden" name="id" value={s.id} /><button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este site? As métricas ficam guardadas.')">Apagar</button></form>

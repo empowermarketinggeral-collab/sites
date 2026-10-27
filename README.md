@@ -17,6 +17,7 @@ Painel privado, no estilo das Análises da Shopify:
 - **Análises** — por site ou todos juntos, 7/30/90 dias, sempre comparado com o período anterior:
   sessões ao longo do tempo, dispositivo, local (país · cidade), referenciador (canal · origem), redes sociais, canal, página de destino e funil de conversão.
 - **Leads** — o back-office de cada site: quem preencheu cada formulário (nome, email, telefone, empresa, respostas), se aceitou emails, de onde veio (canal, origem, campanha, cidade, dispositivo) e o percurso no site antes de enviar. Estado (novo, contactado, cliente, descartado) e notas por lead, procura, filtros por site/formulário/estado e exportação CSV. Mostra os leads que não chegaram ao Big Boss, com botão para reenviar.
+- **Vendas** — vendas e comportamentos da Hotmart por site (ex.: Dreams Academy): compras, faturação, ticket médio, reembolsos, carrinhos abandonados e recuperados, pagamentos pendentes, primeiro acesso ao curso e módulos concluídos. Cada compradora tem a sua ficha com tudo o que fez na Hotmart, os formulários que preencheu e o percurso no site antes do checkout. Exportação CSV.
 - **Sites** — registo de cada site e o código de tracking para colar no `<head>`.
 - **Clientes** e **Domínios** — contactos, notas, datas de expiração, ligação a cada site.
 
@@ -29,6 +30,21 @@ Os dados ficam na tua base de dados (Supabase), não em serviços de análise de
 - Outros eventos: `data-track="nome_do_evento"` ou `window.empowerTrack('nome_do_evento')`.
 - País/cidade vêm dos cabeçalhos do CDN/proxy (Cloudflare `cf-ipcountry`/`cf-ipcity`, Vercel, ou `x-country`/`x-city`). Sem CDN aparecem como "Desconhecido".
 - O hub só aceita eventos vindos do domínio registado para o site, ignora bots e limita pedidos por IP.
+
+### Vendas da Hotmart
+
+A Hotmart já envia tudo ao Big Boss (função `hotmart-webhook`). O hub copia de lá pela função `hub-hotmart-feed` do Big Boss, sozinho a cada minuto em que a página está aberta (ou no botão "Atualizar da Hotmart").
+
+1. Supabase do Big Boss: publicar `hub-hotmart-feed` com "Verify JWT" **desligado** e criar o segredo `HUB_FEED_SECRET` (Edge Function Secrets; uma chave longa, ex.: `openssl rand -hex 32`).
+2. Vercel do hub: a mesma `HUB_FEED_SECRET`. O endereço da função sai do `BIGBOSS_LEAD_URL` (ou define `BIGBOSS_HOTMART_FEED_URL`).
+3. Hub → Sites → Editar: colar o id da marca no Big Boss.
+4. Na Hotmart (Ferramentas → Webhook), ligar também os eventos de comportamento que se querem ver: boleto/pagamento pendente, compra cancelada/expirada, primeiro acesso e módulo concluído na área de membros, cancelamento de assinatura.
+
+Ligação ao site: o `t.js` junta `sck=hub_<ref>` aos links `pay.hotmart.com`/`go.hotmart.com` quando são clicados e regista um evento `checkout` com a mesma referência. A Hotmart devolve o `sck` na venda e o hub liga a compra à visita (canal, campanha, páginas vistas). Links que já tenham `sck` não são alterados.
+
+### Microsoft Clarity
+
+Gravações de sessão e mapas de calor. Cria um projeto por site em clarity.microsoft.com e põe o id em `src/data/site.json` → `tracking.clarityId` do site (carrega só com consentimento de cookies de análise) e em Hub → Sites → Editar (para abrir o painel a partir do hub). O `t.js` identifica no Clarity quem envia um formulário `data-hub-form` (pelo email) e marca os cliques no checkout (`hotmart_ref`), para encontrar as gravações de uma pessoa ou de uma compra.
 
 ### Formulários e leads
 

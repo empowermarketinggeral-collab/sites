@@ -4,15 +4,15 @@ import site from '../data/site.json';
 // Google (Analytics/Ads) e Meta Pixel só carregam depois do consentimento, por categoria.
 // Enquanto não houver nenhum ID em site.json → tracking, o banner não aparece.
 const tracking = site.tracking;
-const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tracking.metaPixelId);
+const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tracking.metaPixelId || tracking.clarityId);
 ---
 {enabled && (
   <div class="consent" id="consent" role="dialog" aria-modal="false" aria-labelledby="consent-title" hidden>
     <p id="consent-title" class="consent-title">Cookies</p>
-    <p>Usamos cookies de análise e de marketing (Google e Meta) para medir o site e as campanhas, apenas com a tua autorização. <a href="/politica_de_privacidade">Saber mais</a></p>
+    <p>Usamos cookies de análise e de marketing (Google, Meta e Microsoft Clarity) para medir o site e as campanhas, apenas com a tua autorização. <a href="/politica_de_privacidade">Saber mais</a></p>
     <form class="consent-prefs" id="consent-prefs" hidden>
       <label><input type="checkbox" checked disabled /> Essenciais <small>(sempre ativos)</small></label>
-      <label><input type="checkbox" name="analytics" /> Análise <small>(Google Analytics)</small></label>
+      <label><input type="checkbox" name="analytics" /> Análise <small>(Google Analytics, Microsoft Clarity)</small></label>
       <label><input type="checkbox" name="marketing" /> Marketing <small>(Google Ads, Meta Pixel)</small></label>
     </form>
     <div class="consent-actions">
@@ -28,7 +28,7 @@ const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tr
   (function () {
     var KEY = 'dreams-consent';
     var CONVERSIONS = { lead: 'Lead', compra: 'InitiateCheckout', contacto: 'Contact' };
-    var loaded = { google: false, meta: false };
+    var loaded = { google: false, meta: false, clarity: false };
     var state = null;
 
     function read() {
@@ -73,9 +73,19 @@ const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tr
       loaded.meta = true;
     }
 
+    // Microsoft Clarity: gravações de sessão e mapas de calor (só com consentimento de análise).
+    function loadClarity() {
+      if (loaded.clarity || !tracking.clarityId) return;
+      window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
+      inject('https://www.clarity.ms/tag/' + encodeURIComponent(tracking.clarityId));
+      window.clarity('consent');
+      loaded.clarity = true;
+    }
+
     function apply(c) {
       state = c;
       if (c.analytics || c.marketing) loadGoogle(c);
+      if (c.analytics) loadClarity();
       if (c.marketing) loadMeta();
       if (!c.marketing && loaded.meta) fbq('consent', 'revoke');
       if (loaded.google && !c.analytics && !c.marketing) {
@@ -116,7 +126,7 @@ const enabled = Boolean(tracking.googleAnalyticsId || tracking.googleAdsId || tr
       write({ v: 1, analytics: c.analytics, marketing: c.marketing, ts: Date.now() });
       box.hidden = true;
       // Retirar consentimento: recarrega para que os scripts de terceiros deixem de correr.
-      if ((loaded.google || loaded.meta) && (!c.analytics && !c.marketing || (hadMarketing && !c.marketing))) location.reload();
+      if ((loaded.google || loaded.meta || loaded.clarity) && (!c.analytics && !c.marketing || (hadMarketing && !c.marketing) || (loaded.clarity && !c.analytics))) location.reload();
       else apply(c);
     }
 
