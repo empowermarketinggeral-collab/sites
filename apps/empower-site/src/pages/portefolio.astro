@@ -30,7 +30,7 @@ const onColor = (hex: string) => {
       <p class="lead reveal">{hero.text}</p>
       <div class="actions reveal">
         <Button href={hero.primaryCta.href} variant="light">{hero.primaryCta.label}</Button>
-        <Button href={hero.secondaryCta.href} variant="outline" track="agendamento">{hero.secondaryCta.label}</Button>
+        <Button href={hero.secondaryCta.href} variant="outline" track="clique_agendar">{hero.secondaryCta.label}</Button>
       </div>
       <dl class="pf-proof">
         {proof.map((s) => (
@@ -224,7 +224,7 @@ const onColor = (hex: string) => {
       <div class="reveal">
         <ul class="services">{closing.items.map((it) => <li>{it}</li>)}</ul>
         <div class="actions">
-          <Button href={closing.primary.href} variant="light" track="agendamento">{closing.primary.label}</Button>
+          <Button href={closing.primary.href} variant="light" track="clique_agendar">{closing.primary.label}</Button>
           <Button href={closing.secondary.href} variant="outline">{closing.secondary.label}</Button>
         </div>
       </div>
