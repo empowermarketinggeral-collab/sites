@@ -1,0 +1,645 @@
+<title>Estúdio de Funis Empower</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: barra de marcas no topo; briefing à esquerda, mapa do funil à direita; funis guardados por baixo */
+:root{
+  --bg:#f5f4f8; --surface:#ffffff; --surface-2:#eeecf4; --line:#dcd8e6;
+  --fg:#1d1a26; --muted:#6a6479; --accent:#6b3fd4; --accent-soft:#ece5fb; --on-accent:#ffffff;
+  --desc:#3f7fd9; --cons:#8a5bd8; --conv:#cf5a8a; --ret:#2f9e8f;
+  --ok:#2f8a57; --warn:#b7791f; --bad:#c2413b;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141219; --surface:#1d1a25; --surface-2:#262231; --line:#363042;
+  --fg:#efecf6; --muted:#a39cb4; --accent:#a283f2; --accent-soft:#2d2542; --on-accent:#140f20;
+  --desc:#6fa6f0; --cons:#b08cf0; --conv:#ec86b0; --ret:#5cc7b6;
+  --ok:#5cc28a; --warn:#e3a94f; --bad:#ec7a72; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141219; --surface:#1d1a25; --surface-2:#262231; --line:#363042;
+  --fg:#efecf6; --muted:#a39cb4; --accent:#a283f2; --accent-soft:#2d2542; --on-accent:#140f20;
+  --desc:#6fa6f0; --cons:#b08cf0; --conv:#ec86b0; --ret:#5cc7b6;
+  --ok:#5cc28a; --warn:#e3a94f; --bad:#ec7a72; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 60px}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:1.65rem;font-weight:700}
+h2{font-size:1.15rem;font-weight:700}
+h3{font-size:.98rem;font-weight:700}
+.eyebrow{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brands{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.brand{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;display:flex;gap:8px;align-items:center;font-weight:500}
+.brand[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.dots{display:inline-flex;gap:3px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--ok)}
+.brand[aria-pressed="true"] .dot{background:color-mix(in srgb,var(--on-accent) 35%,transparent)}
+.brand[aria-pressed="true"] .dot.on{background:var(--on-accent)}
+.accounts{display:flex;flex-wrap:wrap;gap:6px;font-size:.82rem}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 10px;border:1px solid var(--line);background:var(--surface);font-size:.8rem}
+.pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.pill.no{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.grid{display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label,.field .lbl{font-weight:600;font-size:.88rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:6px 11px;font-size:.88rem}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+input[type=text],input[type=number],textarea,select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;padding:9px 11px;font:inherit}
+textarea{min-height:110px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.budget{display:flex;justify-content:space-between;align-items:baseline}
+.budget strong{font-family:var(--f-mono);font-size:1.1rem}
+.btn{border:0;border-radius:8px;padding:11px 16px;font-weight:600;background:var(--accent);color:var(--on-accent)}
+.btn:disabled{opacity:.55;cursor:progress}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{padding:6px 11px;font-size:.85rem}
+.status{font-size:.85rem;color:var(--muted);min-height:1.3em}
+.status.err{color:var(--bad)}
+/* Mapa */
+.map-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted)}
+.tag.example{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.stages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;overflow-x:auto}
+@media (max-width:760px){.stages{grid-template-columns:minmax(0,1fr)}}
+.stage{border-radius:var(--r);background:var(--surface-2);padding:12px;display:flex;flex-direction:column;gap:10px;border-top:4px solid var(--c);min-width:0}
+.stage .hd{display:flex;flex-direction:column;gap:2px}
+.stage .hd h3{color:var(--c)}
+.stage p{margin:0;font-size:.88rem}
+.chan{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.84rem;display:flex;flex-direction:column;gap:2px}
+.chan b{font-weight:600}
+.decide{display:flex;gap:4px;flex-wrap:wrap}
+.decide button{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:2px 8px;font-size:.76rem}
+.decide button[aria-pressed="true"][data-v="entra"]{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.decide button[aria-pressed="true"][data-v="ajustar"]{background:var(--warn);border-color:var(--warn);color:var(--on-accent)}
+.decide button[aria-pressed="true"][data-v="fora"]{background:var(--bad);border-color:var(--bad);color:var(--on-accent)}
+.dimmed{opacity:.45}
+/* funil invertido */
+.funnel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:18px}
+@media (max-width:760px){.funnel{grid-template-columns:minmax(0,1fr)}}
+.bars{display:flex;flex-direction:column;gap:6px;align-items:center}
+.bar{height:42px;border-radius:7px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:var(--on-accent);font-size:.86rem;min-width:170px;max-width:100%;transition:width .35s ease}
+.bar b{font-family:var(--f-mono);font-size:1rem}
+@media (prefers-reduced-motion:reduce){.bar{transition:none}}
+.goal{display:flex;flex-wrap:wrap;gap:10px}
+.kpi{flex:1 1 130px;background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.kpi .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.kpi .k{font-size:.78rem;color:var(--muted)}
+.kpi.good .v{color:var(--ok)} .kpi.bad .v{color:var(--bad)}
+.assume{display:flex;flex-direction:column;gap:9px;font-size:.84rem}
+.assume .a{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center}
+.assume .a span.mono{font-size:.84rem}
+.assume .a input{grid-column:1/-1}
+.scen{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.scen button{border:0;background:var(--surface);padding:5px 10px;font-size:.82rem}
+.scen button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:640px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num{font-family:var(--f-mono);text-align:right;white-space:nowrap}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.card{border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:6px;font-size:.86rem;border-left:4px solid var(--c);min-width:0}
+.card .risk{font-size:.75rem;font-weight:600}
+.risk-Nenhum{color:var(--ok)} .risk-Médio{color:var(--warn)} .risk-Alto{color:var(--bad)}
+ul.clean{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:.88rem}
+.warnbox{border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));background:color-mix(in srgb,var(--warn) 9%,transparent);border-radius:8px;padding:10px 12px;font-size:.87rem}
+.refine{display:flex;gap:8px;flex-wrap:wrap}
+.refine input{flex:1 1 240px}
+.saved{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.sv{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:6px;text-align:left}
+.sv[aria-current="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.sv .meta{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:18px;color:var(--muted);font-size:.9rem}
+.section{display:flex;flex-direction:column;gap:10px}
+.estado{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.estado select{width:auto}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Empower Marketing · Funis</div>
+      <h1>Estúdio de Funis</h1>
+    </div>
+    <div class="accounts" id="accounts" aria-live="polite"></div>
+  </header>
+
+  <nav class="brands" id="brands" aria-label="Marcas"></nav>
+
+  <div class="grid">
+    <form class="panel" id="brief" novalidate>
+      <div>
+        <div class="eyebrow">Nova campanha</div>
+        <h2 id="briefTitle">Briefing</h2>
+      </div>
+      <div class="field">
+        <span class="lbl">Objetivo (podes escolher vários)</span>
+        <div class="chips" id="objetivos"></div>
+      </div>
+      <div class="field">
+        <label for="oferta">Oferta ou função da campanha</label>
+        <input type="text" id="oferta" placeholder="Ex.: consulta de diagnóstico capilar">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="meta">Quantos?</label>
+          <input type="number" id="meta" min="1" value="20">
+        </div>
+        <div class="field">
+          <label for="unidade">De quê, e quando</label>
+          <select id="unidade">
+            <option value="clientes/mês">clientes por mês</option>
+            <option value="marcações/mês">marcações por mês</option>
+            <option value="leads/mês">leads por mês</option>
+            <option value="vendas/mês">vendas por mês</option>
+            <option value="candidaturas no lançamento">candidaturas no lançamento</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <div class="budget"><label for="orcamento">Orçamento em anúncios</label><strong id="orcamentoOut">600 €/mês</strong></div>
+        <input type="range" id="orcamento" min="100" max="5000" step="50" value="600">
+        <span class="muted" id="orcamentoDia" style="font-size:.82rem">≈ 20 €/dia</span>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="ticket">Ticket de uma cliente nova (€)</label>
+          <input type="number" id="ticket" min="0" value="80">
+        </div>
+        <div class="field">
+          <label for="zona">Zona</label>
+          <input type="text" id="zona" placeholder="Ex.: 15 km à volta do salão">
+        </div>
+      </div>
+      <div class="field">
+        <span class="lbl">Plataformas</span>
+        <div class="chips" id="plataformas"></div>
+      </div>
+      <div class="field">
+        <span class="lbl">Para onde vai a pessoa</span>
+        <div class="chips" id="destinos"></div>
+      </div>
+      <div class="field">
+        <label for="pedido">Descreve como no chat</label>
+        <textarea id="pedido" placeholder="Ex.: Quero puxar clientes Estabelecidas (35-45) para a consulta de diagnóstico, com a Patrícia a falar para a câmara. Integrado com as stories da semana."></textarea>
+      </div>
+      <button class="btn" id="gerar" type="submit">Criar funil</button>
+      <div class="status" id="status" role="status"></div>
+    </form>
+
+    <section class="panel" id="map" aria-labelledby="mapTitle"></section>
+  </div>
+
+  <section class="section" aria-labelledby="savedTitle">
+    <h2 id="savedTitle">Funis guardados</h2>
+    <div class="saved" id="saved"></div>
+  </section>
+</div>
+
+<script>
+const BRANDS = [
+  {id:"dreams-studio", nome:"Dreams Studio", meta:false, google:true, gbp:true,
+   ctx:"Salão de cabeleireiro premium, beleza emocional e experiencial, território 'escuta como filosofia'. Cara: Patrícia Melo. Segmentos: Ascendente 25-35, Estabelecida 35-45, Recomeçada 45-55. Compete em experiência, não em preço. Concorrentes: ART.Z, Lúcia Piloto, Jean Louis David, Sanjam, Vitória's Beauty, Manu Bela, Salão Rita Cunha, Studio Neide Valentim, One Point Space."},
+  {id:"dreams-academy", nome:"Dreams Academy", meta:false, google:false, gbp:false,
+   ctx:"Formação para cabeleireiras (técnica profissional e marketing e negócio), formadoras Patrícia Melo e Beatriz Melo. Vendas na Hotmart. Site dreamsacademy.pt com hub ligado (conversões lead e compra)."},
+  {id:"empower", nome:"Empower", meta:true, google:false, gbp:true,
+   ctx:"Agência Empower Marketing: posição, território e ecossistema de marca para negócios de estética e beleza. Porta de entrada paga: Mapa de Crescimento. Site empowermarketing.online com conversões lead, agendamento, contacto."},
+  {id:"empower-boss", nome:"Empower Boss", meta:false, google:false, gbp:false,
+   ctx:"Ecossistema Empower Boss: Big Boss (plataforma) e Bússola."},
+  {id:"bia-melo", nome:"Bia Melo", meta:true, google:false, gbp:false,
+   ctx:"Marca pessoal de Beatriz Melo, Marketing Lab: branding e marketing, mostra o método."},
+  {id:"astredik", nome:"Astredik", meta:true, google:false, gbp:true,
+   ctx:"Marca Astredik, loja com Instagram, TikTok e Perfil da Empresa."},
+  {id:"patricia-melo", nome:"Patrícia Melo", meta:false, google:false, gbp:false,
+   ctx:"Marca pessoal de Patrícia Melo, cabeleireira, cara do Dreams Studio e formadora da Dreams Academy."},
+  {id:"majek", nome:"Majek", meta:false, google:false, gbp:false, ctx:"Majek Gamer, criador de conteúdo gaming."},
+  {id:"horizontes", nome:"Horizontes somos norte", meta:false, google:false, gbp:false, ctx:"Marca Horizontes somos norte."}
+];
+const OBJETIVOS = ["Marcações","Leads","Vendas","Candidaturas","Lançamento","Notoriedade","Mensagens","Reativar clientes"];
+const PLATAFORMAS = ["Meta","Google"];
+const DESTINOS = ["Página do site","WhatsApp","Formulário instantâneo","Hotmart","Chamada"];
+const STAGE = {desc:{nome:"Descoberta",c:"var(--desc)"},cons:{nome:"Consideração",c:"var(--cons)"},conv:{nome:"Conversão",c:"var(--conv)"},ret:{nome:"Reativação",c:"var(--ret)"}};
+const SCEN = {pess:{nome:"Pessimista",f:.65},prov:{nome:"Provável",f:1},otim:{nome:"Otimista",f:1.35}};
+
+const EXEMPLO = {
+  exemplo:true, marca:"dreams-studio", titulo:"Consulta de diagnóstico · exemplo", estado:"rascunho",
+  brief:{objetivos:["Marcações"],oferta:"Consulta de diagnóstico capilar",meta:20,unidade:"clientes/mês",orcamento:600,ticket:80,zona:"15 km à volta do salão",plataformas:["Meta","Google"],destinos:["WhatsApp","Página do site"],pedido:""},
+  plano:{
+    resumo:"Google apanha quem já procura cabeleireiro na zona; a Meta mostra a escuta da Patrícia a quem ainda não conhece. Tudo termina numa marcação por WhatsApp com resposta no mesmo dia.",
+    pressupostos:{cpm:10,ctr:1.2,cpc:0.9,cliqueLead:6,cliqueLeadGoogle:10,leadMarcacao:35,comparencia:80},
+    fontes:"CPM e CTR: benchmarks saúde e estética Portugal (obruno.pt, confiança média). CPC Google e taxas: pressupostos Empower a confirmar na 1.ª semana.",
+    divisao:{meta:65,google:35},
+    etapas:[
+      {id:"desc",pessoa:"Estabelecida 35-45",consciencia:"Não sabe que tem o problema",mensagem:"Sais do cabeleireiro e em 3 dias já não gostas? Falta a conversa antes do corte.",canais:[{plataforma:"Meta",formato:"Reel 9:16",detalhe:"Patrícia a falar para a câmara, gancho do mito"},{plataforma:"Orgânico",formato:"Stories",detalhe:"Semana da escuta (stories-studio)"}],indicador:"CTR do link acima de 1%"},
+      {id:"cons",pessoa:"Estabelecida e Recomeçada",consciencia:"Sabe que há soluções",mensagem:"A primeira meia hora é só conversa. É aí que tudo se decide.",canais:[{plataforma:"Meta",formato:"Carrossel",detalhe:"Os 4 passos da consulta"},{plataforma:"Google",formato:"Pesquisa",detalhe:"cabeleireiro + zona, coloração + zona"}],indicador:"Visitas à página ou conversas"},
+      {id:"conv",pessoa:"Quem já interagiu",consciencia:"Pronta a marcar",mensagem:"Consulta de diagnóstico: marca por WhatsApp, respondemos no mesmo dia.",canais:[{plataforma:"Meta",formato:"Vídeo de prova",detalhe:"Reação real de cliente com autorização"},{plataforma:"WhatsApp",formato:"Mensagem pré-preenchida",detalhe:"Guião de resposta em menos de 1 hora"}],indicador:"Custo por marcação"},
+      {id:"ret",pessoa:"Clientes dos últimos 6 meses",consciencia:"Conhece a marca",mensagem:"Está na altura da tua manutenção. Guardámos as tuas notas da última consulta.",canais:[{plataforma:"WhatsApp",formato:"Mensagem direta",detalhe:"Lista do Big Boss"}],indicador:"Regressos por mês"}
+    ],
+    campanhas:[
+      {nome:"studio_conv_leads_consulta_202611",plataforma:"Meta",etapa:"conv",objetivo:"Leads (mensagens WhatsApp)",evento:"Conversa iniciada",orcamentoDia:13,publico:"Advantage+, 15 km, sugestão mulheres 30-55",destino:"WhatsApp"},
+      {nome:"studio_conv_search_consulta_202611",plataforma:"Google",etapa:"cons",objetivo:"Pesquisa com AI Max",evento:"Marcação no site + chamada",orcamentoDia:7,publico:"Presença 15 km, PT e EN",destino:"Página do site"}
+    ],
+    criativos:[
+      {nome:"mito_reel_v1",angulo:"Mito dos 3 dias",etapa:"desc",formato:"Reel 25 s",gancho:"Porque é que sais do cabeleireiro e em 3 dias já não gostas?",texto:"Não é o teu cabelo. É faltar uma conversa antes do corte.",risco:"Nenhum"},
+      {nome:"escuta_carrossel_v1",angulo:"Método da escuta",etapa:"cons",formato:"Carrossel 4:5",gancho:"A primeira meia hora é só conversa",texto:"Os 4 passos da nossa consulta de diagnóstico.",risco:"Nenhum"},
+      {nome:"prova_reel_v1",angulo:"Reação real",etapa:"conv",formato:"Reel 15 s",gancho:"A cara dela quando se viu ao espelho",texto:"Marca a tua consulta de diagnóstico por WhatsApp.",risco:"Médio"}
+    ],
+    pagina:["Promessa igual à do anúncio","Botão de WhatsApp no topo (data-track=\"contacto\")","3 provas reais com autorização","Morada, horário e mapa"],
+    tracking:["Ligar a conta Meta Ads do Dreams Studio no Metricool","UTMs no padrão Empower","Conversão de chamada e de marcação no Google Ads","Registar no Big Boss quantas conversas viram marcação"],
+    revisoes:[{dia:3,o_que:"Entrega, eventos e aprovações"},{dia:7,o_que:"Cortar anúncios fracos"},{dia:14,o_que:"Decidir oferta e página"},{dia:30,o_que:"Previsto vs real e histórico"}],
+    avisos:["A conta Meta Ads do Dreams Studio não está ligada ao Metricool: sem histórico, os custos são de referência."]
+  },
+  decisoes:{}
+};
+
+const $ = s => document.querySelector(s);
+const el = (tag, attrs={}, ...kids) => { const e=document.createElement(tag); for (const [k,v] of Object.entries(attrs)) { if (k==="class") e.className=v; else if (k==="style") e.setAttribute("style",v); else if (k.startsWith("on")) e.addEventListener(k.slice(2),v); else if (v!==false && v!=null) e.setAttribute(k,v===true?"":v); } for (const k of kids.flat()) if (k!=null && k!==false) e.append(k.nodeType?k:document.createTextNode(String(k))); return e; };
+const eur = n => new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",maximumFractionDigits: n<100?2:0}).format(n);
+const int = n => new Intl.NumberFormat("pt-PT",{maximumFractionDigits:0}).format(Math.round(n));
+
+let state = { brand: "dreams-studio", funis: [], currentId: null, scen: "prov", sel: {objetivos:new Set(["Marcações"]),plataformas:new Set(["Meta","Google"]),destinos:new Set(["WhatsApp"])} };
+try { const b = localStorage.getItem("ef_brand"); if (b && BRANDS.some(x=>x.id===b)) state.brand = b; } catch(e){}
+
+let db = null, sample = null, unsub = null, loadTimer = null;
+
+function brand(){ return BRANDS.find(b=>b.id===state.brand); }
+function current(){
+  if (state.currentId === "__exemplo") return EXEMPLO;
+  return state.funis.find(f=>f.id===state.currentId) || null;
+}
+
+/* ---------- Marcas e contas ---------- */
+function renderBrands(){
+  const nav = $("#brands"); nav.replaceChildren();
+  for (const b of BRANDS){
+    const n = state.funis.filter(f=>f.marca===b.id).length;
+    nav.append(el("button",{class:"brand",type:"button","aria-pressed":String(b.id===state.brand),onclick:()=>selectBrand(b.id),title:"Meta · Google · Perfil da Empresa"},
+      b.nome, el("span",{class:"dots","aria-hidden":"true"}, el("span",{class:"dot"+(b.meta?" on":"")}), el("span",{class:"dot"+(b.google?" on":"")}), el("span",{class:"dot"+(b.gbp?" on":"")})),
+      n ? el("span",{class:"mono",style:"font-size:.78rem"}, n) : null));
+  }
+  const b = brand(), acc = $("#accounts"); acc.replaceChildren();
+  acc.append(el("span",{class:"pill "+(b.meta?"ok":"no")}, b.meta?"Meta Ads ligada":"Meta Ads por ligar"),
+             el("span",{class:"pill "+(b.google?"ok":"no")}, b.google?"Google Ads ligada":"Google Ads por ligar"),
+             el("span",{class:"pill "+(b.gbp?"ok":"no")}, b.gbp?"Perfil da Empresa":"Sem Perfil da Empresa"));
+  $("#briefTitle").textContent = "Briefing · " + b.nome;
+}
+function selectBrand(id){
+  state.brand = id; try{ localStorage.setItem("ef_brand", id); }catch(e){}
+  const mine = state.funis.filter(f=>f.marca===id);
+  state.currentId = mine[0]?.id || (id==="dreams-studio" ? "__exemplo" : null);
+  renderAll();
+}
+
+/* ---------- Briefing ---------- */
+function chipGroup(container, items, key){
+  const c = $(container); c.replaceChildren();
+  for (const it of items){
+    c.append(el("button",{type:"button",class:"chip","aria-pressed":String(state.sel[key].has(it)),onclick:(e)=>{ state.sel[key].has(it)?state.sel[key].delete(it):state.sel[key].add(it); e.currentTarget.setAttribute("aria-pressed",String(state.sel[key].has(it))); }}, it));
+  }
+}
+function syncBudget(){
+  const v = +$("#orcamento").value;
+  $("#orcamentoOut").textContent = int(v) + " €/mês";
+  $("#orcamentoDia").textContent = "≈ " + int(v/30.4) + " €/dia";
+}
+$("#orcamento").addEventListener("input", syncBudget);
+
+function readBrief(){
+  return { objetivos:[...state.sel.objetivos], oferta:$("#oferta").value.trim(), meta:+$("#meta").value||0, unidade:$("#unidade").value,
+    orcamento:+$("#orcamento").value, ticket:+$("#ticket").value||0, zona:$("#zona").value.trim(),
+    plataformas:[...state.sel.plataformas], destinos:[...state.sel.destinos], pedido:$("#pedido").value.trim() };
+}
+
+const SCHEMA = `{
+ "titulo": "nome curto do funil (oferta · objetivo)",
+ "resumo": "2 frases: a lógica do funil",
+ "pressupostos": {"cpm": euros, "ctr": percentagem clique no link Meta, "cpc": euros Google, "cliqueLead": % clique→lead Meta, "cliqueLeadGoogle": % clique→lead Google, "leadMarcacao": % lead→marcação/venda, "comparencia": % marcação→cliente (100 se for venda direta)},
+ "fontes": "de onde vêm os pressupostos e a confiança",
+ "divisao": {"meta": % do orçamento, "google": % do orçamento},
+ "etapas": [{"id": "desc|cons|conv|ret", "pessoa": "pessoa do Cliente ao Cubo", "consciencia": "nível de consciência", "mensagem": "a frase da etapa", "canais": [{"plataforma": "Meta|Google|Orgânico|WhatsApp|Site|Email", "formato": "...", "detalhe": "..."}], "indicador": "..."}],
+ "campanhas": [{"nome": "padrão <marca>_<etapa>_<tipo>_<oferta>_<aaaamm>", "plataforma": "Meta|Google", "etapa": "desc|cons|conv|ret", "objetivo": "...", "evento": "evento de otimização", "orcamentoDia": euros, "publico": "...", "destino": "..."}],
+ "criativos": [{"nome": "<angulo>_<formato>_v1", "angulo": "...", "etapa": "desc|cons|conv|ret", "formato": "...", "gancho": "...", "texto": "texto principal pronto", "risco": "Nenhum|Médio|Alto"}],
+ "pagina": ["o que a página ou o canal de destino tem de ter"],
+ "tracking": ["passos de tracking e ligações a fazer antes de lançar"],
+ "revisoes": [{"dia": número, "o_que": "..."}],
+ "avisos": ["bloqueios, riscos e o que falta confirmar"]
+}`;
+
+const RULES = `És o agente de funis da Empower Marketing (Portugal). Escreves em português de Portugal, tratas por tu, sem travessões nem pontos de exclamação.
+Regras de método:
+- Parte do objetivo de negócio em número e desenha 3 ou 4 etapas (desc = descoberta, cons = consideração, conv = conversão, ret = reativação), cada uma ligada a uma pessoa do Cliente ao Cubo (a decisora e quem a rodeia) e a um nível de consciência.
+- Meta 2026: Advantage+ por defeito, o criativo é a segmentação (Andromeda), 3 a 5 ângulos realmente diferentes, pelo menos um para quem ainda não conhece e um de objeção. Com menos de 30 €/dia na Meta, uma só campanha de conversão com 1 conjunto; remarketing à parte só acima disso. Volume mínimo ~50 eventos/semana: se não houver, otimizar para um evento mais acima.
+- Google 2026: Pesquisa com AI Max e negativas fortes para negócio local; Performance Max (objetivos de loja) só acima de ~20 a 30 €/dia e com conversões a funcionar; respeitar o teto de procura.
+- Políticas Meta: nunca afirmar atributos pessoais ("estás farta do teu cabelo"); antes e depois só com cuidado (risco Médio).
+- Custos de referência Portugal (confiança média): CPM saúde e estética 8 a 15 €, CTR 0,8 a 1,8%; CPC Google em termos locais de beleza é pressuposto 0,40 a 1,50 €. Taxas típicas: clique→lead 3 a 10% (Meta), 5 a 15% (Google), lead→marcação 20 a 50%, comparência 70 a 90%. Diz o que é pressuposto.
+- A soma de orcamentoDia das campanhas × 30,4 tem de bater com o orçamento mensal; a divisão Meta/Google tem de bater com as campanhas. Se só houver uma plataforma escolhida, 100% nela.
+- Nomes no padrão Empower; UTMs e eventos do hub (lead, agendamento, contacto, compra).
+- Se a marca não tem a conta de anúncios ligada, ou a oferta e o orçamento não fecham com o objetivo, escreve-o em avisos.
+Responde APENAS com JSON válido, sem texto à volta, neste formato:
+${SCHEMA}`;
+
+function promptFor(brief){
+  const b = brand();
+  const contas = `Contas: Meta Ads ${b.meta?"ligada":"NÃO ligada"}, Google Ads ${b.google?"ligada":"NÃO ligada"}, Perfil da Empresa ${b.gbp?"sim":"não"}.`;
+  const hoje = new Date(); const aaaamm = hoje.getFullYear()+String(hoje.getMonth()+1).padStart(2,"0");
+  return `${RULES}
+
+Marca: ${b.nome} (prefixo de nome: ${b.id.split("-")[0]}). ${b.ctx}
+${contas}
+Mês de referência dos nomes: ${aaaamm}.
+Briefing:
+- Objetivos: ${brief.objetivos.join(", ")||"não indicado"}
+- Oferta ou função: ${brief.oferta||"não indicada"}
+- Meta: ${brief.meta} ${brief.unidade}
+- Orçamento: ${brief.orcamento} €/mês
+- Ticket de uma cliente nova: ${brief.ticket} €
+- Zona: ${brief.zona||"não indicada"}
+- Plataformas: ${brief.plataformas.join(", ")||"à escolha"}
+- Destino: ${brief.destinos.join(", ")||"à escolha"}
+- Pedido em texto livre: ${brief.pedido||"(nenhum)"}`;
+}
+
+function setStatus(t, err){ const s=$("#status"); s.textContent=t; s.classList.toggle("err",!!err); }
+const ERR = { not_granted:"Precisas de autorizar o Claude nesta página para criar funis.", rate_limited:"Demasiados pedidos seguidos. Espera um minuto e tenta outra vez.", invalid_json:"O Claude respondeu num formato inesperado. Tenta outra vez.", cancelled:"Pedido cancelado." };
+function normalize(p){
+  p.pressupostos = Object.assign({cpm:10,ctr:1.2,cpc:0.9,cliqueLead:6,cliqueLeadGoogle:10,leadMarcacao:35,comparencia:80}, p.pressupostos||{});
+  p.divisao = p.divisao || {meta:100,google:0};
+  for (const k of ["etapas","campanhas","criativos","pagina","tracking","revisoes","avisos"]) if (!Array.isArray(p[k])) p[k]=[];
+  return p;
+}
+
+$("#brief").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!sample){ setStatus("Criar com o Claude não está disponível nesta vista. Abre a página no claude.ai com sessão iniciada.", true); return; }
+  const brief = readBrief();
+  if (!brief.objetivos.length){ setStatus("Escolhe pelo menos um objetivo.", true); return; }
+  const btn = $("#gerar"); btn.disabled = true; setStatus("O Claude está a desenhar o funil. Pode demorar até um minuto.");
+  try {
+    const plano = normalize(await sample.json(promptFor(brief), {modelTier:"complex"}));
+    const doc = { marca: state.brand, titulo: plano.titulo || (brief.oferta||"Novo funil"), estado:"rascunho", brief, plano, decisoes:{}, criadoEm: new Date().toISOString(), atualizadoEm: new Date().toISOString() };
+    if (db){
+      const ref = db.collection("funis").doc();
+      await ref.set(doc);
+      state.currentId = ref.id;
+      if (!state.funis.some(f=>f.id===ref.id)) state.funis.unshift(Object.assign({id:ref.id},doc));
+      setStatus("Funil criado e guardado.");
+    } else {
+      const id = "local-"+Date.now(); state.funis.unshift(Object.assign({id},doc)); state.currentId=id;
+      setStatus("Funil criado. Não foi possível guardar: inicia sessão no claude.ai para o manter.");
+    }
+    renderAll();
+    $("#map").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+  } catch (err){
+    setStatus(ERR[err?.code] || "Não foi possível criar o funil. Tenta outra vez.", true);
+  } finally { btn.disabled = false; }
+});
+
+/* ---------- Mapa ---------- */
+function decisionButtons(key){
+  const f = current(); const v = f?.decisoes?.[key];
+  const wrap = el("div",{class:"decide",role:"group","aria-label":"Decisão"});
+  for (const [val,lab] of [["entra","Entra"],["ajustar","Ajustar"],["fora","Fora"]]){
+    wrap.append(el("button",{type:"button","data-v":val,"aria-pressed":String(v===val),onclick:()=>decide(key, v===val?null:val)}, lab));
+  }
+  return wrap;
+}
+let saveTimer=null;
+function decide(key,val){
+  const f = current(); if (!f) return;
+  f.decisoes = Object.assign({}, f.decisoes); if (val) f.decisoes[key]=val; else delete f.decisoes[key];
+  renderMap();
+  persist(f, {decisoes:f.decisoes});
+}
+function persist(f, patch){
+  if (f.exemplo || !db || String(f.id).startsWith("local-")) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{ try { await db.collection("funis").doc(f.id).update(Object.assign({}, patch, {atualizadoEm:new Date().toISOString()})); } catch(e){ setStatus("Não foi possível guardar a alteração.", true); } }, 600);
+}
+
+function calc(p, orcamento, scen){
+  const f = SCEN[scen].f, a = p.pressupostos;
+  const bMeta = orcamento * (p.divisao.meta||0)/100, bGoo = orcamento * (p.divisao.google||0)/100;
+  const ctr = a.ctr/100*f, cl = a.cliqueLead/100*f, clg = a.cliqueLeadGoogle/100*f, lm = Math.min(1,a.leadMarcacao/100*f), cp = Math.min(1,a.comparencia/100*(scen==="pess"?.95:scen==="otim"?1.05:1));
+  const cpm = a.cpm/f, cpc = a.cpc/f;
+  const impr = bMeta/cpm*1000, clMeta = impr*ctr, clGoo = cpc>0? bGoo/cpc : 0;
+  const leads = clMeta*cl + clGoo*clg, marc = leads*lm, cli = marc*cp;
+  return {impr, cliques: clMeta+clGoo, leads, marc, cli, cpl: leads? orcamento/leads : 0, cpcli: cli? orcamento/cli : 0};
+}
+
+function renderMap(){
+  const m = $("#map"); m.replaceChildren();
+  const f = current();
+  if (!f){
+    m.append(el("div",{class:"eyebrow"},"Mapa do funil"), el("h2",{id:"mapTitle"},"Ainda não há funis para "+brand().nome),
+      el("div",{class:"empty"},"Escolhe os objetivos, a oferta e o orçamento no briefing e carrega em Criar funil. O mapa aparece aqui com as etapas, as contas do orçamento, as campanhas e os criativos, e fica guardado nesta marca."));
+    return;
+  }
+  const p = f.plano, br = f.brief;
+  // cabeçalho
+  const estadoSel = el("select",{id:"estado","aria-label":"Estado do funil",onchange:(e)=>{ f.estado=e.target.value; persist(f,{estado:f.estado}); renderSaved(); }},
+    ...["rascunho","validado","em curso","terminado"].map(s=>el("option",{value:s,selected:f.estado===s},s)));
+  if (f.exemplo) estadoSel.disabled = true;
+  m.append(el("div",{class:"map-head"},
+    el("div",{style:"display:flex;flex-direction:column;gap:4px;min-width:0"},
+      el("div",{class:"eyebrow"},"Mapa do funil · "+(BRANDS.find(b=>b.id===f.marca)?.nome||"")),
+      el("h2",{id:"mapTitle"}, f.titulo),
+      f.exemplo ? el("span",{class:"tag example"},"Exemplo ilustrativo, não é um funil teu") : null),
+    el("div",{class:"estado"}, el("label",{for:"estado",class:"muted",style:"font-size:.85rem"},"Estado"), estadoSel)));
+  if (p.resumo) m.append(el("p",{style:"margin:0"}, p.resumo));
+
+  // avisos
+  if (p.avisos.length) m.append(el("div",{class:"warnbox"}, el("b",{},"A ter em conta"), el("ul",{class:"clean"}, p.avisos.map(a=>el("li",{},a)))));
+
+  // etapas
+  const stages = el("div",{class:"stages"});
+  for (const id of ["desc","cons","conv","ret"]){
+    const s = p.etapas.find(x=>x.id===id); if (!s) continue;
+    const key = "etapa:"+id, out = f.decisoes?.[key]==="fora";
+    stages.append(el("div",{class:"stage"+(out?" dimmed":""),style:"--c:"+STAGE[id].c},
+      el("div",{class:"hd"}, el("h3",{},STAGE[id].nome), el("span",{class:"muted",style:"font-size:.75rem"}, s.consciencia||"")),
+      el("p",{}, el("b",{},s.pessoa||"")),
+      el("p",{style:"font-style:italic"}, "“"+(s.mensagem||"")+"”"),
+      ...(s.canais||[]).map(c=>el("div",{class:"chan"}, el("b",{}, c.plataforma+" · "+c.formato), el("span",{class:"muted"}, c.detalhe||""))),
+      el("p",{class:"muted",style:"font-size:.8rem"}, "Indicador: "+(s.indicador||"")),
+      decisionButtons(key)));
+  }
+  m.append(el("div",{class:"section"}, el("h3",{},"Etapas"), stages));
+
+  // funil invertido
+  m.append(renderFunnel(f));
+
+  // campanhas
+  if (p.campanhas.length){
+    const total = p.campanhas.reduce((s,c)=>s+(+c.orcamentoDia||0),0);
+    m.append(el("div",{class:"section"}, el("h3",{},"Campanhas"),
+      el("div",{class:"tablewrap"}, el("table",{},
+        el("thead",{}, el("tr",{}, ...["Campanha","Etapa","Objetivo e evento","Público","Destino","€/dia","Decisão"].map(h=>el("th",{scope:"col"},h)))),
+        el("tbody",{}, p.campanhas.map((c,i)=>{ const key="camp:"+i; return el("tr",{class:f.decisoes?.[key]==="fora"?"dimmed":""},
+          el("td",{}, el("div",{class:"mono",style:"font-size:.8rem;word-break:break-all"},c.nome), el("span",{class:"muted"},c.plataforma)),
+          el("td",{}, STAGE[c.etapa]?.nome||c.etapa||""),
+          el("td",{}, c.objetivo, el("br"), el("span",{class:"muted"}, c.evento)),
+          el("td",{}, c.publico), el("td",{}, c.destino),
+          el("td",{class:"num"}, eur(+c.orcamentoDia||0)),
+          el("td",{}, decisionButtons(key))); }),
+          el("tr",{}, el("td",{colspan:"5"}, el("b",{},"Total")), el("td",{class:"num"}, el("b",{}, eur(total))), el("td",{class:"muted"}, "≈ "+int(total*30.4)+" €/mês")))))));
+  }
+
+  // criativos
+  if (p.criativos.length){
+    m.append(el("div",{class:"section"}, el("h3",{},"Criativos"),
+      el("div",{class:"cards"}, p.criativos.map((c,i)=>{ const key="cri:"+i; return el("div",{class:"card"+(f.decisoes?.[key]==="fora"?" dimmed":""),style:"--c:"+(STAGE[c.etapa]?.c||"var(--accent)")},
+        el("div",{class:"mono muted",style:"font-size:.76rem"}, c.nome),
+        el("b",{}, c.angulo), el("span",{class:"muted"}, (STAGE[c.etapa]?.nome||"")+" · "+c.formato),
+        el("span",{}, "Gancho: “"+c.gancho+"”"), el("span",{class:"muted"}, c.texto),
+        el("span",{class:"risk risk-"+c.risco}, "Risco de política: "+c.risco),
+        decisionButtons(key)); }))));
+  }
+
+  // página, tracking, revisões
+  const lists = el("div",{class:"cards"});
+  if (p.pagina.length) lists.append(el("div",{class:"card",style:"--c:var(--conv)"}, el("b",{},"Página ou canal de destino"), el("ul",{class:"clean"}, p.pagina.map(x=>el("li",{},x)))));
+  if (p.tracking.length) lists.append(el("div",{class:"card",style:"--c:var(--accent)"}, el("b",{},"Antes de lançar"), el("ul",{class:"clean"}, p.tracking.map(x=>el("li",{},x)))));
+  if (p.revisoes.length) lists.append(el("div",{class:"card",style:"--c:var(--ret)"}, el("b",{},"Revisões"), el("ul",{class:"clean"}, p.revisoes.map(r=>el("li",{}, el("span",{class:"mono"},"Dia "+r.dia)," · "+r.o_que)))));
+  m.append(lists);
+  if (p.fontes) m.append(el("p",{class:"muted",style:"margin:0;font-size:.8rem"}, "Fontes e confiança: "+p.fontes));
+
+  // ajustar com o Claude
+  if (!f.exemplo){
+    const inp = el("input",{type:"text",id:"refineInput",placeholder:"Ex.: tira o Google e põe mais um ângulo para a Recomeçada","aria-label":"Pedir um ajuste ao Claude"});
+    const st = el("div",{class:"status",role:"status"});
+    const b = el("button",{type:"button",class:"btn ghost small"},"Ajustar com o Claude");
+    b.addEventListener("click", async ()=>{
+      const pedido = inp.value.trim(); if (!pedido) { st.textContent="Escreve o que queres mudar."; return; }
+      if (!sample){ st.textContent="Ajustar com o Claude não está disponível nesta vista."; return; }
+      b.disabled=true; st.textContent="O Claude está a ajustar o funil.";
+      try{
+        const decis = Object.entries(f.decisoes||{}).map(([k,v])=>k+"="+v).join(", ")||"nenhuma";
+        const novo = normalize(await sample.json(`${promptFor(f.brief)}
+
+Este é o funil atual (JSON):
+${JSON.stringify(p)}
+Decisões já tomadas (etapa:id, camp:índice, cri:índice): ${decis}. Remove o que está "fora", melhora o que está "ajustar", mantém o que "entra".
+Ajuste pedido: ${pedido}
+Devolve o funil completo atualizado no mesmo formato JSON.`, {modelTier:"complex"}));
+        f.plano = novo; f.titulo = novo.titulo || f.titulo; f.decisoes = {};
+        persist(f, {plano:novo, titulo:f.titulo, decisoes:{}});
+        renderAll();
+      }catch(err){ st.textContent = ERR[err?.code] || "Não foi possível ajustar. Tenta outra vez."; b.disabled=false; }
+    });
+    m.append(el("div",{class:"section"}, el("h3",{},"Pedir um ajuste"), el("div",{class:"refine"}, inp, b), st));
+  }
+}
+
+function renderFunnel(f){
+  const p = f.plano, orc = f.brief.orcamento;
+  const wrap = el("div",{class:"section"});
+  const scen = el("div",{class:"scen",role:"group","aria-label":"Cenário"}, Object.entries(SCEN).map(([k,v])=>el("button",{type:"button","aria-pressed":String(state.scen===k),onclick:()=>{state.scen=k; renderMap();}}, v.nome)));
+  wrap.append(el("div",{style:"display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center"}, el("h3",{},"Do orçamento ao objetivo"), scen));
+  const box = el("div",{class:"funnel"});
+  const left = el("div",{style:"display:flex;flex-direction:column;gap:12px;min-width:0"});
+  const right = el("div",{class:"assume"});
+  box.append(left, right); wrap.append(box);
+
+  const draw = () => {
+    const r = calc(p, orc, state.scen);
+    const steps = [["Impressões Meta", r.impr, "var(--desc)"],["Cliques", r.cliques, "var(--cons)"],["Leads", r.leads, "color-mix(in srgb,var(--cons) 50%,var(--conv))"],["Marcações", r.marc, "var(--conv)"],["Clientes", r.cli, "var(--ret)"]];
+    const mx = Math.max(1, ...steps.slice(1).map(s=>s[1]));
+    const bars = el("div",{class:"bars"});
+    steps.forEach(([lab,v,c],i)=>{
+      const w = i===0 ? 100 : Math.max(28, Math.sqrt(v/mx)*92);
+      bars.append(el("div",{class:"bar",style:`width:${w}%;background:${c}`}, el("span",{},lab), el("b",{}, int(v))));
+    });
+    const alvo = f.brief.meta||0;
+    const hit = r.cli >= alvo*0.95;
+    const goal = el("div",{class:"goal"},
+      el("div",{class:"kpi "+(hit?"good":"bad")}, el("div",{class:"v"}, int(r.cli)+" / "+int(alvo)), el("div",{class:"k"}, "previsto vs objetivo ("+f.brief.unidade+")")),
+      el("div",{class:"kpi"}, el("div",{class:"v"}, eur(r.cpl)), el("div",{class:"k"},"custo por lead")),
+      el("div",{class:"kpi"+(f.brief.ticket && r.cpcli>f.brief.ticket?" bad":"")}, el("div",{class:"v"}, eur(r.cpcli)), el("div",{class:"k"}, "custo por cliente"+(f.brief.ticket?" · ticket "+eur(f.brief.ticket):""))),
+      el("div",{class:"kpi"}, el("div",{class:"v"}, int(orc)+" €"), el("div",{class:"k"}, "por mês · Meta "+(p.divisao.meta||0)+"% · Google "+(p.divisao.google||0)+"%")));
+    left.replaceChildren(goal, bars);
+    if (!hit && r.cli>0) left.append(el("p",{class:"muted",style:"margin:0;font-size:.84rem"}, "Para chegar ao objetivo neste cenário seria preciso cerca de "+int(orc*alvo/r.cli)+" €/mês, ou melhorar a conversão da página e da resposta."));
+  };
+
+  const A = [["cpm","CPM Meta","€",3,30,.5],["ctr","CTR do link Meta","%",.3,4,.1],["cpc","CPC Google","€",.1,4,.05],["cliqueLead","Clique → lead (Meta)","%",1,30,.5],["cliqueLeadGoogle","Clique → lead (Google)","%",1,30,.5],["leadMarcacao","Lead → marcação","%",5,100,1],["comparencia","Marcação → cliente","%",30,100,1]];
+  right.append(el("div",{class:"eyebrow"},"Pressupostos (provável), arrasta para testar"));
+  for (const [k,lab,u,min,max,step] of A){
+    const out = el("span",{class:"mono"}, fmtA(p.pressupostos[k],u));
+    const inp = el("input",{type:"range",id:"a-"+k,min,max,step,value:p.pressupostos[k],"aria-label":lab});
+    inp.addEventListener("input",()=>{ p.pressupostos[k]=+inp.value; out.textContent=fmtA(+inp.value,u); draw(); });
+    inp.addEventListener("change",()=>persist(f,{plano:p}));
+    right.append(el("div",{class:"a"}, el("span",{},lab), out, inp));
+  }
+  const split = el("input",{type:"range",id:"a-split",min:0,max:100,step:5,value:p.divisao.meta||0,"aria-label":"Divisão Meta e Google"});
+  const so = el("span",{class:"mono"}, (p.divisao.meta||0)+"% / "+(p.divisao.google||0)+"%");
+  split.addEventListener("input",()=>{ p.divisao={meta:+split.value,google:100-split.value}; so.textContent=split.value+"% / "+(100-split.value)+"%"; draw(); });
+  split.addEventListener("change",()=>persist(f,{plano:p}));
+  right.append(el("div",{class:"a"}, el("span",{},"Meta / Google"), so, split));
+  draw();
+  return wrap;
+}
+function fmtA(v,u){ return u==="€" ? eur(v) : (Math.round(v*10)/10).toString().replace(".",",")+"%"; }
+
+/* ---------- Guardados ---------- */
+function renderSaved(){
+  const s = $("#saved"); s.replaceChildren();
+  const mine = state.funis.filter(f=>f.marca===state.brand);
+  if (state.brand==="dreams-studio" || !mine.length){
+    if (state.brand==="dreams-studio") s.append(savedCard(Object.assign({id:"__exemplo"},EXEMPLO)));
+  }
+  for (const f of mine) s.append(savedCard(f));
+  if (!mine.length && state.brand!=="dreams-studio") s.append(el("div",{class:"empty"},"Os funis que criares para "+brand().nome+" aparecem aqui."));
+}
+function savedCard(f){
+  const r = calc(f.plano, f.brief.orcamento, "prov");
+  return el("button",{type:"button",class:"sv","aria-current":String(state.currentId===f.id),onclick:()=>{ state.currentId=f.id; renderAll(); }},
+    el("div",{class:"meta"}, el("span",{}, f.exemplo?"exemplo":f.estado), el("span",{class:"mono"}, f.criadoEm? new Date(f.criadoEm).toLocaleDateString("pt-PT"):"")),
+    el("b",{}, f.titulo),
+    el("span",{class:"muted",style:"font-size:.84rem"}, (f.brief.objetivos||[]).join(", ")+" · "+int(f.brief.orcamento)+" €/mês"),
+    el("span",{class:"mono",style:"font-size:.84rem"}, int(r.cli)+" previstos / "+int(f.brief.meta)+" objetivo"));
+}
+
+function renderAll(){ renderBrands(); renderMap(); renderSaved(); }
+
+/* ---------- Arranque ---------- */
+chipGroup("#objetivos", OBJETIVOS, "objetivos");
+chipGroup("#plataformas", PLATAFORMAS, "plataformas");
+chipGroup("#destinos", DESTINOS, "destinos");
+syncBudget();
+state.currentId = state.brand==="dreams-studio" ? "__exemplo" : null;
+renderAll();
+
+(async () => {
+  if (!window.claude?.use) { setStatus("Abre esta página no claude.ai para criar e guardar funis."); return; }
+  claude.use("sample").then(s => { sample = s; if (!s) setStatus("Criar com o Claude não está disponível nesta vista."); });
+  db = await claude.use("db");
+  if (!db) { setStatus("Inicia sessão no claude.ai para guardar os funis."); return; }
+  loadTimer = setTimeout(()=>setStatus("Ainda não foi possível carregar os funis guardados."), 10000);
+  unsub = db.collection("funis").orderBy("criadoEm","desc").onSnapshot(snap => {
+    if (!snap.metadata?.fromCache){ clearTimeout(loadTimer); if ($("#status").textContent.startsWith("Ainda não")) setStatus(""); }
+    const locals = state.funis.filter(f=>String(f.id).startsWith("local-"));
+    state.funis = snap.docs.map(d=>Object.assign({id:d.id}, d.data())).concat(locals);
+    if (state.currentId==="__exemplo" || !state.currentId){
+      const mine = state.funis.filter(f=>f.marca===state.brand);
+      if (mine.length && state.currentId!=="__exemplo") state.currentId = mine[0].id;
+    }
+    // não redesenhar o mapa enquanto alguém arrasta um pressuposto
+    if (!document.activeElement?.matches?.('input[type=range]')) renderAll(); else { renderBrands(); renderSaved(); }
+  }, () => { clearTimeout(loadTimer); setStatus("Não foi possível ler os funis guardados.", true); });
+})();
+</script>

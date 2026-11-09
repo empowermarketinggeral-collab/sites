@@ -17,9 +17,17 @@ O funil liga um objetivo de negócio a campanhas concretas, com o orçamento con
 6. **Frescura:** antes de desenhar, ver a data de verificação das skills anuncios-meta e anuncios-google. Mais de 45 dias, avisar.
 7. Português de Portugal, tratar por tu, sem travessões nem exclamações nos textos que vão para o dashboard.
 
-## Fase 1 · Briefing (perguntas de escolha múltipla, uma ronda)
+## Estúdio de Funis (o painel)
 
-Ver `references/briefing.md`. Ler primeiro o que já existe (registo de marcas em `references/marcas.md`, skills de stories e relatórios da marca, Mapa de Crescimento, projeto da marca) e só perguntar o que falta. Mínimo: objetivo em número e prazo, oferta de entrada, orçamento mensal máximo, zona, destino (site, WhatsApp, formulário), quem responde aos leads e em quanto tempo.
+Painel interativo de todas as marcas: https://claude.ai/artifact/Hk6WkmP3Lai5nL98zTDnth (fonte em `skills/funil-de-marca/painel/estudio-de-funis.html` no repositório `sites`). A Beatriz escolhe a marca, marca os objetivos em chips, define oferta, orçamento, plataformas e destino, descreve o pedido em texto livre e carrega em "Criar funil". O mapa visual aparece com as etapas, o funil invertido com pressupostos ajustáveis e três cenários, as campanhas, os criativos e as decisões Entra / Ajustar / Fora. Cada funil fica guardado na base de dados do painel, coleção `funis` (campos `marca`, `titulo`, `estado`, `brief`, `plano`, `decisoes`).
+
+- **Quando a Beatriz fala de um funil feito no painel:** ler a coleção `funis` com a ferramenta ArtifactData (url do painel) e partir dali, respeitando as decisões. Para aprofundar (pesquisa, Metricool, hub), seguir as fases abaixo e, no fim, gravar o plano revisto no mesmo documento (`update` com `if_version`).
+- **Quando o funil é feito no chat:** no fim, gravar também no painel um documento novo em `funis` com o mesmo formato, para todas as marcas ficarem no mesmo sítio.
+- Ao mudar o formato do plano ou as regras de método, atualizar também o `RULES` dentro do HTML e voltar a publicar.
+
+## Fase 1 · Briefing interativo
+
+No chat, o briefing é sempre um painel visual inline (nunca uma lista de perguntas em texto): chips de escolha múltipla para os objetivos (Marcações, Leads, Vendas, Candidaturas, Lançamento, Notoriedade, Mensagens, Reativar clientes), plataformas e destino; campos para oferta, número e prazo; slider de orçamento mensal com o valor por dia ao lado; ticket médio; zona; caixa "descreve como no chat". O botão envia tudo com sendPrompt, com "Comentários:" no fim, e só envia com pelo menos um objetivo escolhido. Logo a seguir ao envio, mostrar o **mapa visual** (as 4 etapas em colunas de cor, os canais em cada uma, o funil invertido em barras) antes de qualquer texto longo. Ver `references/briefing.md`. Ler primeiro o que já existe (registo de marcas em `references/marcas.md`, skills de stories e relatórios da marca, Mapa de Crescimento, projeto da marca) e só perguntar o que falta. Mínimo: objetivo em número e prazo, oferta de entrada, orçamento mensal máximo, zona, destino (site, WhatsApp, formulário), quem responde aos leads e em quanto tempo.
 
 ## Fase 2 · Diagnóstico (dados reais)
 
@@ -46,7 +54,8 @@ Cada ponto validado no painel antes do seguinte (podem ir 2 a 3 pontos por paine
 
 ## Fase 4 · Entrega
 
-- **Dashboard** a partir do tipo de artefacto Dashboard, título "Funil · <Marca> · <Oferta>", lang pt-PT. Separadores: 1 Resumo (objetivo, orçamento, cenários, linha de tempo) · 2 Funil (etapas e funil invertido) · 3 Campanhas (Meta, Google) · 4 Criativos · 5 Implementação (checklist por pessoa e data) · 6 Resultados (vazio no início; atualiza-se nas revisões com dados do Metricool e do hub, previsto vs real). Datasets em JSON fixos, como no Mapa de Crescimento. O mesmo dashboard serve todas as marcas: só os datasets mudam. É este dashboard que vai para o Big Boss.
+- **Painel:** o funil validado fica no Estúdio de Funis (coleção `funis`, estado "validado").
+- **Dashboard** a partir do tipo de artefacto Dashboard (para levar ao Big Boss quando o funil é grande), título "Funil · <Marca> · <Oferta>", lang pt-PT. Separadores: 1 Resumo (objetivo, orçamento, cenários, linha de tempo) · 2 Funil (etapas e funil invertido) · 3 Campanhas (Meta, Google) · 4 Criativos · 5 Implementação (checklist por pessoa e data) · 6 Resultados (vazio no início; atualiza-se nas revisões com dados do Metricool e do hub, previsto vs real). Datasets em JSON fixos, como no Mapa de Crescimento. O mesmo dashboard serve todas as marcas: só os datasets mudam. É este dashboard que vai para o Big Boss.
 - **Documento** no projeto da marca: `claude/funis/<marca>/<aaaamm>-<oferta>.md` com tudo o que foi validado, pressupostos e pontos em aberto.
 - **Ficheiros de montagem:** textos prontos a copiar e, quando útil, CSV para o Google Ads Editor e folha de importação em massa da Meta.
 

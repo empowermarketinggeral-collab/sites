@@ -8,6 +8,10 @@ Fonte das skills que se carregam no claude.ai. Editar aqui, fazer commit e carre
 | `anuncios-google/` | Campanhas Google Ads: Pesquisa com AI Max, Performance Max (incluindo loja), Demand Gen, YouTube, palavras-chave, conversões, Consent Mode |
 | `funil-de-marca/` | O "agente": de um objetivo de negócio até ao funil completo, validado em painel e entregue em dashboard (que vai para o Big Boss) |
 
+## Estúdio de Funis
+
+Painel interativo de todas as marcas: https://claude.ai/artifact/Hk6WkmP3Lai5nL98zTDnth (fonte em `funil-de-marca/painel/estudio-de-funis.html`). Para atualizar, publicar de novo este ficheiro no mesmo endereço.
+
 ## Carregar no claude.ai
 
 1. Comprimir a pasta da skill em `.zip` (a pasta inteira, com o `SKILL.md` na raiz do zip).
