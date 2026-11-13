@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // Páginas que não devem ir para o Google.
-const PRIVATE = ['/reuniao-agendada', '/404'];
+const PRIVATE = ['/reuniao-agendada', '/404', '/diagnostico'];
 
 export default defineConfig({
   site: 'https://www.empowermarketing.online',
