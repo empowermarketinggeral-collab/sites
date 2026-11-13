@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Diagnóstico de marketing em 2 minutos | Empower Marketing",
+    "description": "Investes em marketing? Sabes o que te devolve? Responde a 8 perguntas e descobre o que trava o crescimento da tua marca."
+  },
+  "lead": {
+    "endpoint": "https://sites-fyz8.vercel.app/api/lead?site=empower-marketing",
+    "source": "diagnostico-feira",
+    "sheetsUrl": ""
+  },
+  "whatsapp": "351910199278",
+  "landing": {
+    "eyebrow": "Diagnóstico · 2 minutos",
+    "title": "Investes em marketing?",
+    "accent": "Sabes o que te devolve?",
+    "subtitle": "Oito perguntas rápidas. No fim, ficas a saber o que está a travar o crescimento da tua marca.",
+    "button": "Começar o diagnóstico"
+  },
+  "questions": [
+    { "id": "objetivo", "question": "Qual é hoje o principal objetivo da tua marca?", "options": [
+      ["vender", "Vender mais"], ["preco", "Subir o preço e o valor percebido"], ["mercado", "Entrar num novo mercado"], ["notoriedade", "Ser mais conhecida"] ] },
+    { "id": "quem", "question": "Quem trata do marketing da tua marca?", "options": [
+      ["ninguem", "Ninguém, neste momento"], ["eu", "Sou eu"], ["equipa", "Alguém da equipa, entre outras tarefas"], ["freelancer", "Um freelancer"], ["agencia", "Uma agência"] ] },
+    { "id": "anuncios", "question": "Fazes anúncios pagos (Meta, Google, outros)?", "options": [
+      ["sim", "Sim, regularmente"], ["parei", "Já fiz, mas parei"], ["nao", "Não"] ] },
+    { "id": "inv_anuncios", "question": "Quanto investes por mês em anúncios?", "onlyIf": { "anuncios": "sim" }, "options": [
+      ["a300", "Até 300€"], ["a1000", "300€ a 1.000€"], ["a3000", "1.000€ a 3.000€"], ["m3000", "Mais de 3.000€"] ] },
+    { "id": "redes", "question": "Com que regularidade publicas nas redes sociais?", "options": [
+      ["consistente", "Várias vezes por semana, com plano"], ["irregular", "Quando há tempo"], ["raro", "Raramente"], ["nunca", "Não publico"] ] },
+    { "id": "inv_total", "question": "Quanto investes em marketing por mês, no total?", "options": [
+      ["a300", "Até 300€"], ["a1000", "300€ a 1.000€"], ["a3000", "1.000€ a 3.000€"], ["m3000", "Mais de 3.000€"], ["naosei", "Não sei ao certo"] ] },
+    { "id": "plano", "question": "Tens um plano de marketing escrito, com objetivos e números?", "options": [
+      ["sim", "Sim"], ["parcial", "Mais ou menos"], ["nao", "Não"] ] },
+    { "id": "retorno", "question": "Consegues dizer quanto te devolve cada euro investido?", "options": [
+      ["sim", "Sim"], ["parcial", "Mais ou menos"], ["nao", "Não"] ] }
+  ],
+  "capture": {
+    "title": "Para onde enviamos o teu diagnóstico?",
+    "subtitle": "Último passo. Vês o resultado logo a seguir.",
+    "sectors": ["Moda", "Beleza", "Restauração", "Mobiliário e design", "Marca conceito", "Marca pessoal", "Outro"],
+    "consent": "Aceito que a Empower Marketing guarde estes dados para me contactar sobre o diagnóstico.",
+    "privacy": "Podes pedir a remoção a qualquer momento.",
+    "button": "Ver o meu resultado",
+    "sending": "A preparar…"
+  },
+  "results": {
+    "estrategia": { "title": "Falta de estratégia", "text": "Investes e executas, mas sem um plano com objetivos e números. Por isso é difícil saber o que cada euro te devolve. O problema não é fazer mais. É saber para onde a marca vai e que posição quer ocupar." },
+    "execucao": { "title": "Falta de quem execute", "text": "Sabes o que a tua marca precisa, mas o marketing depende de ti ou de ninguém. Sem consistência, a marca perde presença e as boas ideias ficam a meio." },
+    "investimento": { "title": "Falta de investimento", "text": "Tens um objetivo claro e alguma estrutura, mas o investimento atual não chega para o que queres alcançar. A marca está a crescer abaixo do seu potencial." }
+  },
+  "result": {
+    "eyebrow": "O que trava a tua marca",
+    "nextText": "Numa conversa de 20 minutos, mostramos-te por onde começar.",
+    "button": "Marca a tua reunião"
+  }
+}

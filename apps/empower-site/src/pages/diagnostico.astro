@@ -1,0 +1,287 @@
+---
+import Base from '../layouts/Base.astro';
+import dg from '../data/diagnostico.json';
+
+// Diagnóstico rápido da feira (QR do flyer): 8 perguntas → contacto → resultado
+// (falta de estratégia, de quem execute ou de investimento) → reunião por WhatsApp.
+// O contacto é guardado no hub (/api/lead → página Leads, e segue para o Big Boss)
+// ANTES de mostrar o resultado, por isso fica registado mesmo que a pessoa não marque.
+const { meta, landing, questions, capture, results, result } = dg;
+const config = { lead: dg.lead, whatsapp: dg.whatsapp, questions, results, sending: capture.sending };
+---
+<Base title={meta.title} description={meta.description} noindex>
+  <div class="dg" data-dg>
+    <section class="page-hero" data-screen="landing">
+      <div class="wrap">
+        <p class="eyebrow reveal">{landing.eyebrow}</p>
+        <h1 class="display page-title reveal">{landing.title}<br /><span class="accent">{landing.accent}</span></h1>
+        <p class="lead reveal">{landing.subtitle}</p>
+        <div class="reveal">
+          <button type="button" class="btn btn-light dg-btn" data-start data-track="diagnostico_inicio">{landing.button}</button>
+        </div>
+        <noscript><p class="note">Para fazer o diagnóstico, ativa o JavaScript no teu browser.</p></noscript>
+      </div>
+    </section>
+
+    <section class="section dg-panel" data-screen="quiz" hidden>
+      <div class="wrap narrow">
+        <div class="dg-progress" aria-hidden="true"><span data-bar></span></div>
+        <p class="muted small dg-count" aria-live="polite"><span data-count>1</span> de <span data-of>{questions.length}</span></p>
+        {questions.map((q) => (
+          <fieldset class="dg-q" data-id={q.id} data-only-if={q.onlyIf ? JSON.stringify(q.onlyIf) : undefined} hidden>
+            <legend class="display dg-question">{q.question}</legend>
+            <div class="dg-options">
+              {q.options.map(([value, label]) => (
+                <label class="dg-option"><input type="radio" name={q.id} value={value} data-label={label} /><span>{label}</span></label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+        <button type="button" class="linklike muted dg-back" data-back>← Voltar</button>
+      </div>
+    </section>
+
+    <section class="section dg-panel" data-screen="capture" hidden>
+      <div class="wrap narrow">
+        <h2 class="display section-title-sm">{capture.title}</h2>
+        <p class="body-lg">{capture.subtitle}</p>
+        <form class="dg-form" data-form novalidate>
+          <label>Nome<input name="name" autocomplete="name" required maxlength="100" /></label>
+          <label>Marca<input name="brand" autocomplete="organization" required maxlength="120" /></label>
+          <label>Setor
+            <select name="setor" required>
+              <option value="">Escolhe</option>
+              {capture.sectors.map((s) => <option>{s}</option>)}
+            </select>
+          </label>
+          <label>Email<input name="email" type="email" autocomplete="email" required maxlength="200" /></label>
+          <label>Telemóvel<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="30" /></label>
+          <label class="dg-hp" aria-hidden="true">Não preencher<input name="website_url" tabindex="-1" autocomplete="off" /></label>
+          <label class="dg-check"><input type="checkbox" name="consent" required /><span>{capture.consent}</span></label>
+          <p class="muted small">{capture.privacy} <a href="/politica-de-privacidade">Política de privacidade</a>.</p>
+          <p class="dg-error" role="alert" data-form-error hidden></p>
+          <button class="btn btn-light dg-btn" data-submit>{capture.button}</button>
+        </form>
+        <button type="button" class="linklike muted dg-back" data-back>← Voltar</button>
+      </div>
+    </section>
+
+    <section class="section dg-panel" data-screen="result" hidden>
+      <div class="wrap narrow">
+        <p class="eyebrow">{result.eyebrow}</p>
+        <h2 class="display dg-result" data-result-title></h2>
+        <p class="body-lg" data-result-text></p>
+        <div class="card card-outline dg-next">
+          <p>{result.nextText}</p>
+          <a class="btn btn-light" href="#" target="_blank" rel="noopener" data-whatsapp data-track="agendamento">{result.button}</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="application/json" id="dg-config" set:html={JSON.stringify(config)} />
+</Base>
+
+<script>
+  type Opt = [string, string];
+  type Q = { id: string; question: string; options: Opt[]; onlyIf?: Record<string, string> };
+  type Config = {
+    lead: { endpoint: string; source: string; sheetsUrl: string };
+    whatsapp: string;
+    questions: Q[];
+    results: Record<'estrategia' | 'execucao' | 'investimento', { title: string; text: string }>;
+    sending: string;
+  };
+  const config: Config = JSON.parse(document.getElementById('dg-config')!.textContent!);
+  const root = document.querySelector<HTMLElement>('[data-dg]')!;
+  const screens = root.querySelectorAll<HTMLElement>('[data-screen]');
+  const all = [...root.querySelectorAll<HTMLFieldSetElement>('.dg-q')];
+  const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+  const formError = root.querySelector<HTMLElement>('[data-form-error]')!;
+  const answers: Record<string, string> = {};
+  const labels: Record<string, string> = {};
+  let current = 0;
+
+  const track = (name: string) => (window as any).empowerTrack?.(name);
+
+  // Perguntas que se aplicam (ex.: o valor em anúncios só para quem faz anúncios).
+  const visible = () => all.filter((f) => {
+    const cond = f.dataset.onlyIf ? JSON.parse(f.dataset.onlyIf) as Record<string, string> : null;
+    return !cond || Object.entries(cond).every(([k, v]) => answers[k] === v);
+  });
+
+  function show(name: string) {
+    screens.forEach((s) => (s.hidden = s.dataset.screen !== name));
+    window.scrollTo({ top: 0 });
+  }
+
+  function goTo(i: number) {
+    const list = visible();
+    current = i;
+    all.forEach((f) => (f.hidden = f !== list[i]));
+    root.querySelector<HTMLElement>('[data-bar]')!.style.width = `${((i + 1) / list.length) * 100}%`;
+    root.querySelector('[data-count]')!.textContent = String(i + 1);
+    root.querySelector('[data-of]')!.textContent = String(list.length);
+    const checked = list[i].querySelector<HTMLInputElement>('input:checked');
+    (checked ?? list[i].querySelector<HTMLInputElement>('input'))?.focus({ preventScroll: true });
+  }
+
+  root.querySelector('[data-start]')!.addEventListener('click', () => { show('quiz'); goTo(0); });
+
+  all.forEach((f) => f.addEventListener('change', (e) => {
+    const input = e.target as HTMLInputElement;
+    answers[f.dataset.id!] = input.value;
+    labels[f.dataset.id!] = input.dataset.label ?? input.value;
+    if (f.dataset.id === 'anuncios' && input.value !== 'sim') {
+      delete answers.inv_anuncios; delete labels.inv_anuncios;
+      root.querySelectorAll<HTMLInputElement>('input[name=inv_anuncios]').forEach((r) => (r.checked = false));
+    }
+    setTimeout(() => {
+      const list = visible();
+      const i = list.indexOf(f);
+      if (i < list.length - 1) goTo(i + 1);
+      else { show('capture'); form.querySelector<HTMLInputElement>('input')?.focus({ preventScroll: true }); }
+    }, 220);
+  }));
+
+  root.querySelectorAll('[data-back]').forEach((b) => b.addEventListener('click', () => {
+    const onCapture = !root.querySelector<HTMLElement>('[data-screen=capture]')!.hidden;
+    if (onCapture) { show('quiz'); goTo(visible().length - 1); }
+    else if (current > 0) goTo(current - 1);
+    else show('landing');
+  }));
+
+  // Pontuação: E = estratégia, X = execução, I = investimento. Empate: E > X > I.
+  function diagnose() {
+    const r = answers;
+    let E = 0, X = 0, I = 0;
+    X += ({ ninguem: 3, eu: 2, equipa: 1 } as Record<string, number>)[r.quem] ?? 0;
+    X += ({ irregular: 1, raro: 2, nunca: 2 } as Record<string, number>)[r.redes] ?? 0;
+    E += ({ parcial: 1, nao: 2 } as Record<string, number>)[r.plano] ?? 0;
+    E += ({ parcial: 1, nao: 2 } as Record<string, number>)[r.retorno] ?? 0;
+    if (r.anuncios === 'parei') E += 1;
+    if (r.inv_total === 'naosei') E += 2;
+    if ((r.inv_anuncios === 'a3000' || r.inv_anuncios === 'm3000') && r.plano !== 'sim') E += 1;
+    I += ({ a300: 2, a1000: 1 } as Record<string, number>)[r.inv_total] ?? 0;
+    if (r.anuncios === 'nao') I += 1;
+    if (r.inv_anuncios === 'a300') I += 1;
+    if ((r.objetivo === 'mercado' || r.objetivo === 'vender') && (r.inv_total === 'a300' || r.inv_total === 'a1000')) I += 1;
+    let key: keyof Config['results'] = 'estrategia';
+    if (X > E && X >= I) key = 'execucao';
+    else if (I > E && I > X) key = 'investimento';
+    return { key, E, X, I };
+  }
+
+  async function send(payload: Record<string, unknown>) {
+    const jobs: Promise<unknown>[] = [];
+    if (config.lead.endpoint) {
+      jobs.push(fetch(config.lead.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true }));
+    }
+    // Opcional: cópia para Google Sheets (Apps Script com doPost). Vazio = desligado.
+    if (config.lead.sheetsUrl) {
+      jobs.push(fetch(config.lead.sheetsUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload), keepalive: true }));
+    }
+    await Promise.race([Promise.allSettled(jobs), new Promise((r) => setTimeout(r, 6000))]);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formError.hidden = true;
+    const data = new FormData(form);
+    const c = {
+      name: String(data.get('name') ?? '').trim(),
+      brand: String(data.get('brand') ?? '').trim(),
+      setor: String(data.get('setor') ?? ''),
+      email: String(data.get('email') ?? '').trim(),
+      phone: String(data.get('phone') ?? '').trim(),
+    };
+    let msg = '';
+    if (!c.name || !c.brand || !c.setor || !c.email || !c.phone) msg = 'Preenche todos os campos.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email)) msg = 'Confirma o email.';
+    else if (c.phone.replace(/\D/g, '').length < 9) msg = 'Confirma o telemóvel.';
+    else if (data.get('consent') !== 'on') msg = 'Precisamos do teu consentimento para guardar os dados.';
+    if (msg) { formError.textContent = msg; formError.hidden = false; return; }
+
+    const d = diagnose();
+    const res = config.results[d.key];
+    const custom_fields: Record<string, string> = {
+      marca: c.brand,
+      setor: c.setor,
+      diagnostico: res.title,
+      objetivo: labels.objetivo ?? '',
+      quem_trata_marketing: labels.quem ?? '',
+      anuncios: labels.anuncios ?? '',
+      investimento_anuncios: labels.inv_anuncios ?? 'Não se aplica',
+      redes_sociais: labels.redes ?? '',
+      investimento_total: labels.inv_total ?? '',
+      plano_escrito: labels.plano ?? '',
+      mede_retorno: labels.retorno ?? '',
+      pontos_estrategia: String(d.E),
+      pontos_execucao: String(d.X),
+      pontos_investimento: String(d.I),
+    };
+    const payload = {
+      name: c.name,
+      first_name: c.name.split(/\s+/)[0],
+      last_name: c.name.split(/\s+/).slice(1).join(' '),
+      email: c.email,
+      phone: c.phone,
+      brand: c.brand,
+      source: config.lead.source,
+      tags: [`diagnostico:${d.key}`, `setor:${c.setor.toLowerCase()}`, 'origem:feira'],
+      consent: true,
+      consent_email: false,
+      custom_fields,
+      _honeypot: String(data.get('website_url') ?? ''),
+    };
+
+    const button = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const label = button.textContent;
+    button.disabled = true;
+    button.textContent = config.sending;
+    await send(payload);
+    button.disabled = false;
+    button.textContent = label;
+
+    root.querySelector('[data-result-title]')!.textContent = res.title;
+    root.querySelector('[data-result-text]')!.textContent = res.text;
+    const text = `Olá, sou ${c.name} da marca ${c.brand}. Fiz o diagnóstico da Empower e o resultado foi "${res.title}". Quero marcar a reunião.`;
+    root.querySelector<HTMLAnchorElement>('[data-whatsapp]')!.href = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(text)}`;
+    show('result');
+    track('lead');
+    (window as any).empowerConversion?.('lead');
+  });
+</script>
+
+<style>
+  .dg-btn { border: 0; cursor: pointer; font-family: var(--font-sans); }
+  .dg-btn:disabled { opacity: .6; cursor: progress; }
+  .dg-panel { min-height: 70vh; }
+  .dg-progress { height: 4px; background: rgba(242,239,245,.12); border-radius: 4px; overflow: hidden; }
+  .dg-progress span { display: block; height: 100%; width: 0; background: var(--lilac); transition: width .3s ease; }
+  .dg-count { margin: .7rem 0 2.4rem; }
+  .dg-q { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .dg-question { font-size: clamp(1.6rem, 3.6vw, 2.5rem); line-height: 1.15; padding: 0; margin-bottom: 2rem; }
+  .dg-options { display: grid; gap: .75rem; }
+  .dg-option { display: block; cursor: pointer; }
+  .dg-option input { position: absolute; opacity: 0; pointer-events: none; }
+  .dg-option span { display: block; padding: 1rem 1.2rem; border: 1px solid rgba(242,239,245,.3); border-radius: 12px; font-size: 1.1rem; transition: border-color .15s ease, background .15s ease; }
+  .dg-option:hover span { border-color: var(--lilac); }
+  .dg-option input:focus-visible + span { outline: 2px solid var(--lilac); outline-offset: 3px; }
+  .dg-option input:checked + span { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+  .dg-back { margin-top: 2rem; }
+  .dg-form { display: grid; gap: 1.1rem; margin-top: 2rem; max-width: 560px; }
+  .dg-form label { display: grid; gap: .4rem; font-size: 1rem; }
+  .dg-form input:not([type=checkbox]), .dg-form select { background: rgba(242,239,245,.06); color: var(--paper); border: 1px solid rgba(242,239,245,.3); border-radius: 10px; padding: .8rem .9rem; font: inherit; font-family: var(--font-sans); min-height: 48px; }
+  .dg-form select option { color: #1c0f2e; }
+  .dg-form input:focus, .dg-form select:focus { outline: 2px solid var(--lilac); outline-offset: 1px; }
+  .dg-form .dg-check { grid-template-columns: auto 1fr; align-items: start; gap: .7rem; }
+  .dg-check input { width: 1.2rem; height: 1.2rem; margin-top: .2rem; accent-color: var(--lilac); }
+  .dg-form p { margin: 0; }
+  .dg-form .btn { justify-self: start; }
+  .dg-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .dg-error { color: #f0a8c0; }
+  .dg-result { font-size: clamp(2.4rem, 7vw, 4rem); line-height: 1.05; margin: .4rem 0 1.4rem; }
+  .dg-next { margin-top: 2.6rem; }
+  .dg-next p { color: var(--paper-muted); margin: 0 0 1.4rem; }
+</style>
