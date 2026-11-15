@@ -1,7 +1,11 @@
 import { defineMiddleware } from 'astro:middleware';
 import { SESSION_COOKIE, isValidSession } from './lib/auth';
 
-const PUBLIC_PATHS = new Set(['/login', '/api/collect', '/api/lead', '/t.js', '/favicon.png']);
+const PUBLIC_PATHS = new Set([
+  '/login', '/api/collect', '/api/lead', '/t.js',
+  // ícones e manifesto (o browser pede-os também no ecrã de entrada)
+  '/favicon.png', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/icon-maskable-512.png', '/manifest.webmanifest',
+]);
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;

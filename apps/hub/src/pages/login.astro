@@ -1,4 +1,7 @@
 ---
+import '@fontsource/quicksand/500.css';
+import '@fontsource/quicksand/700.css';
+import '@fontsource/bodoni-moda/900.css';
 import { SESSION_COOKIE, clearFailures, createSession, isLocked, recordFailure, verifyPassword } from '../lib/auth';
 
 let error = '';
@@ -27,11 +30,18 @@ if (Astro.request.method === 'POST') {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#F5F1EA" />
     <title>Entrar · Empower Hub</title>
   </head>
   <body>
     <form method="post">
-      <h1>✦ Empower Hub</h1>
+      <img src="/favicon.svg" alt="" width="56" height="56" />
+      <h1>Empower <b>Hub</b><span class="dot">.</span></h1>
+      <p class="sub">Back-office dos sites</p>
       <label>Password <input type="password" name="password" autocomplete="current-password" required autofocus /></label>
       {error && <p class="err" role="alert">{error}</p>}
       <button>Entrar</button>
@@ -40,11 +50,26 @@ if (Astro.request.method === 'POST') {
 </html>
 
 <style>
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(80% 80% at 50% 0%, #2a1540, #111114 70%); color: #f2eff5; font: 15px/1.5 system-ui, sans-serif; padding: 16px; }
-  form { width: 100%; max-width: 340px; display: grid; gap: 1rem; background: #1b1722; border: 1px solid #2e2838; border-radius: 16px; padding: 2rem; }
-  h1 { margin: 0; font-weight: 500; font-size: 1.4rem; }
-  label { display: grid; gap: .3rem; color: #a59fae; }
-  input { background: #0e0c12; color: #f2eff5; border: 1px solid #2e2838; border-radius: 8px; padding: .6rem; font: inherit; }
-  button { background: #3a1d5c; color: #f2eff5; border: 0; border-radius: 8px; padding: .65rem; font: inherit; cursor: pointer; }
-  .err { color: #f08a8a; margin: 0; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #F5F1EA; color: #121212; font: 500 15px/1.5 'Quicksand', system-ui, sans-serif; padding: 16px; }
+  form { width: 100%; max-width: 360px; display: grid; gap: 1rem; background: #FFFFFF; border: 1px solid #E6E0D5; border-radius: 3px; padding: 2rem; }
+  img { border: 1px solid #E6E0D5; border-radius: 3px; }
+  h1 { margin: 0; font: 700 1.7rem/1.1 'Bodoni Moda', Georgia, serif; letter-spacing: -.015em; }
+  h1 b { font-weight: 900; }
+  .dot { color: #B8913A; font-weight: 900; }
+  .sub { margin: -.7rem 0 0; color: #6B655D; }
+  label { display: grid; gap: .3rem; color: #4A4642; font-weight: 700; font-size: .88rem; }
+  input { background: #FFFFFF; color: #121212; border: 1px solid #D2CABB; border-radius: 3px; padding: .65rem; font: inherit; }
+  input:focus { outline: 2px solid #B8913A; outline-offset: 0; border-color: #B8913A; }
+  button { background: #121212; color: #F5F1EA; border: 0; border-radius: 3px; padding: .7rem; font: 700 1rem 'Quicksand', system-ui, sans-serif; cursor: pointer; }
+  .err { color: #B3261E; margin: 0; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #141217; color: #F5F1EA; }
+    form { background: #1D1A22; border-color: #2E2A33; }
+    img { border-color: #2E2A33; }
+    .sub { color: #A39C90; }
+    label { color: #CFC6B6; }
+    input { background: #19171D; color: #F5F1EA; border-color: #3E3944; }
+    button { background: #F5F1EA; color: #121212; }
+    .err { color: #F08A80; }
+  }
 </style>

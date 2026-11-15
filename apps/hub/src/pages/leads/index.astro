@@ -116,9 +116,6 @@ const tab = (id: string) => `?${new URLSearchParams({ site: id, days: String(day
 </Hub>
 
 <style>
-  .tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
-  .tabs a { padding: .4rem .8rem; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
-  .tabs a[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
   .filters input[type='search'] { min-width: min(260px, 100%); background: var(--surface); }
   table.leads td { font-size: .9rem; }
   table.leads .pill { margin-top: .15rem; }

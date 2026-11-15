@@ -93,10 +93,6 @@ const exportQuery = new URLSearchParams({ site: siteId, ...(segment && { segment
 </Hub>
 
 <style>
-  .tabs, .segments { display: flex; flex-wrap: wrap; gap: .4rem; }
-  .tabs a, .segments a { padding: .4rem .8rem; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
-  .tabs a[aria-current], .segments a[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .segments a[aria-current] .muted { color: #e9e3f1; }
   .filters input[type='search'] { min-width: min(280px, 100%); background: var(--surface); }
   table.people td { font-size: .9rem; }
   .pills { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .3rem; }
