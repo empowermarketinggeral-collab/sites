@@ -88,6 +88,7 @@ export async function upsert(table: Table, form: FormData): Promise<void> {
   const values = fields.map((f) => String(form.get(f) ?? '').trim().slice(0, 2000));
   // Só guardamos URLs http(s): evita links javascript: no painel.
   if (table === 'sites' && !/^https?:\/\//i.test(values[fields.indexOf('url' as never)])) throw new Error('URL inválido');
+  if (table === 'sites') values[fields.indexOf('domain' as never)] = normalizeDomain(values[fields.indexOf('domain' as never)]);
   if (table === 'sites' && !/^([0-9a-f-]{36})?$/i.test(values[fields.indexOf('bigboss_brand_id' as never)])) throw new Error('Id da marca no Big Boss inválido');
   if (table === 'sites' && !/^[a-z0-9]{0,20}$/i.test(values[fields.indexOf('clarity_id' as never)])) throw new Error('Id do Clarity inválido');
   const cols = ['id', ...fields].join(', ');
@@ -106,6 +107,11 @@ async function slugOrUuid(table: Table, name: string): Promise<string> {
   const slug = name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const taken = await get('SELECT 1 FROM hub.sites WHERE id = ?', [slug]);
   return slug && !taken ? slug : randomUUID();
+}
+
+// "https://www.exemplo.pt/página" → "exemplo.pt" (o campo Domínio aceita qualquer destas formas).
+export function normalizeDomain(value: string): string {
+  return value.trim().toLowerCase().replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/:\d+$/, '').replace(/^www\./, '').replace(/\.$/, '');
 }
 
 export function daysUntil(date: string): number | null {

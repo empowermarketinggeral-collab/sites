@@ -1,77 +1,156 @@
 ---
 import Hub from '../layouts/Hub.astro';
 import { handleCrud } from '../lib/crud';
-import { list, type Client, type Site } from '../lib/db';
+import { list, normalizeDomain, run, type Site } from '../lib/db';
 import { leadConfig, probeBigBoss, tokenEnvKey } from '../lib/leads';
-import { clarityLink } from '../lib/clarity';
+import { clarityConfigured, clarityLink, clarityTokenKey } from '../lib/clarity';
+import { ISSUE_TEXT, checkInstall, trackingHealth } from '../lib/diagnostics';
+import { issuesOf, unknownSiteIssues } from '../lib/sites';
 
+// "Usar este endereço": muda o domínio do site para o endereço de onde chegaram visitas recusadas.
+if (Astro.request.method === 'POST') {
+  const peek = await Astro.request.clone().formData();
+  if (peek.get('_action') === 'usedomain') {
+    const host = normalizeDomain(String(peek.get('host') ?? ''));
+    if (host) {
+      await run('UPDATE hub.sites SET domain = ? WHERE id = ?', [host, String(peek.get('id') ?? '')]);
+      await run("DELETE FROM hub.tracking_issues WHERE site_id = ? AND reason = 'dominio_diferente'", [String(peek.get('id') ?? '')]);
+    }
+    return Astro.redirect(`/sites#${encodeURIComponent(String(peek.get('id') ?? ''))}`, 303);
+  }
+}
 const redirect = await handleCrud(Astro, 'sites');
 if (redirect) return redirect;
 
+const q = Astro.url.searchParams;
 const sites = await list<Site>('sites');
-const clients = await list<Client>('clients');
-const editing = sites.find((s) => s.id === Astro.url.searchParams.get('edit'));
-const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? '—';
+const editing = sites.find((s) => s.id === q.get('edit'));
+// Site novo com um id já usado num código de tracking (vindo de "visitas com data-site desconhecido").
+const newId = !editing && /^[a-z0-9-]{1,60}$/.test(q.get('novo') ?? '') ? q.get('novo')! : '';
+const newHost = newId ? normalizeDomain(q.get('host') ?? '') : '';
 // Teste da ligação ao Big Boss (não cria contactos): /sites?test=<id>.
-const testId = Astro.url.searchParams.get('test');
+const testId = q.get('test');
 const test = testId && sites.some((s) => s.id === testId) ? { id: testId, ...(await probeBigBoss(testId)) } : null;
+const checkSite = sites.find((s) => s.id === q.get('check'));
+const checks = checkSite ? await checkInstall(checkSite, Astro.url.hostname) : null;
+const unknown = (await unknownSiteIssues()).filter((i) => !sites.some((s) => s.id === i.site_id));
+const diag = await Promise.all(sites.map(async (s) => ({ health: await trackingHealth(s.id), issues: await issuesOf(s.id) })));
 const snippet = (id: string) => `<script defer src="${Astro.url.origin}/t.js" data-site="${id}"></script>`;
+const ago = (ts: number) => {
+  const m = Math.round((Date.now() - ts) / 60_000);
+  return m < 1 ? 'agora mesmo' : m < 60 ? `há ${m} min` : m < 48 * 60 ? `há ${Math.round(m / 60)} h` : `há ${Math.round(m / 1440)} dias`;
+};
+const nf = new Intl.NumberFormat('pt-PT');
+const times = (n: number) => `${nf.format(n)} ${n === 1 ? 'vez' : 'vezes'}`;
 ---
 <Hub title="Sites">
   <div class="stack">
+    {unknown.length > 0 && (
+      <section class="card attention">
+        <h2 class="card-title">Visitas de sites que não estão registados</h2>
+        <p class="muted">Estes pedidos trazem um <code>data-site</code> que não existe no hub, por isso as visitas não ficam guardadas. Cria o site com esse id, ou corrige o código no site.</p>
+        <ul>
+          {unknown.map((i) => (
+            <li><code>data-site="{i.site_id}"</code> vindo de <strong>{i.host}</strong> <span class="muted">({times(i.count)}, {ago(i.last_ts)})</span> · <a href={`?${new URLSearchParams({ novo: i.site_id, host: i.host })}`}>Criar este site</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     <form method="post" class="card edit">
-      <input type="hidden" name="id" value={editing?.id ?? ''} />
-      <label>Nome <input name="name" required value={editing?.name} /></label>
-      <label>URL <input name="url" type="url" required placeholder="https://" value={editing?.url} /></label>
-      <label>Domínio (para validar o tracking) <input name="domain" required placeholder="exemplo.pt" value={editing?.domain} /></label>
+      <input type="hidden" name="id" value={editing?.id ?? newId} />
+      <label>Nome <input name="name" required value={editing?.name ?? (newId ? newId.replace(/-/g, ' ') : undefined)} /></label>
+      <label>URL <input name="url" type="url" required placeholder="https://" value={editing?.url ?? (newHost ? `https://${newHost}` : undefined)} /></label>
+      <label>Domínio (para validar o tracking) <input name="domain" required placeholder="exemplo.pt" value={editing?.domain ?? (newHost || undefined)} /></label>
       <label>Pasta no repositório <input name="repo" placeholder="apps/..." value={editing?.repo} /></label>
-      <label>Cliente
-        <select name="client_id">
-          <option value="">—</option>
-          {clients.map((c) => <option value={c.id} selected={editing?.client_id === c.id}>{c.name}</option>)}
-        </select>
-      </label>
+      <input type="hidden" name="client_id" value={editing?.client_id ?? ''} />
       <label>Id da marca no Big Boss (vendas Hotmart) <input name="bigboss_brand_id" placeholder="00000000-0000-…" pattern="[0-9a-fA-F\-]{36}" value={editing?.bigboss_brand_id} /></label>
       <label>Id do projeto Microsoft Clarity <input name="clarity_id" placeholder="ex.: abc123xyz" pattern="[a-zA-Z0-9]{4,20}" value={editing?.clarity_id} /></label>
       <button>{editing ? 'Guardar' : 'Adicionar site'}</button>
     </form>
+    <p class="muted small">O domínio aceita qualquer forma (<code>https://www.exemplo.pt/</code> fica <code>exemplo.pt</code>) e inclui os subdomínios. As visitas vindas do endereço em URL também são aceites (ex.: o site ainda em …vercel.app).</p>
 
-    {sites.map((s) => (
-      <section class="card">
-        <div class="head" style="margin:0">
-          <h2 class="card-title" style="margin:0">{s.name}</h2>
-          <div>
-            <a href={`/leads?site=${s.id}`}>Leads</a> ·
-            {s.bigboss_brand_id && <><a href={`/vendas?site=${s.id}`}>Vendas</a> ·</>}
-            {clarityLink(s) && <><a href={clarityLink(s)!} target="_blank" rel="noopener noreferrer">Clarity</a> ·</>}
-            <a href={`/analytics?site=${s.id}`}>Análises</a> ·
-            <a href={`?edit=${s.id}`}>Editar</a>
-            <form method="post" style="display:inline"><input type="hidden" name="id" value={s.id} /><button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este site? As métricas ficam guardadas.')">Apagar</button></form>
+    {sites.map((s, i) => {
+      const { health, issues } = diag[i];
+      const domainIssues = issues.filter((x) => x.reason === 'dominio_diferente');
+      return (
+        <section class="card" id={s.id}>
+          <div class="head" style="margin:0">
+            <h2 class="card-title" style="margin:0">{s.name}</h2>
+            <div class="links">
+              <a href={`/analytics?site=${s.id}`}>Análises</a>
+              <a href={`/clientes?site=${s.id}`}>Clientes</a>
+              <a href={`/leads?site=${s.id}`}>Leads</a>
+              {s.bigboss_brand_id && <a href={`/vendas?site=${s.id}`}>Vendas</a>}
+              {clarityLink(s) && <a href={clarityLink(s)!} target="_blank" rel="noopener noreferrer">Clarity</a>}
+              <a href={`?edit=${s.id}`}>Editar</a>
+              <form method="post" style="display:inline"><input type="hidden" name="id" value={s.id} /><button class="danger" name="_action" value="delete" onclick="return confirm('Apagar este site? As métricas ficam guardadas.')">Apagar</button></form>
+            </div>
           </div>
-        </div>
-        <p class="muted" style="margin:.4rem 0">
-          <a href={s.url} target="_blank" rel="noopener noreferrer">{s.url}</a> · Cliente: {clientName(s.client_id)}{s.repo && ` · ${s.repo}`}
-        </p>
-        <p class="muted" style="margin:.4rem 0">
-          Id: <code>{s.id}</code> · Domínio: <code>{s.domain || '—'}</code> ·
-          Big Boss: {leadConfig(s.id).token ? 'token configurado' : <>sem <code>{tokenEnvKey(s.id)}</code></>} ·
-          <a href={`?test=${s.id}`}>Testar ligação</a>
-        </p>
-        {test?.id === s.id && <p class={test.ok ? 'ok' : 'err'} role="status">{test.message}</p>}
-        <details>
-          <summary>Código de tracking</summary>
-          <p class="muted">Cola antes de <code>&lt;/head&gt;</code>. Para medir conversões, junta <code>data-track="lead"</code> ao botão ou link de contacto.</p>
-          <pre>{snippet(s.id)}</pre>
-          <p class="muted">Formulários: com este código no site, qualquer <code>&lt;form data-hub-form="newsletter"&gt;</code> passa a enviar para a página Leads (e para o Big Boss, se houver token).
-            Usa campos com <code>name="email"</code>, <code>name</code>, <code>phone</code>, <code>company</code>, <code>consent_email</code>; os outros ficam como respostas.
-            Opcional: <code>data-tags="newsletter:ativo"</code>, <code>data-success="Obrigado!"</code> ou <code>data-redirect="/obrigado"</code>.</p>
-        </details>
-      </section>
-    ))}
+          <p class="muted" style="margin:.4rem 0">
+            <a href={s.url} target="_blank" rel="noopener noreferrer">{s.url}</a>{s.repo && ` · ${s.repo}`} · Id: <code>{s.id}</code> · Domínio: <code>{s.domain || '—'}</code>
+          </p>
+
+          <div class="health">
+            {health.lastTs
+              ? <span class={`pill ${Date.now() - health.lastTs < 86_400_000 ? 'good' : 'warn'}`}>Último evento {ago(health.lastTs)}</span>
+              : <span class="pill bad">Ainda não chegou nenhuma visita</span>}
+            <span class="muted">Últimas 24 h: {nf.format(health.sessions24h)} visitas, {nf.format(health.events24h)} eventos</span>
+            <a href={`?check=${s.id}#${s.id}`}>Verificar instalação</a>
+          </div>
+
+          {checkSite?.id === s.id && checks && (
+            <ul class="checks" role="status">
+              {checks.map((c) => (
+                <li class={c.ok === true ? 'ok' : c.ok === false ? 'err' : 'note'}>
+                  <span aria-hidden="true">{c.ok === true ? '✓' : c.ok === false ? '✗' : '!'}</span> {c.label}{c.detail && <span class="muted"> {c.detail}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {issues.length > 0 && (
+            <div class="issues">
+              {domainIssues.map((x) => (
+                <p class="err">
+                  {ISSUE_TEXT[x.reason]}: <strong>{x.host}</strong> <span class="muted">({times(x.count)}, a última {ago(x.last_ts)})</span>
+                  <form method="post" style="display:inline"><input type="hidden" name="id" value={s.id} /><input type="hidden" name="host" value={x.host} /><button class="ghost small-btn" name="_action" value="usedomain">Usar {x.host} como domínio</button></form>
+                </p>
+              ))}
+              {issues.filter((x) => x.reason !== 'dominio_diferente').map((x) => (
+                <p class="err">{ISSUE_TEXT[x.reason] ?? x.reason}: <code>{x.host}</code> <span class="muted">({times(x.count)}, a última {ago(x.last_ts)})</span></p>
+              ))}
+            </div>
+          )}
+
+          <p class="muted" style="margin:.4rem 0">
+            Big Boss: {leadConfig(s.id).token ? 'token configurado' : <>sem <code>{tokenEnvKey(s.id)}</code></>} · <a href={`?test=${s.id}#${s.id}`}>Testar ligação</a> ·
+            Clarity: {clarityLink(s) ? (clarityConfigured(s) ? 'ligado, com dados no hub' : <>ligado (para ver os números no hub: <code>{clarityTokenKey(s.id)}</code>)</>) : 'sem id do projeto'}
+          </p>
+          {test?.id === s.id && <p class={test.ok ? 'ok' : 'err'} role="status">{test.message}</p>}
+          <details>
+            <summary>Código de tracking</summary>
+            <p class="muted">Cola antes de <code>&lt;/head&gt;</code>. Para medir conversões, junta <code>data-track="lead"</code> (ou <code>contacto</code>, <code>agendamento</code>, <code>compra</code>) ao botão ou link, e <code>data-track-detail="E-book"</code> para dizer o quê.</p>
+            <pre>{snippet(s.id)}</pre>
+            <p class="muted">Formulários: com este código no site, qualquer <code>&lt;form data-hub-form="newsletter"&gt;</code> passa a enviar para a página Leads (e para o Big Boss, se houver token).
+              Usa campos com <code>name="email"</code>, <code>name</code>, <code>phone</code>, <code>company</code>, <code>consent_email</code>; os outros ficam como respostas.
+              Opcional: <code>data-tags="newsletter:ativo"</code>, <code>data-success="Obrigado!"</code> ou <code>data-redirect="/obrigado"</code>.</p>
+          </details>
+        </section>
+      );
+    })}
   </div>
 </Hub>
 
 <style>
   .ok { color: var(--good); margin: .4rem 0; }
   .err { color: var(--bad); margin: .4rem 0; }
+  .note { color: var(--warn); }
+  .small { font-size: .82rem; margin: -.4rem 0 0; }
+  .links { display: flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: center; }
+  .health { display: flex; flex-wrap: wrap; gap: .4rem .9rem; align-items: center; margin: .6rem 0; }
+  .checks { list-style: none; margin: .4rem 0 .8rem; padding: .7rem .9rem; background: var(--page); border: 1px solid var(--line); border-radius: 10px; display: grid; gap: .35rem; }
+  .issues p { margin: .3rem 0; }
+  .small-btn { padding: .2rem .6rem; font-size: .82rem; margin-left: .4rem; }
+  .attention { border-color: var(--warn); }
 </style>
