@@ -2,19 +2,17 @@
 import Delta from './Delta.astro';
 interface Props { labels: string[]; current: number[]; previous: number[] }
 const { labels, current, previous } = Astro.props;
-const top = Math.max(1, current[0]);
 const pct = (v: number) => (current[0] ? (v / current[0]) * 100 : 0);
+const nf = new Intl.NumberFormat('pt-PT');
 ---
-<div class="funnel" style={`grid-template-columns: repeat(${labels.length}, minmax(0, 1fr))`}>
+<ol class="funnel">
   {labels.map((l, i) => (
-    <div class="fn-step">
-      <span class="muted">{l}</span>
-      <b>{pct(current[i]).toFixed(i ? 1 : 0).replace('.', ',')}%</b>
-      <span>{current[i]}</span>
-      <Delta current={current[i]} previous={previous[i]} />
-      <div class="fn-col" title={`${l}: ${current[i]} (anterior: ${previous[i]})`}>
-        <span class={`fn-bar o${Math.min(i + 1, 3)}`} style={`height:${Math.max(2, (current[i] / top) * 100)}%`}></span>
+    <li title={`${l}: ${current[i]} (período anterior: ${previous[i]})`}>
+      <div class="fn-head">
+        <span class="fn-label">{l}</span>
+        <span class="fn-val"><b>{pct(current[i]).toFixed(i ? 1 : 0).replace('.', ',')}%</b> <span class="muted">{nf.format(current[i])}</span> <Delta current={current[i]} previous={previous[i]} /></span>
       </div>
-    </div>
+      <span class="fn-track"><span class="fn-bar" style={`width:${Math.max(0.5, pct(current[i]))}%`}></span></span>
+    </li>
   ))}
-</div>
+</ol>

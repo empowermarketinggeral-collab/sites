@@ -383,7 +383,7 @@ export async function conversionsReport(siteId: string, days: number) {
     bySource: rate((s) => `${s.channel} · ${s.source}`),
     byCampaign: rate((s) => s.campaign || null),
     byLanding: rate((s) => s.landing),
-    funnel: { labels: ['Sessões', 'Interagiram', 'Checkout ou formulário', 'Converteram'], current: funnel(cur), previous: funnel(prev) },
+    funnel: { labels: ['Sessões', 'Interagiram', 'Checkout ou inscrição', 'Converteram'], current: funnel(cur), previous: funnel(prev) },
     others: [...others.values()].sort((a, b) => b.count - a.count).slice(0, 30),
     recent,
   };

@@ -112,6 +112,15 @@ const periodsOf = r?.periods ?? conv?.periods;
               <li><span class="swatch"></span>{range(r.periods.current)}</li>
               <li><span class="swatch prev"></span>{range(r.periods.previous)}</li>
             </ul>
+            <details>
+              <summary>Ver tabela</summary>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Dia</th><th class="num">Sessões</th><th class="num">Período anterior</th></tr></thead>
+                  <tbody>{r.timeseries.current.map((pt, i) => <tr><td>{pt.date}</td><td class="num">{pt.sessions}</td><td class="num">{r.timeseries.previous[i]?.sessions ?? 0}</td></tr>)}</tbody>
+                </table>
+              </div>
+            </details>
           </section>
           <section class="card">
             <h2 class="card-title">Sessões por tipo de dispositivo</h2>
@@ -304,9 +313,6 @@ const periodsOf = r?.periods ?? conv?.periods;
 </Hub>
 
 <style>
-  .tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
-  .tabs a { padding: .4rem .8rem; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
-  .tabs a[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
   .chip.live { font-weight: 600; }
   .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--good); display: inline-block; }
   a.chip { text-decoration: none; }

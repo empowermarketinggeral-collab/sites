@@ -26,6 +26,12 @@ Back-office privado, no estilo da Shopify:
 - **Sites** — registo de cada site, o código de tracking para colar no `<head>` e o diagnóstico: último evento recebido, visitas das últimas 24 h, visitas recusadas e porquê (com botão para aceitar o endereço certo), visitas de `data-site` que não existem e "Verificar instalação" (abre o site e confirma o código, o `data-site` e a CSP).
 - **Domínios** — datas de expiração e ligação a cada site.
 
+### Design e ícone
+
+Identidade Empower Boss: fundo papel (`#F5F1EA`), folhas brancas com linhas finas e cantos de 3px, tinta preta, ponto dourado (`#B8913A`); Quicksand no texto e nos números, Bodoni Moda só no nome e nos títulos (fontes servidas pelo próprio hub, `@fontsource`). Modo escuro segue o sistema.
+Cores dos gráficos validadas para daltonismo e contraste nos dois modos: roxo Empower (série principal), dourado e verde Norte; o período anterior é cinza. Os valores são sempre legíveis sem cor (rótulos, tabela "Ver tabela").
+Ícone: monograma "H." em Bodoni com o ponto dourado, a mesma linha do "B." da Empower Boss (preto) e do Big Boss (roxo), aqui em papel. Ficheiros em `public/` (`favicon.svg`, `favicon.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`) e `manifest.webmanifest` para instalar no telemóvel.
+
 ### Como funciona o tracking
 
 Cada site carrega um script leve (`/t.js`) do hub. **Não usa cookies**: o visitante é identificado por um hash diário (IP + browser + site) que muda todos os dias, por isso não é preciso banner de cookies para estas métricas.
