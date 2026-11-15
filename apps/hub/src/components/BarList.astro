@@ -1,8 +1,8 @@
 ---
 import type { BreakdownRow } from '../lib/analytics';
 import Delta from './Delta.astro';
-interface Props { title: string; rows: BreakdownRow[]; empty?: string }
-const { title, rows, empty = 'Sem dados neste período.' } = Astro.props;
+interface Props { title: string; rows: BreakdownRow[]; empty?: string; more?: { href: string; label: string } }
+const { title, rows, empty = 'Sem dados neste período.', more } = Astro.props;
 const max = Math.max(1, ...rows.flatMap((r) => [r.current, r.previous]));
 const w = (v: number) => `${(v / max) * 100}%`;
 ---
@@ -26,4 +26,5 @@ const w = (v: number) => `${(v / max) * 100}%`;
       ))}
     </ul>
   )}
+  {more && <p class="bl-more"><a href={more.href}>{more.label}</a></p>}
 </section>

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { clientIp, hostMatches, originMatches, rateLimiter, siteFor } from '../../lib/sites';
+import { clientIp, hostMatches, noteIssue, originMatches, rateLimiter, siteFor } from '../../lib/sites';
 import { record } from '../../lib/tracking';
 
 const EVENT_NAME = /^[a-z0-9_]{1,40}$/;
@@ -20,7 +20,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const body = await request.text();
   if (body.length > 2000) return new Response(null, { status: 413, headers });
 
-  let data: { s?: string; n?: string; u?: string; r?: string; k?: string };
+  let data: { s?: string; n?: string; u?: string; r?: string; k?: string; t?: string; d?: string };
   let url: URL;
   try {
     data = JSON.parse(body);
@@ -29,22 +29,37 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return new Response(null, { status: 400, headers });
   }
 
-  const site = await siteFor(String(data.s ?? ''));
-  const name = String(data.n ?? 'pageview');
-  // Só aceitamos eventos vindos do domínio registado para o site.
-  if (!site || !hostMatches(site, url.hostname) || (origin && !originMatches(site, origin)) || !EVENT_NAME.test(name)) {
-    return new Response(null, { status: 403, headers });
-  }
-
   const h = request.headers;
   const ip = clientIp(h, clientAddress);
   if (limited(ip)) return new Response(null, { status: 429, headers });
+
+  const site = await siteFor(String(data.s ?? ''));
+  const name = String(data.n ?? 'pageview');
+  // Só aceitamos eventos vindos do domínio registado para o site (ou do seu endereço).
+  // As recusas ficam registadas para o diagnóstico em Sites.
+  const siteId = String(data.s ?? '').slice(0, 80);
+  if (!site) {
+    await noteIssue(siteId || '(sem data-site)', url.hostname, 'site_desconhecido');
+    return new Response(null, { status: 403, headers });
+  }
+  if (!hostMatches(site, url.hostname) || (origin && !originMatches(site, origin))) {
+    const badHost = !hostMatches(site, url.hostname) || !origin || !URL.canParse(origin) ? url.hostname : new URL(origin).hostname;
+    await noteIssue(site.id, badHost, 'dominio_diferente');
+    return new Response(null, { status: 403, headers });
+  }
+  if (!EVENT_NAME.test(name)) {
+    await noteIssue(site.id, name.slice(0, 40), 'nome_de_evento_invalido');
+    return new Response(null, { status: 403, headers });
+  }
+
   await record({
     siteId: site.id,
     name,
     url,
     referrer: String(data.r ?? ''),
     ref: REF.test(String(data.k ?? '')) ? String(data.k) : '',
+    title: String(data.t ?? '').replace(/\s+/g, ' ').trim().slice(0, 150),
+    detail: String(data.d ?? '').replace(/\s+/g, ' ').trim().slice(0, 120),
     ip,
     ua: h.get('user-agent') ?? '',
     country: h.get('cf-ipcountry') ?? h.get('x-vercel-ip-country') ?? h.get('x-country') ?? '',

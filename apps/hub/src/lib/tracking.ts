@@ -65,6 +65,8 @@ export interface TrackInput {
   country: string;
   city: string;
   ref?: string;
+  title?: string;
+  detail?: string;
   ts?: number;
 }
 
@@ -85,11 +87,12 @@ export async function record(input: TrackInput): Promise<boolean> {
   const session = last?.session_id ?? createHash('sha256').update(`${visitor}|${ts}`).digest('base64url').slice(0, 22);
 
   await run(
-    `INSERT INTO hub.events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device, ref)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO hub.events (site_id, ts, name, session_id, visitor_id, path, entry, channel, source, utm_campaign, country, city, device, ref, title, detail)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.siteId, ts, input.name, session, visitor, input.url.pathname.slice(0, 300), last ? 0 : 1,
       attribution.channel, attribution.source, attribution.campaign, input.country, input.city, device, input.ref ?? '',
+      input.title ?? '', input.detail ?? '',
     ],
   );
   return true;

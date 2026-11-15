@@ -1,0 +1,104 @@
+---
+import Hub from '../../layouts/Hub.astro';
+import { list, type Site } from '../../lib/db';
+import { SEGMENTS, listCustomers } from '../../lib/customers';
+import { money } from '../../lib/sales';
+import { statusLabel } from '../../lib/backoffice';
+
+const SORTS = [
+  { id: 'recentes', label: 'Atividade recente' },
+  { id: 'gasto', label: 'Maior gasto' },
+  { id: 'pedidos', label: 'Mais pedidos e compras' },
+  { id: 'antigas', label: 'Mais antigas' },
+];
+const sites = await list<Site>('sites');
+const q = Astro.url.searchParams;
+const siteId = sites.some((s) => s.id === q.get('site')) ? q.get('site')! : 'all';
+const segment = SEGMENTS.some((s) => s.id === q.get('segmento')) ? q.get('segmento')! : '';
+const sort = SORTS.some((s) => s.id === q.get('ordem')) ? q.get('ordem')! : 'recentes';
+const search = (q.get('q') ?? '').trim().slice(0, 100);
+const data = await listCustomers(siteId, { segment, q: search, sort });
+const shown = data.list.slice(0, 500);
+
+const nf = new Intl.NumberFormat('pt-PT');
+const date = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Lisbon' });
+const siteName = (id: string) => sites.find((s) => s.id === id)?.name ?? id;
+const link = (params: Record<string, string>) => `?${new URLSearchParams({ site: siteId, ...(segment && { segmento: segment }), ordem: sort, ...(search && { q: search }), ...params })}`;
+const exportQuery = new URLSearchParams({ site: siteId, ...(segment && { segmento: segment }), ordem: sort, ...(search && { q: search }) });
+---
+<Hub title="Clientes">
+  <a slot="actions" class="chip" href={`/clientes/export?${exportQuery}`} download>Exportar CSV</a>
+
+  <div class="stack">
+    <nav class="tabs" aria-label="Site">
+      <a href={`?site=all`} aria-current={siteId === 'all' ? 'page' : undefined}>Todos os sites</a>
+      {sites.map((s) => <a href={`?site=${s.id}`} aria-current={siteId === s.id ? 'page' : undefined}>{s.name}</a>)}
+    </nav>
+
+    <div class="grid-stats">
+      <div class="card stat"><span class="muted">Pessoas</span><b>{nf.format(data.total)}</b><span class="muted">inscritas ou compradoras</span></div>
+      <div class="card stat"><span class="muted">Compradoras</span><b>{nf.format(data.counts.compradoras)}</b><span class="muted">{data.total ? `${Math.round((data.counts.compradoras / data.total) * 100)}% das pessoas` : ''}</span></div>
+      <div class="card stat"><span class="muted">Aceitam emails</span><b>{nf.format(data.counts.subscritoras)}</b></div>
+      <div class="card stat"><span class="muted">Inscritas sem compra</span><b>{nf.format(data.counts['sem-compra'])}</b><span class="muted">para trabalhar</span></div>
+      <div class="card stat"><span class="muted">Total gasto (Hotmart)</span><b>{money(data.revenue, data.currency)}</b></div>
+    </div>
+
+    <nav class="segments" aria-label="Segmento">
+      {SEGMENTS.map((s) => <a href={link({ segmento: s.id })} aria-current={s.id === segment ? 'page' : undefined}>{s.label} <span class="muted">{nf.format(data.counts[s.id] ?? 0)}</span></a>)}
+    </nav>
+
+    <form class="filters" method="get">
+      <input type="hidden" name="site" value={siteId} />
+      {segment && <input type="hidden" name="segmento" value={segment} />}
+      <select name="ordem" aria-label="Ordenar" onchange="this.form.submit()">{SORTS.map((s) => <option value={s.id} selected={s.id === sort}>{s.label}</option>)}</select>
+      <input type="search" name="q" value={search} placeholder="Procurar nome, email, telefone, empresa…" aria-label="Procurar" />
+      <button class="ghost">Procurar</button>
+    </form>
+
+    <section class="card">
+      <h2 class="card-title">{data.list.length > 500 ? `500 de ${nf.format(data.list.length)} pessoas` : `${nf.format(data.list.length)} ${data.list.length === 1 ? 'pessoa' : 'pessoas'}`}</h2>
+      {shown.length === 0 ? (
+        <p class="muted">Ainda ninguém neste segmento. As pessoas aparecem aqui quando preenchem um formulário do site (Leads) ou compram na Hotmart (Vendas).</p>
+      ) : (
+        <div class="table-wrap">
+          <table class="people">
+            <thead><tr><th>Pessoa</th><th>Inscrições</th><th>Compras</th><th class="num">Total gasto</th><th>Veio de</th><th>Última atividade</th></tr></thead>
+            <tbody>
+              {shown.map((c) => (
+                <tr>
+                  <td>
+                    <a href={`/clientes/pessoa?${new URLSearchParams({ k: c.key, site: siteId })}`}><strong>{c.name || c.email || c.phone}</strong></a>
+                    <br /><span class="muted">{[c.email, c.company].filter(Boolean).join(' · ')}</span>
+                    {siteId === 'all' && <><br /><span class="muted">{c.sites.map(siteName).join(', ')}</span></>}
+                    <div class="pills">
+                      {c.purchases > 0 && <span class="pill good">Compradora</span>}
+                      {c.consent && <span class="pill">Aceita emails</span>}
+                      {c.openCarts > 0 && <span class="pill warn">Carrinho por recuperar</span>}
+                      {c.status && c.status !== 'novo' && <span class="pill">{statusLabel(c.status)}</span>}
+                    </div>
+                  </td>
+                  <td>{c.leads ? <>{c.leads}<br /><span class="muted">{c.forms.slice(0, 3).join(', ')}</span></> : <span class="muted">—</span>}</td>
+                  <td>{c.purchases ? <>{c.purchases}<br /><span class="muted">{c.products.slice(0, 2).join(', ')}</span></> : <span class="muted">—</span>}</td>
+                  <td class="num">{c.purchases || c.refunds ? money(c.spent, c.currency) : '—'}</td>
+                  <td>{c.origin || <span class="muted">—</span>}{c.campaign && <><br /><span class="muted">campanha {c.campaign}</span></>}</td>
+                  <td class="nowrap">{date.format(c.lastTs)}<br /><span class="muted">desde {date.format(c.firstTs)}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  </div>
+</Hub>
+
+<style>
+  .tabs, .segments { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .tabs a, .segments a { padding: .4rem .8rem; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
+  .tabs a[aria-current], .segments a[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .segments a[aria-current] .muted { color: #e9e3f1; }
+  .filters input[type='search'] { min-width: min(280px, 100%); background: var(--surface); }
+  table.people td { font-size: .9rem; }
+  .pills { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .3rem; }
+  .nowrap { white-space: nowrap; }
+</style>

@@ -1,0 +1,111 @@
+---
+import type { Site } from '../lib/db';
+import { clarityInsights, clarityLink, clarityTokenKey } from '../lib/clarity';
+
+interface Props { site: Site; force?: boolean }
+const { site, force = false } = Astro.props;
+const data = clarityLink(site) ? await clarityInsights(site, force) : null;
+const pages = data?.pages ?? [];
+const sessions = pages.reduce((t, p) => t + p.sessions, 0);
+// Médias pesadas pelas sessões de cada página. Nos cliques, uma página sem a métrica conta como 0%
+// (o Clarity só lista as páginas onde isso aconteceu); no scroll e no tempo, só contam as que têm valor.
+const avg = (key: 'scroll' | 'activeTime' | 'rage' | 'dead' | 'quickback') => {
+  const clicks = key === 'rage' || key === 'dead' || key === 'quickback';
+  if (clicks && !pages.some((p) => p[key] !== null)) return null;
+  const rows = pages.filter((p) => (clicks || p[key] !== null) && p.sessions > 0);
+  const w = rows.reduce((t, p) => t + p.sessions, 0);
+  return w ? rows.reduce((t, p) => t + (p[key] ?? 0) * p.sessions, 0) / w : null;
+};
+const pct = (v: number | null) => (v === null ? '—' : `${v.toFixed(1).replace('.', ',')}%`);
+const secs = (v: number | null) => (v === null ? '—' : `${Math.floor(v / 60)}m ${String(Math.round(v % 60)).padStart(2, '0')}s`);
+const nf = new Intl.NumberFormat('pt-PT');
+const when = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon' });
+const problems = [...pages].filter((p) => (p.rage ?? 0) + (p.dead ?? 0) + (p.quickback ?? 0) > 0)
+  .sort((a, b) => ((b.rage ?? 0) + (b.dead ?? 0)) * b.sessions - ((a.rage ?? 0) + (a.dead ?? 0)) * a.sessions).slice(0, 5);
+---
+{!clarityLink(site) ? (
+  <section class="card">
+    <h2 class="card-title">Ligar o Microsoft Clarity a {site.name}</h2>
+    <ol>
+      <li>Em <a href="https://clarity.microsoft.com" target="_blank" rel="noopener noreferrer">clarity.microsoft.com</a> cria um projeto para este site e copia o id do projeto (Settings → Overview).</li>
+      <li>Cola o id em <a href={`/sites?edit=${site.id}`}>Sites → Editar</a>. Passas a ter aqui os botões para o painel, as gravações e os mapas de calor.</li>
+      <li>No site, o Clarity tem de carregar: nos sites deste repositório basta pôr o id em <code>src/data/site.json</code> → <code>tracking.clarityId</code> (só carrega com consentimento de cookies de análise).</li>
+      <li>Para veres os números aqui dentro: Clarity → Settings → Data export → Generate new API token, e no Vercel do hub a variável <code>{clarityTokenKey(site.id)}</code> com esse token.</li>
+    </ol>
+  </section>
+) : (
+  <div class="stack">
+    <section class="card">
+      <div class="ci-head">
+        <h2 class="card-title">Comportamento das visitas (Microsoft Clarity)</h2>
+        <div class="ci-links">
+          <a class="chip" href={clarityLink(site, 'dashboard')} target="_blank" rel="noopener noreferrer">Painel</a>
+          <a class="chip" href={clarityLink(site, 'recordings')} target="_blank" rel="noopener noreferrer">Gravações</a>
+          <a class="chip" href={clarityLink(site, 'heatmaps')} target="_blank" rel="noopener noreferrer">Mapas de calor</a>
+        </div>
+      </div>
+      {!data ? (
+        <p class="muted">Para veres aqui os números dos últimos 3 dias (cliques de raiva, cliques mortos, scroll, tempo ativo por página): Clarity → Settings → Data export → Generate new API token, e no Vercel do hub a variável <code>{clarityTokenKey(site.id)}</code> com esse token. Sem token, usa os botões acima.</p>
+      ) : (
+        <>
+          {data.error && <p class="ci-err" role="alert">{data.error}</p>}
+          {data.fetchedAt > 0 && (
+            <form method="post" class="ci-refresh">
+              <span class="muted">Últimos 3 dias, atualizado a {when.format(data.fetchedAt)}. O Clarity limita os pedidos por dia: o hub atualiza sozinho de 3 em 3 horas.</span>
+              <button class="ghost">Atualizar</button>
+            </form>
+          )}
+          {pages.length === 0 && !data.error && (
+            <p class="muted">O Clarity ainda não tem dados para estes dias{data.metrics.length ? ` (métricas recebidas: ${data.metrics.join(', ')})` : ''}.</p>
+          )}
+          {pages.length > 0 && (
+            <div class="grid-stats">
+              <div class="card stat"><span class="muted">Sessões</span><b>{nf.format(sessions)}</b></div>
+              <div class="card stat"><span class="muted">Scroll médio</span><b>{pct(avg('scroll'))}</b><span class="muted">da página</span></div>
+              <div class="card stat"><span class="muted">Tempo ativo médio</span><b>{secs(avg('activeTime'))}</b></div>
+              <div class="card stat"><span class="muted">Sessões com cliques de raiva</span><b>{pct(avg('rage'))}</b><span class="muted">clicar várias vezes no mesmo sítio</span></div>
+              <div class="card stat"><span class="muted">Sessões com cliques mortos</span><b>{pct(avg('dead'))}</b><span class="muted">clicar em algo que não faz nada</span></div>
+              <div class="card stat"><span class="muted">Recuos rápidos</span><b>{pct(avg('quickback'))}</b><span class="muted">entrar e voltar logo atrás</span></div>
+            </div>
+          )}
+        </>
+      )}
+    </section>
+
+    {problems.length > 0 && (
+      <section class="card">
+        <h2 class="card-title">Páginas a rever primeiro</h2>
+        <ul>{problems.map((p) => <li><code>{p.path}</code>: {[
+          p.rage !== null && `${pct(p.rage)} com cliques de raiva`,
+          p.dead !== null && `${pct(p.dead)} com cliques mortos`,
+          p.quickback !== null && `${pct(p.quickback)} com recuos rápidos`,
+        ].filter(Boolean).join(', ')} <span class="muted">({nf.format(p.sessions)} sessões)</span></li>)}</ul>
+        <p class="muted">Abre os <a href={clarityLink(site, 'heatmaps')} target="_blank" rel="noopener noreferrer">mapas de calor</a> dessas páginas para ver onde clicam.</p>
+      </section>
+    )}
+
+    {pages.length > 0 && (
+      <section class="card">
+        <h2 class="card-title">Por página</h2>
+        <div class="table-wrap">
+          <table class="report">
+            <thead><tr><th>Página</th><th class="num">Sessões</th><th class="num">Scroll</th><th class="num">Tempo ativo</th><th class="num">Raiva</th><th class="num">Mortos</th><th class="num">Recuos</th><th class="num">Erros JS</th></tr></thead>
+            <tbody>{pages.slice(0, 50).map((p) => (
+              <tr><td><code>{p.path}</code></td><td class="num">{nf.format(p.sessions)}</td><td class="num">{pct(p.scroll)}</td><td class="num">{secs(p.activeTime)}</td><td class="num">{pct(p.rage)}</td><td class="num">{pct(p.dead)}</td><td class="num">{pct(p.quickback)}</td><td class="num">{pct(p.scriptErrors)}</td></tr>
+            ))}</tbody>
+          </table>
+        </div>
+        <p class="muted">Percentagens = sessões da página em que isso aconteceu.</p>
+      </section>
+    )}
+  </div>
+)}
+
+<style>
+  .ci-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .6rem; margin-bottom: .6rem; }
+  .ci-head .card-title { margin: 0; }
+  .ci-links { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .ci-links a { text-decoration: none; }
+  .ci-refresh { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+  .ci-err { color: var(--bad); }
+</style>

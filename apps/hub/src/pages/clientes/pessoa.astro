@@ -1,0 +1,108 @@
+---
+import Hub from '../../layouts/Hub.astro';
+import { list, type Site } from '../../lib/db';
+import { customerDetail } from '../../lib/customers';
+import { money } from '../../lib/sales';
+import { statusLabel } from '../../lib/backoffice';
+import { eventLabel } from '../../lib/analytics';
+import { clarityLink } from '../../lib/clarity';
+
+const sites = await list<Site>('sites');
+const q = Astro.url.searchParams;
+const siteId = sites.some((s) => s.id === q.get('site')) ? q.get('site')! : 'all';
+const key = (q.get('k') ?? '').trim().toLowerCase().slice(0, 200);
+const data = key ? await customerDetail(siteId, key) : null;
+if (!data) return Astro.redirect(`/clientes?site=${encodeURIComponent(siteId)}`, 303);
+const { customer: c, items, visits } = data;
+
+const full = new Intl.DateTimeFormat('pt-PT', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Lisbon' });
+const time = new Intl.DateTimeFormat('pt-PT', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon' });
+const siteName = (id: string) => sites.find((s) => s.id === id)?.name ?? id;
+const digits = c.phone.replace(/^00/, '').replace(/[^\d]/g, '');
+const waNumber = digits.length === 9 ? `351${digits}` : digits;
+const claritySites = c.sites.map((id) => sites.find((s) => s.id === id)).filter((s): s is Site => !!s && !!clarityLink(s));
+---
+<Hub title={c.name || c.email || c.phone}>
+  <a slot="actions" class="chip" href={`/clientes?site=${encodeURIComponent(siteId)}`}>Voltar aos clientes</a>
+
+  <div class="stack">
+    <div class="grid-stats">
+      <div class="card stat"><span class="muted">Total gasto</span><b>{money(c.spent, c.currency)}</b><span class="muted">{c.purchases} {c.purchases === 1 ? 'compra' : 'compras'}{c.refunds ? `, ${c.refunds} reembolso(s)` : ''}</span></div>
+      <div class="card stat"><span class="muted">Inscrições</span><b>{c.leads}</b><span class="muted">{c.forms.join(', ') || '—'}</span></div>
+      <div class="card stat"><span class="muted">Cliente desde</span><b class="smaller">{full.format(c.firstTs)}</b><span class="muted">{c.origin ? `veio de ${c.origin}` : ''}</span></div>
+      <div class="card stat"><span class="muted">Última atividade</span><b class="smaller">{full.format(c.lastTs)}</b></div>
+    </div>
+
+    <div class="grid-3">
+      <section class="card">
+        <h2 class="card-title">Contacto</h2>
+        <dl>
+          {c.email && <><dt>Email</dt><dd><a href={`mailto:${c.email}`}>{c.email}</a></dd></>}
+          {c.phone && <><dt>Telefone</dt><dd><a href={`tel:${c.phone}`}>{c.phone}</a>{waNumber.length >= 11 && <> · <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp</a></>}</dd></>}
+          {c.company && <><dt>Empresa / marca</dt><dd>{c.company}</dd></>}
+          <dt>Aceita emails</dt><dd>{c.consent ? 'Sim' : 'Não'}</dd>
+          <dt>Sites</dt><dd>{c.sites.map(siteName).join(', ')}</dd>
+          {c.status && <><dt>Estado do lead</dt><dd>{statusLabel(c.status)}{c.lastLeadId && <> · <a href={`/leads/${c.lastLeadId}`}>alterar</a></>}</dd></>}
+        </dl>
+      </section>
+      <section class="card">
+        <h2 class="card-title">Produtos</h2>
+        {c.products.length ? <ul>{c.products.map((p) => <li>{p}</li>)}</ul> : <p class="muted">Ainda não comprou.</p>}
+        {c.openCarts > 0 && <p><span class="pill warn">Tem {c.openCarts} {c.openCarts === 1 ? 'carrinho' : 'carrinhos'} por recuperar</span></p>}
+      </section>
+      <section class="card">
+        <h2 class="card-title">Gravações</h2>
+        {claritySites.length === 0 ? <p class="muted">Liga o Microsoft Clarity em Sites para veres as gravações das visitas.</p> : (
+          <p class="muted">{claritySites.map((s) => <><a href={clarityLink(s, 'recordings')} target="_blank" rel="noopener noreferrer">Gravações de {s.name}</a>. </>)}
+            {c.email && <>Filtra por "ID de utilizador personalizado" = <code>{c.email}</code> (visitas em que preencheu um formulário do hub).</>}</p>
+        )}
+      </section>
+    </div>
+
+    <section class="card">
+      <h2 class="card-title">Cronologia</h2>
+      <ol class="timeline">
+        {items.map((i) => (
+          <li class={i.kind === 'visita' ? 'visit' : ''}>
+            <span class="muted">{full.format(i.ts)}</span>
+            <span>
+              {i.tone ? <span class={`pill ${i.tone}`}>{i.label}</span> : <strong>{i.label}</strong>}
+              {i.href && <> <a href={i.href}>ver</a></>}
+              {i.detail && <><br /><span class="muted">{i.detail}</span></>}
+              {siteId === 'all' && i.site && <span class="muted"> · {siteName(i.site)}</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    {visits.map((v) => (
+      <section class="card">
+        <h2 class="card-title">Visita de {full.format(v.start)}</h2>
+        <ol class="journey">
+          {v.events.map((e) => (
+            <li class={e.name === 'pageview' ? '' : 'event'}>
+              <span class="muted">{time.format(e.ts)}</span>
+              {e.name === 'pageview'
+                ? <span>{e.title || <code>{e.path}</code>}{e.title && <span class="muted"> <code>{e.path}</code></span>}</span>
+                : <span><strong>{eventLabel(e.name)}</strong> <span class="muted">em</span> <code>{e.path}</code></span>}
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+</Hub>
+
+<style>
+  dl { display: grid; grid-template-columns: auto 1fr; gap: .35rem .9rem; margin: 0; }
+  dt { color: var(--muted); }
+  dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .stat b.smaller { font-size: 1.05rem; }
+  .timeline, .journey { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+  .timeline li { display: grid; grid-template-columns: minmax(9.5rem, auto) 1fr; gap: .8rem; padding-left: .6rem; border-left: 2px solid var(--accent); }
+  .timeline li.visit { border-left-color: var(--line); }
+  .journey li { display: grid; grid-template-columns: 3.5rem 1fr; gap: .6rem; padding-left: .6rem; border-left: 2px solid var(--line); }
+  .journey li.event { border-left-color: var(--accent); }
+  @media (max-width: 560px) { .timeline li { grid-template-columns: 1fr; gap: .1rem; } }
+</style>

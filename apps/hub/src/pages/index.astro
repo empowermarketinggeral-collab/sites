@@ -1,43 +1,67 @@
 ---
 import Hub from '../layouts/Hub.astro';
 import Delta from '../components/Delta.astro';
-import { daysUntil, list, type Client, type Domain, type Site } from '../lib/db';
-import { report } from '../lib/analytics';
+import { daysUntil, list, type Domain, type Site } from '../lib/db';
+import { liveNow, periods, report } from '../lib/analytics';
 import { checkStatus } from '../lib/status';
 import { leadStats } from '../lib/backoffice';
 import { money, salesStats, syncSales } from '../lib/sales';
-import { periods } from '../lib/analytics';
+import { clarityLink } from '../lib/clarity';
+import { issuesOf } from '../lib/sites';
 
+const PERIODS = [
+  { days: 1, label: 'Hoje (24 h)' },
+  { days: 7, label: '7 dias' },
+  { days: 30, label: '30 dias' },
+];
+const days = PERIODS.find((p) => p.days === Number(Astro.url.searchParams.get('days')))?.days ?? 7;
+const p = periods(days);
 const sites = await list<Site>('sites');
-const clients = await list<Client>('clients');
 const domains = await list<Domain>('domains');
 
 const cards = await Promise.all(
-  sites.map(async (site) => ({
-    site,
-    client: clients.find((c) => c.id === site.client_id),
-    status: await checkStatus(site.url),
-    kpis: (await report(site.id, 30)).kpis,
-    leads: await leadStats(site.id, periods(30).current.from, periods(30).previous.from),
-    sales: site.bigboss_brand_id && (await syncSales(site)) === null ? await salesStats(site.id, periods(30).current.from, periods(30).previous.from) : null,
-  })),
+  sites.map(async (site) => {
+    const [status, r, leads, live, issues] = await Promise.all([
+      checkStatus(site.url), report(site.id, days), leadStats(site.id, p.current.from, p.previous.from), liveNow(site.id), issuesOf(site.id),
+    ]);
+    const sales = site.bigboss_brand_id && (await syncSales(site)) === null ? await salesStats(site.id, p.current.from, p.previous.from) : null;
+    return { site, status, r, leads, live, issues, sales };
+  }),
 );
-const total = (await report('all', 30)).kpis;
+const sum = (f: (c: (typeof cards)[number]) => number) => cards.reduce((t, c) => t + f(c), 0);
+const totals = {
+  sessions: sum((c) => c.r.kpis.current.sessions), prevSessions: sum((c) => c.r.kpis.previous.sessions),
+  visitors: sum((c) => c.r.kpis.current.visitors), prevVisitors: sum((c) => c.r.kpis.previous.visitors),
+  conversions: sum((c) => c.r.kpis.current.conversions), prevConversions: sum((c) => c.r.kpis.previous.conversions),
+  leads: sum((c) => c.leads.current.total), prevLeads: sum((c) => c.leads.previous.total),
+  purchases: sum((c) => c.sales?.current.purchases ?? 0), prevPurchases: sum((c) => c.sales?.previous.purchases ?? 0),
+  revenue: sum((c) => c.sales?.current.revenue ?? 0), prevRevenue: sum((c) => c.sales?.previous.revenue ?? 0),
+  live: sum((c) => c.live),
+};
+const hasSales = cards.some((c) => c.sales);
+const silent = cards.filter((c) => c.r.kpis.current.sessions === 0 || c.issues.length > 0);
 
 const expiring = domains
   .map((d) => ({ ...d, days: daysUntil(d.expires_at) }))
   .filter((d) => d.days !== null && d.days <= 60)
   .sort((a, b) => (a.days ?? 0) - (b.days ?? 0));
 const nf = new Intl.NumberFormat('pt-PT');
+const pct = (a: number, b: number) => (b ? `${((a / b) * 100).toFixed(1).replace('.', ',')}%` : '—');
 ---
 <Hub title="Início">
+  <nav slot="actions" class="filters" aria-label="Período">
+    {PERIODS.map((x) => <a class="chip" href={`?days=${x.days}`} aria-current={x.days === days ? 'page' : undefined}>{x.label}</a>)}
+    <span class="chip"><span class="dot" aria-hidden="true"></span>{nf.format(totals.live)} agora nos sites</span>
+  </nav>
+
   <div class="stack">
     <div class="grid-stats">
-      <div class="card stat"><span class="muted">Sessões (30 dias, todos os sites)</span><b>{nf.format(total.current.sessions)}</b><Delta current={total.current.sessions} previous={total.previous.sessions} /></div>
-      <div class="card stat"><span class="muted">Conversões (30 dias)</span><b>{nf.format(total.current.conversions)}</b><Delta current={total.current.conversions} previous={total.previous.conversions} /></div>
-      <a class="card stat" href="/sites" style="text-decoration:none;color:inherit"><span class="muted">Sites</span><b>{sites.length}</b></a>
-      <a class="card stat" href="/clients" style="text-decoration:none;color:inherit"><span class="muted">Clientes</span><b>{clients.length}</b></a>
-      <a class="card stat" href="/domains" style="text-decoration:none;color:inherit"><span class="muted">Domínios</span><b>{domains.length}</b></a>
+      <div class="card stat"><span class="muted">Sessões</span><b>{nf.format(totals.sessions)}</b><Delta current={totals.sessions} previous={totals.prevSessions} /></div>
+      <div class="card stat"><span class="muted">Visitantes</span><b>{nf.format(totals.visitors)}</b><Delta current={totals.visitors} previous={totals.prevVisitors} /></div>
+      <div class="card stat"><span class="muted">Conversões</span><b>{nf.format(totals.conversions)}</b><Delta current={totals.conversions} previous={totals.prevConversions} /></div>
+      <div class="card stat"><span class="muted">Taxa de conversão</span><b>{pct(totals.conversions, totals.sessions)}</b></div>
+      <a class="card stat" href="/leads"><span class="muted">Inscrições (leads)</span><b>{nf.format(totals.leads)}</b><Delta current={totals.leads} previous={totals.prevLeads} /></a>
+      {hasSales && <a class="card stat" href="/vendas"><span class="muted">Vendas</span><b>{nf.format(totals.purchases)} · {money(totals.revenue, 'EUR')}</b><Delta current={totals.revenue} previous={totals.prevRevenue} /></a>}
     </div>
 
     {expiring.length > 0 && (
@@ -51,6 +75,17 @@ const nf = new Intl.NumberFormat('pt-PT');
       </section>
     )}
 
+    {silent.length > 0 && (
+      <section class="card attention">
+        <h2 class="card-title">A rever</h2>
+        <ul>
+          {silent.map(({ site, r, issues }) => (
+            <li><strong>{site.name}</strong>: {issues.length > 0 ? 'há visitas a ser recusadas' : r.kpis.current.sessions === 0 ? 'sem visitas neste período' : ''}. <a href={`/sites#${site.id}`}>Ver diagnóstico</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     {sites.length === 0 && (
       <section class="card">
         <h2 class="card-title">Começa por aqui</h2>
@@ -59,26 +94,50 @@ const nf = new Intl.NumberFormat('pt-PT');
     )}
 
     <div class="grid-3">
-      {cards.map(({ site, client, status, kpis, leads, sales }) => (
-        <section class="card">
-          <h2 class="card-title">{site.name}</h2>
-          <p style="margin:0 0 .6rem">
-            <span class={`pill ${status.up ? 'good' : 'bad'}`}>{status.up ? `● Online · ${status.ms} ms` : `○ Offline${status.status ? ` · ${status.status}` : ''}`}</span>
-            {client && <span class="muted"> · {client.name}</span>}
-          </p>
-          <a href={site.url} target="_blank" rel="noopener noreferrer">{site.domain || site.url}</a>
-          <table style="margin-top:.6rem">
-            <tbody>
-              <tr><td class="muted">Sessões (30d)</td><td class="num">{nf.format(kpis.current.sessions)}</td><td class="num"><Delta current={kpis.current.sessions} previous={kpis.previous.sessions} /></td></tr>
-              <tr><td class="muted">Visitantes</td><td class="num">{nf.format(kpis.current.visitors)}</td><td class="num"><Delta current={kpis.current.visitors} previous={kpis.previous.visitors} /></td></tr>
-              <tr><td class="muted">Conversões</td><td class="num">{nf.format(kpis.current.conversions)}</td><td class="num"><Delta current={kpis.current.conversions} previous={kpis.previous.conversions} /></td></tr>
-              <tr><td class="muted">Leads</td><td class="num">{nf.format(leads.current.total)}</td><td class="num"><Delta current={leads.current.total} previous={leads.previous.total} /></td></tr>
-              {sales && <tr><td class="muted"><a href={`/vendas?site=${site.id}`}>Vendas</a></td><td class="num">{nf.format(sales.current.purchases)} · {money(sales.current.revenue, sales.current.currency)}</td><td class="num"><Delta current={sales.current.revenue} previous={sales.previous.revenue} /></td></tr>}
-            </tbody>
-          </table>
-          <p style="margin:.6rem 0 0"><a href={`/leads?site=${site.id}`}>Ver leads →</a> &nbsp; <a href={`/analytics?site=${site.id}`}>Ver análises →</a></p>
-        </section>
-      ))}
+      {cards.map(({ site, status, r, leads, live, sales }) => {
+        const k = r.kpis;
+        return (
+          <section class="card site">
+            <div class="site-head">
+              <h2 class="card-title">{site.name}</h2>
+              <span class={`pill ${status.up ? 'good' : 'bad'}`}>{status.up ? `● Online · ${status.ms} ms` : `○ Offline${status.status ? ` · ${status.status}` : ''}`}</span>
+            </div>
+            <p class="muted" style="margin:.2rem 0 .6rem"><a href={site.url} target="_blank" rel="noopener noreferrer">{site.domain || site.url}</a> · {nf.format(live)} agora</p>
+            <table>
+              <tbody>
+                <tr><td class="muted">Sessões</td><td class="num">{nf.format(k.current.sessions)}</td><td class="num"><Delta current={k.current.sessions} previous={k.previous.sessions} /></td></tr>
+                <tr><td class="muted">Páginas vistas</td><td class="num">{nf.format(k.current.pageviews)}</td><td class="num"><Delta current={k.current.pageviews} previous={k.previous.pageviews} /></td></tr>
+                <tr><td class="muted">Conversões</td><td class="num">{nf.format(k.current.conversions)} <span class="muted">({pct(k.current.conversions, k.current.sessions)})</span></td><td class="num"><Delta current={k.current.conversions} previous={k.previous.conversions} /></td></tr>
+                <tr><td class="muted">Inscrições</td><td class="num">{nf.format(leads.current.total)}</td><td class="num"><Delta current={leads.current.total} previous={leads.previous.total} /></td></tr>
+                {sales && <tr><td class="muted">Vendas</td><td class="num">{nf.format(sales.current.purchases)} · {money(sales.current.revenue, sales.current.currency)}</td><td class="num"><Delta current={sales.current.revenue} previous={sales.previous.revenue} /></td></tr>}
+              </tbody>
+            </table>
+            {r.topPages[0] && <p class="fact"><span class="muted">Página mais vista:</span> {r.topPages[0].label} <span class="muted">({nf.format(r.topPages[0].current)})</span></p>}
+            {r.conversionPages[0] && <p class="fact"><span class="muted">Onde mais converte:</span> {r.conversionPages[0].label} <span class="muted">({nf.format(r.conversionPages[0].current)})</span></p>}
+            {leads.current.byForm[0] && <p class="fact"><span class="muted">Formulário com mais inscrições:</span> {leads.current.byForm[0].label} <span class="muted">({nf.format(leads.current.byForm[0].current)})</span></p>}
+            <p class="site-links">
+              <a href={`/analytics?site=${site.id}&days=${Math.max(days, 7)}`}>Análises</a>
+              <a href={`/analytics?site=${site.id}&days=${Math.max(days, 7)}&aba=conversoes`}>Conversões</a>
+              <a href={`/clientes?site=${site.id}`}>Clientes</a>
+              <a href={`/leads?site=${site.id}`}>Leads</a>
+              {site.bigboss_brand_id && <a href={`/vendas?site=${site.id}`}>Vendas</a>}
+              {clarityLink(site) && <a href={clarityLink(site)!} target="_blank" rel="noopener noreferrer">Clarity</a>}
+            </p>
+          </section>
+        );
+      })}
     </div>
   </div>
 </Hub>
+
+<style>
+  a.chip { text-decoration: none; }
+  a.chip[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  a.card.stat { text-decoration: none; color: inherit; }
+  .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--good); display: inline-block; }
+  .site-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem; align-items: center; }
+  .site-head .card-title { margin: 0; }
+  .fact { margin: .45rem 0 0; font-size: .88rem; overflow-wrap: anywhere; }
+  .site-links { display: flex; flex-wrap: wrap; gap: .3rem .9rem; margin: .8rem 0 0; }
+  .attention { border-color: var(--warn); }
+</style>

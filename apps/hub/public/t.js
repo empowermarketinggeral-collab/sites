@@ -1,6 +1,7 @@
 /* Empower Hub — tracking sem cookies. Uso:
    <script defer src="https://HUB/t.js" data-site="ID-DO-SITE"></script>
-   Eventos: data-track="nome_evento" num link/botão, ou window.empowerTrack('nome_evento'). */
+   Eventos: data-track="nome_evento" num link/botão (opcional data-track-detail="o quê"),
+   ou window.empowerTrack('nome_evento', 'o quê'). */
 (function () {
   var s = document.currentScript;
   if (!s || navigator.webdriver) return;
@@ -8,13 +9,17 @@
   var endpoint = new URL('/api/collect', s.src).href;
   var lastPath = null;
 
-  function send(name, ref) {
+  // ref: referência de um clique (checkout Hotmart); detail: o quê (formulário, botão, produto).
+  function send(name, ref, detail) {
     try {
       fetch(endpoint, {
         method: 'POST',
         keepalive: true,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ s: site, n: name, u: location.href, r: document.referrer, k: ref }),
+        body: JSON.stringify({
+          s: site, n: name, u: location.href, r: document.referrer, k: ref || '',
+          t: String(document.title || '').slice(0, 150), d: String(detail || '').slice(0, 120),
+        }),
       }).catch(function () {});
     } catch (e) {}
   }
@@ -23,6 +28,12 @@
     if (location.pathname === lastPath) return;
     lastPath = location.pathname;
     send('pageview');
+  }
+
+  // Texto curto de um botão ou link, para saber "o quê" (ex.: "Quero o e-book").
+  function label(el) {
+    var t = el.getAttribute('data-track-detail') || el.getAttribute('aria-label') || el.textContent || '';
+    return t.replace(/\s+/g, ' ').trim().slice(0, 120);
   }
 
   // Formulários: <form data-hub-form="newsletter" data-tags="a,b" data-success="Obrigado!" data-redirect="/obrigado">
@@ -47,7 +58,7 @@
       body: JSON.stringify(data),
     }).then(function (res) {
       if (!res.ok) throw new Error(res.status);
-      send('lead');
+      send('lead', '', data.source);
       // Microsoft Clarity (se o site o carregar): permite procurar as gravações desta pessoa pelo email.
       if (window.clarity && data.email) window.clarity('identify', String(data.email).toLowerCase());
       var to = form.getAttribute('data-redirect');
@@ -79,19 +90,20 @@
     for (var i = 0; i < bytes.length; i++) ref += (bytes[i] % 36).toString(36);
     u.searchParams.set('sck', 'hub_' + ref);
     a.href = u.href;
-    send('checkout', ref);
+    send('checkout', ref, label(a));
     if (window.clarity) window.clarity('set', 'hotmart_ref', 'hub_' + ref);
   }
 
-  window.empowerTrack = send;
+  window.empowerTrack = function (name, detail) { send(name, '', detail); };
   document.addEventListener('click', function (e) {
     if (!e.target.closest) return;
     var el = e.target.closest('[data-track]');
-    if (el) send(el.getAttribute('data-track'));
+    if (el) send(el.getAttribute('data-track'), '', label(el));
     hotmartCheckout(e.target.closest('a[href]'));
   });
   var push = history.pushState;
-  history.pushState = function () { push.apply(this, arguments); pageview(); };
-  addEventListener('popstate', pageview);
+  // Em sites de uma só página o título muda depois da navegação: espera um pouco.
+  history.pushState = function () { push.apply(this, arguments); setTimeout(pageview, 150); };
+  addEventListener('popstate', function () { setTimeout(pageview, 150); });
   pageview();
 })();

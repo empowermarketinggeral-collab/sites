@@ -1,7 +1,7 @@
 // Partilhado entre a app e os scripts (ex.: seed-demo). Uma instrução por item.
 // Tudo fica no schema privado "hub" (a API pública do Supabase só expõe "public"),
 // e com RLS ativo sem políticas: só a ligação direta da app consegue ler/escrever.
-const TABLES = ['sites', 'clients', 'domains', 'events', 'leads', 'sales', 'login_attempts'];
+const TABLES = ['sites', 'clients', 'domains', 'events', 'leads', 'sales', 'tracking_issues', 'clarity_cache', 'login_attempts'];
 
 export const SCHEMA = [
   `CREATE SCHEMA IF NOT EXISTS hub`,
@@ -102,6 +102,21 @@ export const SCHEMA = [
   `ALTER TABLE hub.sites ADD COLUMN IF NOT EXISTS clarity_id TEXT NOT NULL DEFAULT ''`,
   `ALTER TABLE hub.events ADD COLUMN IF NOT EXISTS ref TEXT NOT NULL DEFAULT ''`,
   `CREATE INDEX IF NOT EXISTS events_ref ON hub.events (ref) WHERE ref <> ''`,
+  // Título da página e o "quê" de cada evento (nome do formulário, texto do botão).
+  `ALTER TABLE hub.events ADD COLUMN IF NOT EXISTS title TEXT NOT NULL DEFAULT ''`,
+  `ALTER TABLE hub.events ADD COLUMN IF NOT EXISTS detail TEXT NOT NULL DEFAULT ''`,
+  `CREATE INDEX IF NOT EXISTS events_session ON hub.events (session_id, ts)`,
+  // Pedidos de tracking recusados (site desconhecido, domínio diferente…), para o diagnóstico em Sites.
+  `CREATE TABLE IF NOT EXISTS hub.tracking_issues (
+    site_id TEXT NOT NULL, host TEXT NOT NULL, reason TEXT NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0, last_ts DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY (site_id, host, reason)
+  )`,
+  // Respostas da API do Microsoft Clarity (limite de pedidos por dia), por site e dimensão.
+  `CREATE TABLE IF NOT EXISTS hub.clarity_cache (
+    site_id TEXT NOT NULL, kind TEXT NOT NULL, ts DOUBLE PRECISION NOT NULL, body TEXT NOT NULL,
+    PRIMARY KEY (site_id, kind)
+  )`,
   `CREATE TABLE IF NOT EXISTS hub.login_attempts (
     ip TEXT PRIMARY KEY, count INTEGER NOT NULL, until DOUBLE PRECISION NOT NULL
   )`,

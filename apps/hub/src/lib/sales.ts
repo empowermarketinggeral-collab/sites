@@ -169,6 +169,17 @@ export function timelineOf(sale: Sale): Promise<Sale[]> {
   return all<Sale>('SELECT * FROM hub.sales WHERE site_id = ? AND email = ? ORDER BY ts', [sale.site_id, sale.email]);
 }
 
+// Vendas que começaram num clique no site, pela página (e botão) onde o checkout foi aberto.
+export function salesByPage(siteId: string, from: number, to: number) {
+  return all<{ path: string; title: string; detail: string; n: number; revenue: number | null; currency: string | null }>(
+    `SELECT e.path, max(e.title) AS title, e.detail, count(*)::int AS n, sum(s.value) AS revenue, max(s.currency) AS currency
+     FROM hub.sales s JOIN hub.events e ON e.site_id = s.site_id AND e.ref <> '' AND e.ref = substr(s.sck, 5)
+     WHERE s.site_id = ? AND s.kind = 'compra' AND s.ts >= ? AND s.ts < ? AND s.sck LIKE 'hub\\_%'
+     GROUP BY e.path, e.detail ORDER BY n DESC LIMIT 30`,
+    [siteId, from, to],
+  );
+}
+
 export function salesByEmail(email: string): Promise<Sale[]> {
   if (!email) return Promise.resolve([]);
   return all<Sale>("SELECT * FROM hub.sales WHERE email = ? AND kind IN ('compra', 'reembolso', 'carrinho') ORDER BY ts DESC LIMIT 50", [email]);

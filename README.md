@@ -4,30 +4,36 @@ Monorepo com a app central (hub) e os sites criados pela Empower Marketing.
 
 ```
 apps/
-  hub/            App central: métricas de todos os sites, clientes e domínios (privada, com login)
+  hub/            Back-office central: análises, clientes, leads e vendas de todos os sites (privado, com login)
   empower-site/   Novo site da Empower Marketing (estático, conteúdo editável num ficheiro)
   dreams-academy-site/  Site da Dreams Academy (estático, mesma estrutura do site Empower)
 ```
 
 ## Hub (`apps/hub`)
 
-Painel privado, no estilo das Análises da Shopify:
+Back-office privado, no estilo da Shopify:
 
-- **Início** — sessões e conversões de todos os sites, estado (online/offline) de cada site, alertas de domínios a expirar.
-- **Análises** — por site ou todos juntos, 7/30/90 dias, sempre comparado com o período anterior:
-  sessões ao longo do tempo, dispositivo, local (país · cidade), referenciador (canal · origem), redes sociais, canal, página de destino e funil de conversão.
+- **Início** — hoje, 7 ou 30 dias: sessões, visitantes, conversões, inscrições e vendas de todos os sites, quantas pessoas estão agora nos sites, e por site a página mais vista, onde mais converte e o formulário com mais inscrições. Avisa quando um site não recebe visitas ou tem visitas recusadas, e quando um domínio está a expirar.
+- **Análises** — por site ou todos juntos (24 h, 7, 30 ou 90 dias), sempre comparado com o período anterior, em separadores:
+  - *Visão geral*: sessões ao longo do tempo, dispositivo, páginas mais vistas, conversões por tipo, funil, canal, referenciador, página de destino, local.
+  - *Páginas*: todas as páginas com título, visualizações, visitantes, entradas, saídas, tempo médio, conversões (e a taxa) e o que se clicou em cada uma.
+  - *Conversões*: onde se converteu (página + tipo + o quê, ex.: e-book vs. curso), inscrições por formulário, vendas por página (Hotmart), taxa por página de entrada, últimas conversões com ligação ao lead, outros cliques.
+  - *Origens*: sessões e taxa de conversão por canal, origem e campanha (`utm_campaign`).
+  - *Comportamento*: Microsoft Clarity (botões para o painel, gravações e mapas de calor; com token, os números por página).
+- **Clientes** — as pessoas de cada site, como os Clientes da Shopify: quem se inscreveu e quem comprou, juntas pelo email. Segmentos (compradoras, aceitam emails, inscritas sem compra, carrinho por recuperar, compraram 2+ vezes), procura, ordenação, CSV e a ficha de cada pessoa com a cronologia (formulários, compras, visitas e páginas vistas).
 - **Leads** — o back-office de cada site: quem preencheu cada formulário (nome, email, telefone, empresa, respostas), se aceitou emails, de onde veio (canal, origem, campanha, cidade, dispositivo) e o percurso no site antes de enviar. Estado (novo, contactado, cliente, descartado) e notas por lead, procura, filtros por site/formulário/estado e exportação CSV. Mostra os leads que não chegaram ao Big Boss, com botão para reenviar.
 - **Vendas** — vendas e comportamentos da Hotmart por site (ex.: Dreams Academy): compras, faturação, ticket médio, reembolsos, carrinhos abandonados e recuperados, pagamentos pendentes, primeiro acesso ao curso e módulos concluídos. Cada compradora tem a sua ficha com tudo o que fez na Hotmart, os formulários que preencheu e o percurso no site antes do checkout. Exportação CSV.
-- **Sites** — registo de cada site e o código de tracking para colar no `<head>`.
-- **Clientes** e **Domínios** — contactos, notas, datas de expiração, ligação a cada site.
+- **Sites** — registo de cada site, o código de tracking para colar no `<head>` e o diagnóstico: último evento recebido, visitas das últimas 24 h, visitas recusadas e porquê (com botão para aceitar o endereço certo), visitas de `data-site` que não existem e "Verificar instalação" (abre o site e confirma o código, o `data-site` e a CSP).
+- **Domínios** — datas de expiração e ligação a cada site.
 
 ### Como funciona o tracking
 
 Cada site carrega um script leve (`/t.js`) do hub. **Não usa cookies**: o visitante é identificado por um hash diário (IP + browser + site) que muda todos os dias, por isso não é preciso banner de cookies para estas métricas.
 Os dados ficam na tua base de dados (Supabase), não em serviços de análise de terceiros.
 
-- Conversões: acrescenta `data-track="lead"` (ou `contacto`, `agendamento`, `compra`) a um botão ou link.
-- Outros eventos: `data-track="nome_do_evento"` ou `window.empowerTrack('nome_do_evento')`.
+- Conversões: acrescenta `data-track="lead"` (ou `contacto`, `agendamento`, `compra`) a um botão ou link. O hub guarda também o título da página e o texto do botão (ou `data-track-detail="E-book"`), para se saber onde e em quê se converteu.
+- Outros eventos: `data-track="nome_do_evento"` ou `window.empowerTrack('nome_do_evento', 'o quê')`.
+- Domínio do site: aceita-se com ou sem `https://`, `www` e barra no fim, e também o endereço em URL (ex.: o site ainda em …vercel.app). O que for recusado aparece em Sites.
 - País/cidade vêm dos cabeçalhos do CDN/proxy (Cloudflare `cf-ipcountry`/`cf-ipcity`, Vercel, ou `x-country`/`x-city`). Sem CDN aparecem como "Desconhecido".
 - O hub só aceita eventos vindos do domínio registado para o site, ignora bots e limita pedidos por IP.
 
@@ -44,7 +50,7 @@ Ligação ao site: o `t.js` junta `sck=hub_<ref>` aos links `pay.hotmart.com`/`g
 
 ### Microsoft Clarity
 
-Gravações de sessão e mapas de calor. Cria um projeto por site em clarity.microsoft.com e põe o id em `src/data/site.json` → `tracking.clarityId` do site (carrega só com consentimento de cookies de análise) e em Hub → Sites → Editar (para abrir o painel a partir do hub). O `t.js` identifica no Clarity quem envia um formulário `data-hub-form` (pelo email) e marca os cliques no checkout (`hotmart_ref`), para encontrar as gravações de uma pessoa ou de uma compra.
+Gravações de sessão e mapas de calor. Cria um projeto por site em clarity.microsoft.com e põe o id em `src/data/site.json` → `tracking.clarityId` do site (carrega só com consentimento de cookies de análise) e em Hub → Sites → Editar (botões para o painel, gravações e mapas de calor em Análises, Início, Sites e nas fichas). Para ver os números do Clarity dentro do hub (Análises → Comportamento: scroll, tempo ativo, cliques de raiva e mortos, recuos rápidos por página, últimos 3 dias): Clarity → Settings → Data export → gerar um token e pô-lo no Vercel do hub em `CLARITY_TOKEN_<ID_DO_SITE>` (ex.: `CLARITY_TOKEN_DREAMS_ACADEMY`). O Clarity limita os pedidos por dia, por isso o hub guarda a resposta e só volta a pedir de 3 em 3 horas. O `t.js` identifica no Clarity quem envia um formulário `data-hub-form` (pelo email) e marca os cliques no checkout (`hotmart_ref`), para encontrar as gravações de uma pessoa ou de uma compra.
 
 ### Formulários e leads
 

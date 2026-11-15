@@ -1,33 +1,76 @@
 ---
 import Hub from '../layouts/Hub.astro';
 import BarList from '../components/BarList.astro';
+import Delta from '../components/Delta.astro';
 import Donut from '../components/Donut.astro';
 import Funnel from '../components/Funnel.astro';
 import LineChart from '../components/LineChart.astro';
 import Stat from '../components/Stat.astro';
 import { list, type Site } from '../lib/db';
-import { report } from '../lib/analytics';
+import { conversionsReport, eventLabel, liveNow, pagesReport, report, type PageRow } from '../lib/analytics';
+import { clarityLink } from '../lib/clarity';
+import { money, salesByPage } from '../lib/sales';
+import ClarityInsights from '../components/ClarityInsights.astro';
 
 const PERIODS = [
+  { days: 1, label: 'Últimas 24 horas' },
   { days: 7, label: 'Últimos 7 dias' },
   { days: 30, label: 'Últimos 30 dias' },
   { days: 90, label: 'Últimos 90 dias' },
 ];
+const TABS = [
+  { id: 'geral', label: 'Visão geral' },
+  { id: 'paginas', label: 'Páginas' },
+  { id: 'conversoes', label: 'Conversões' },
+  { id: 'origens', label: 'Origens' },
+  { id: 'comportamento', label: 'Comportamento' },
+];
+const SORTS = [
+  { id: 'views', label: 'Visualizações' },
+  { id: 'visitors', label: 'Visitantes' },
+  { id: 'entries', label: 'Entradas' },
+  { id: 'time', label: 'Tempo na página' },
+  { id: 'conversions', label: 'Conversões' },
+];
+
 const sites = await list<Site>('sites');
 const q = Astro.url.searchParams;
 const days = PERIODS.find((p) => p.days === Number(q.get('days')))?.days ?? 30;
 const siteId = sites.some((s) => s.id === q.get('site')) ? q.get('site')! : 'all';
-const r = await report(siteId, days);
-const { current: k, previous: kp } = r.kpis;
+const site = sites.find((s) => s.id === siteId);
+const tab = TABS.some((t) => t.id === q.get('aba')) ? q.get('aba')! : 'geral';
+const sort = SORTS.some((s) => s.id === q.get('ordem')) ? q.get('ordem')! : 'views';
+
+const live = await liveNow(siteId);
+const r = tab === 'geral' ? await report(siteId, days) : null;
+const pages = tab === 'paginas' ? await pagesReport(siteId, days) : null;
+const conv = tab === 'conversoes' || tab === 'origens' ? await conversionsReport(siteId, days) : null;
+const salesPages = tab === 'conversoes' && site?.bigboss_brand_id && conv ? await salesByPage(site.id, conv.periods.current.from, conv.periods.current.to) : [];
+if (pages) {
+  const key: Record<string, (p: PageRow) => number> = {
+    views: (p) => p.views, visitors: (p) => p.visitors, entries: (p) => p.entries, time: (p) => p.avgTime, conversions: (p) => p.conversions,
+  };
+  pages.sort((a, b) => key[sort](b) - key[sort](a));
+}
+const k = r?.kpis.current;
+const kp = r?.kpis.previous;
+const clarity = site ? clarityLink(site) : null;
 
 const fmtRange = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', timeZone: 'Europe/Lisbon' });
+const when = new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon' });
 const range = (x: { from: number; to: number }) => `${fmtRange.format(x.from)} – ${fmtRange.format(x.to)}`;
 const nf = new Intl.NumberFormat('pt-PT');
 const pct = (v: number) => `${v.toFixed(1).replace('.', ',')}%`;
-const dur = (s: number) => `${Math.floor(s / 60)}m ${String(Math.round(s % 60)).padStart(2, '0')}s`;
+const ratio = (a: number, b: number) => (b ? pct((a / b) * 100) : '—');
+const dur = (s: number) => (s ? `${Math.floor(s / 60)}m ${String(Math.round(s % 60)).padStart(2, '0')}s` : '—');
+const siteName = (id: string) => sites.find((s) => s.id === id)?.name ?? id;
+const link = (params: Record<string, string>) => `?${new URLSearchParams({ site: siteId, days: String(days), aba: tab, ...params })}`;
+const periodsOf = r?.periods ?? conv?.periods;
 ---
 <Hub title="Análises">
   <form slot="actions" class="filters" method="get">
+    <input type="hidden" name="aba" value={tab} />
+    {tab === 'paginas' && <input type="hidden" name="ordem" value={sort} />}
     <select name="site" aria-label="Site" onchange="this.form.submit()">
       <option value="all">Todos os sites</option>
       {sites.map((s) => <option value={s.id} selected={s.id === siteId}>{s.name}</option>)}
@@ -35,59 +78,245 @@ const dur = (s: number) => `${Math.floor(s / 60)}m ${String(Math.round(s % 60)).
     <select name="days" aria-label="Período" onchange="this.form.submit()">
       {PERIODS.map((p) => <option value={p.days} selected={p.days === days}>{p.label}</option>)}
     </select>
-    <span class="chip">{range(r.periods.current)}</span>
+    {periodsOf && <span class="chip">{range(periodsOf.current)}</span>}
+    <span class="chip live" title="Visitas com atividade nos últimos 5 minutos"><span class="dot" aria-hidden="true"></span>{live} agora no site</span>
+    {clarity && <a class="chip" href={clarity} target="_blank" rel="noopener noreferrer">Abrir no Clarity</a>}
     <noscript><button>Aplicar</button></noscript>
   </form>
 
   <div class="stack">
-    <div class="grid-stats">
-      <Stat label="Sessões" value={nf.format(k.sessions)} current={k.sessions} previous={kp.sessions} />
-      <Stat label="Visitantes" value={nf.format(k.visitors)} current={k.visitors} previous={kp.visitors} />
-      <Stat label="Páginas vistas" value={nf.format(k.pageviews)} current={k.pageviews} previous={kp.pageviews} />
-      <Stat label="Taxa de rejeição" value={pct(k.bounceRate)} current={k.bounceRate} previous={kp.bounceRate} invert />
-      <Stat label="Duração média" value={dur(k.avgDuration)} current={k.avgDuration} previous={kp.avgDuration} />
-      <Stat label="Taxa de conversão" value={pct(k.conversionRate)} current={k.conversionRate} previous={kp.conversionRate} />
-    </div>
+    <nav class="tabs" aria-label="Relatórios">
+      {TABS.map((t) => <a href={link({ aba: t.id })} aria-current={t.id === tab ? 'page' : undefined}>{t.label}</a>)}
+    </nav>
 
-    <div class="grid-3">
-      <section class="card span-2">
-        <h2 class="card-title">Sessões ao longo do tempo</h2>
-        <LineChart current={r.timeseries.current} previous={r.timeseries.previous} />
-        <ul class="legend">
-          <li><span class="swatch"></span>{range(r.periods.current)}</li>
-          <li><span class="swatch prev"></span>{range(r.periods.previous)}</li>
-        </ul>
-        <details>
-          <summary>Ver tabela</summary>
+    {r && k && kp && (
+      <>
+        <div class="grid-stats">
+          <Stat label="Sessões" value={nf.format(k.sessions)} current={k.sessions} previous={kp.sessions} />
+          <Stat label="Visitantes" value={nf.format(k.visitors)} current={k.visitors} previous={kp.visitors} />
+          <Stat label="Páginas vistas" value={nf.format(k.pageviews)} current={k.pageviews} previous={kp.pageviews} />
+          <Stat label="Taxa de rejeição" value={pct(k.bounceRate)} current={k.bounceRate} previous={kp.bounceRate} invert />
+          <Stat label="Duração média" value={dur(k.avgDuration)} current={k.avgDuration} previous={kp.avgDuration} />
+          <Stat label="Taxa de conversão" value={pct(k.conversionRate)} current={k.conversionRate} previous={kp.conversionRate} />
+        </div>
+
+        {k.sessions === 0 && site && (
+          <p class="card warn-box">Sem visitas neste período. Se o site tem tráfego, vê o diagnóstico em <a href={`/sites#${site.id}`}>Sites</a>: mostra se os pedidos estão a chegar e porque são recusados.</p>
+        )}
+
+        <div class="grid-3">
+          <section class="card span-2">
+            <h2 class="card-title">Sessões ao longo do tempo</h2>
+            <LineChart current={r.timeseries.current} previous={r.timeseries.previous} />
+            <ul class="legend">
+              <li><span class="swatch"></span>{range(r.periods.current)}</li>
+              <li><span class="swatch prev"></span>{range(r.periods.previous)}</li>
+            </ul>
+          </section>
+          <section class="card">
+            <h2 class="card-title">Sessões por tipo de dispositivo</h2>
+            <Donut rows={r.byDevice} total={k.sessions} previousTotal={kp.sessions} />
+          </section>
+
+          <BarList title="Páginas mais vistas" rows={r.topPages} more={{ href: link({ aba: 'paginas' }), label: 'Ver todas as páginas' }} />
+          <BarList title="Conversões por tipo" rows={r.byConversion} empty="Sem conversões neste período." more={{ href: link({ aba: 'conversoes' }), label: 'Ver onde converteram' }} />
+          <section class="card">
+            <h2 class="card-title">Detalhamento da taxa de conversão</h2>
+            <Funnel {...r.funnel} />
+          </section>
+
+          <BarList title="Sessões por canal" rows={r.byChannel} />
+          <BarList title="Sessões por referenciador" rows={r.byReferrer} />
+          <BarList title="Sessões por página de destino" rows={r.byLanding} />
+          <BarList title="Sessões por local" rows={r.byLocation} />
+          <BarList title="Sessões por referenciador social" rows={r.bySocial} />
+        </div>
+      </>
+    )}
+
+    {pages && (
+      <section class="card">
+        <div class="card-head">
+          <h2 class="card-title">{nf.format(pages.length)} páginas vistas neste período</h2>
+          <span class="muted">Ordenar por: {SORTS.map((s, i) => <>{i > 0 && ' · '}{s.id === sort ? <strong>{s.label}</strong> : <a href={link({ ordem: s.id })}>{s.label}</a>}</>)}</span>
+        </div>
+        {pages.length === 0 ? <p class="muted">Sem visitas neste período.</p> : (
           <div class="table-wrap">
-            <table>
-              <thead><tr><th>Dia</th><th class="num">Sessões</th><th class="num">Período anterior</th></tr></thead>
-              <tbody>{r.timeseries.current.map((p, i) => <tr><td>{p.date}</td><td class="num">{p.sessions}</td><td class="num">{r.timeseries.previous[i]?.sessions ?? 0}</td></tr>)}</tbody>
+            <table class="report">
+              <thead><tr>
+                <th>Página</th><th class="num">Visualizações</th><th class="num">Visitantes</th><th class="num">Entradas</th>
+                <th class="num">Saídas</th><th class="num">Tempo médio</th><th class="num">Conversões</th><th>O que fizeram</th>
+              </tr></thead>
+              <tbody>
+                {pages.map((p) => (
+                  <tr>
+                    <td>
+                      <strong>{p.title || p.path}</strong>
+                      {p.title && <><br /><code class="muted">{p.path}</code></>}
+                      {siteId === 'all' && <><br /><span class="muted">{siteName(p.site)}</span></>}
+                    </td>
+                    <td class="num">{nf.format(p.views)}<br /><Delta current={p.views} previous={p.prevViews} /></td>
+                    <td class="num">{nf.format(p.visitors)}</td>
+                    <td class="num">{nf.format(p.entries)}</td>
+                    <td class="num">{ratio(p.exits, p.views)}</td>
+                    <td class="num">{dur(p.avgTime)}</td>
+                    <td class="num">{p.conversions ? <>{nf.format(p.conversions)}<br /><span class="muted">{ratio(p.convSessions, p.viewSessions)}</span></> : '—'}</td>
+                    <td class="actions">{p.actions.length ? p.actions.map((a) => <span>{a.label} <span class="muted">({a.count})</span></span>) : <span class="muted">—</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
-        </details>
+        )}
+        <p class="muted small">Saídas = vezes em que a visita acabou nesta página. Tempo médio = até à página ou clique seguinte. Conversões = inscrições, contactos, agendamentos e compras feitos nesta página (e a taxa sobre as visitas que a viram). Os títulos aparecem nas visitas a partir desta atualização.</p>
       </section>
-      <section class="card">
-        <h2 class="card-title">Sessões por tipo de dispositivo</h2>
-        <Donut rows={r.byDevice} total={k.sessions} previousTotal={kp.sessions} />
-      </section>
+    )}
 
-      <BarList title="Sessões por local" rows={r.byLocation} />
-      <BarList title="Sessões por referenciador" rows={r.byReferrer} />
-      <BarList title="Sessões por referenciador social" rows={r.bySocial} />
+    {conv && tab === 'conversoes' && (
+      <>
+        <div class="grid-stats">
+          <Stat label="Conversões" value={nf.format(conv.total.current)} current={conv.total.current} previous={conv.total.previous} />
+          <Stat label="Taxa de conversão" value={ratio(conv.funnel.current[3], conv.funnel.current[0])} current={conv.funnel.current[0] ? conv.funnel.current[3] / conv.funnel.current[0] : 0} previous={conv.funnel.previous[0] ? conv.funnel.previous[3] / conv.funnel.previous[0] : 0} />
+          {conv.byType.map((t) => <Stat label={t.label} value={nf.format(t.current)} current={t.current} previous={t.previous} />)}
+        </div>
 
-      <BarList title="Sessões por canal" rows={r.byChannel} />
-      <BarList title="Sessões por página de destino" rows={r.byLanding} />
-      <section class="card">
-        <h2 class="card-title">Detalhamento da taxa de conversão</h2>
-        <Funnel {...r.funnel} />
-      </section>
-    </div>
+        <section class="card">
+          <h2 class="card-title">Onde converteram</h2>
+          {conv.byPlace.length === 0 ? <p class="muted">Sem conversões neste período.</p> : (
+            <div class="table-wrap">
+              <table class="report">
+                <thead><tr><th>Página</th><th>Conversão</th><th>O quê</th><th class="num">Quantas</th><th class="num">Taxa na página</th></tr></thead>
+                <tbody>
+                  {conv.byPlace.map((c) => (
+                    <tr>
+                      <td><strong>{c.title || c.path}</strong>{c.title && <><br /><code class="muted">{c.path}</code></>}{siteId === 'all' && <><br /><span class="muted">{siteName(c.site)}</span></>}</td>
+                      <td>{eventLabel(c.name)}</td>
+                      <td>{c.detail || <span class="muted">—</span>}</td>
+                      <td class="num">{nf.format(c.count)}<br /><Delta current={c.count} previous={c.prev} /></td>
+                      <td class="num">{ratio(c.count, c.viewSessions)}<br /><span class="muted">de {nf.format(c.viewSessions)} visitas</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
-    <ul class="legend">
-      <li><span class="swatch"></span>Período atual</li>
-      <li><span class="swatch prev"></span>Período anterior</li>
-      <li class="muted">Conversão = sessões com um evento <code>lead</code>, <code>contacto</code>, <code>agendamento</code> ou <code>compra</code>.</li>
-    </ul>
+        <div class="grid-3">
+          <section class="card">
+            <h2 class="card-title">Detalhamento da conversão</h2>
+            <Funnel {...conv.funnel} />
+          </section>
+          <BarList title="Inscrições por formulário" rows={conv.byForm.map((f) => ({ ...f, label: conv.formPages.get(f.label)?.size ? `${f.label} (${[...conv.formPages.get(f.label)!].slice(0, 2).join(', ')})` : f.label }))} empty="Sem inscrições neste período." more={{ href: '/leads' + (site ? `?site=${site.id}` : ''), label: 'Ver as pessoas em Leads' }} />
+          <section class="card">
+            <h2 class="card-title">Vendas por página</h2>
+            {!site?.bigboss_brand_id ? <p class="muted">Liga as vendas da Hotmart deste site em Sites (id da marca no Big Boss) para ver em que página começou cada compra.</p>
+              : salesPages.length === 0 ? <p class="muted">Sem vendas que tenham começado num clique no site neste período.</p> : (
+              <ul class="plain">
+                {salesPages.map((sp) => <li><strong>{sp.title || sp.path}</strong>{sp.detail && <span class="muted"> · {sp.detail}</span>}<br /><span class="muted">{nf.format(sp.n)} {sp.n === 1 ? 'venda' : 'vendas'} · {money(sp.revenue, sp.currency ?? 'EUR')}</span></li>)}
+              </ul>
+            )}
+          </section>
+        </div>
+
+        <section class="card">
+          <h2 class="card-title">Taxa de conversão por página de entrada</h2>
+          <div class="table-wrap">
+            <table class="report">
+              <thead><tr><th>Entraram por</th><th class="num">Sessões</th><th class="num">Converteram</th><th class="num">Taxa</th></tr></thead>
+              <tbody>{conv.byLanding.slice(0, 15).map((l) => <tr><td><code>{l.label}</code></td><td class="num">{nf.format(l.sessions)}</td><td class="num">{nf.format(l.converted)}</td><td class="num">{ratio(l.converted, l.sessions)}<br /><Delta current={l.sessions ? l.converted / l.sessions : 0} previous={l.prevSessions ? l.prevConverted / l.prevSessions : 0} /></td></tr>)}</tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="card-title">Últimas conversões</h2>
+          {conv.recent.length === 0 ? <p class="muted">Sem conversões neste período.</p> : (
+            <div class="table-wrap">
+              <table class="report">
+                <thead><tr><th>Quando</th><th>Conversão</th><th>Página</th><th>Veio de</th><th>Pessoa</th></tr></thead>
+                <tbody>
+                  {conv.recent.map((c) => (
+                    <tr>
+                      <td class="nowrap">{when.format(c.ts)}</td>
+                      <td>{eventLabel(c.name)}{c.detail && <><br /><span class="muted">{c.detail}</span></>}</td>
+                      <td>{c.title || <code>{c.path}</code>}{siteId === 'all' && <><br /><span class="muted">{siteName(c.site)}</span></>}</td>
+                      <td>{c.channel} · {c.source}{c.campaign && <><br /><span class="muted">campanha {c.campaign}</span></>}<br /><span class="muted">{[c.device, c.city].filter(Boolean).join(', ')}</span></td>
+                      <td>{c.leadId ? <a href={`/leads/${c.leadId}`}>Ver lead</a> : <span class="muted">—</span>}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        {conv.others.length > 0 && (
+          <section class="card">
+            <h2 class="card-title">Outros cliques registados</h2>
+            <div class="table-wrap">
+              <table class="report">
+                <thead><tr><th>Clique</th><th>Página</th><th class="num">Vezes</th></tr></thead>
+                <tbody>{conv.others.map((o) => <tr><td>{o.label}</td><td><code>{o.path}</code>{siteId === 'all' && <span class="muted"> {siteName(o.site)}</span>}</td><td class="num">{nf.format(o.count)}</td></tr>)}</tbody>
+              </table>
+            </div>
+          </section>
+        )}
+        <p class="muted small">Conversão = inscrição num formulário, contacto, agendamento ou compra (botões com <code>data-track</code> e formulários do hub). Cada visita conta uma vez por tipo e página.</p>
+      </>
+    )}
+
+    {conv && tab === 'origens' && (
+      <>
+        {[
+          { title: 'Por canal', rows: conv.byChannel },
+          { title: 'Por origem', rows: conv.bySource },
+          { title: 'Por campanha (utm_campaign)', rows: conv.byCampaign },
+        ].map((t) => (
+          <section class="card">
+            <h2 class="card-title">{t.title}</h2>
+            {t.rows.length === 0 ? <p class="muted">{t.title.startsWith('Por campanha') ? 'Sem visitas com utm_campaign neste período. Junta ?utm_source=instagram&utm_campaign=nome aos links das campanhas.' : 'Sem visitas neste período.'}</p> : (
+              <div class="table-wrap">
+                <table class="report">
+                  <thead><tr><th>Origem</th><th class="num">Sessões</th><th class="num">Converteram</th><th class="num">Taxa de conversão</th></tr></thead>
+                  <tbody>{t.rows.slice(0, 25).map((row) => <tr><td>{row.label}</td><td class="num">{nf.format(row.sessions)}<br /><Delta current={row.sessions} previous={row.prevSessions} /></td><td class="num">{nf.format(row.converted)}</td><td class="num">{ratio(row.converted, row.sessions)}</td></tr>)}</tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        ))}
+      </>
+    )}
+
+    {tab === 'comportamento' && (
+      site ? <ClarityInsights site={site} force={Astro.request.method === 'POST'} /> : (
+        <section class="card"><p>Escolhe um site para ver o comportamento das visitas (Microsoft Clarity).</p></section>
+      )
+    )}
+
+    {tab !== 'comportamento' && (
+      <ul class="legend">
+        <li><span class="swatch"></span>Período atual</li>
+        <li><span class="swatch prev"></span>Período anterior</li>
+      </ul>
+    )}
   </div>
 </Hub>
+
+<style>
+  .tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .tabs a { padding: .4rem .8rem; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
+  .tabs a[aria-current] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .chip.live { font-weight: 600; }
+  .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--good); display: inline-block; }
+  a.chip { text-decoration: none; }
+  .card-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; align-items: baseline; margin-bottom: .6rem; }
+  .card-head .card-title { margin: 0; }
+  table.report td { font-size: .9rem; }
+  table.report code { font-size: 12px; }
+  td.actions span { display: block; }
+  .nowrap { white-space: nowrap; }
+  .small { font-size: .82rem; }
+  .warn-box { color: var(--warn); margin: 0; }
+  ul.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+</style>
