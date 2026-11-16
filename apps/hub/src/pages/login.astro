@@ -34,6 +34,7 @@ if (Astro.request.method === 'POST') {
     <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#F5F1EA" />
     <title>Entrar · Empower Hub</title>
   </head>
@@ -50,7 +51,7 @@ if (Astro.request.method === 'POST') {
 </html>
 
 <style>
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #F5F1EA; color: #121212; font: 500 15px/1.5 'Quicksand', system-ui, sans-serif; padding: 16px; }
+  body { color-scheme: light; margin: 0; min-height: 100vh; display: grid; place-items: center; background: #F5F1EA; color: #121212; font: 500 15px/1.5 'Quicksand', system-ui, sans-serif; padding: 16px; }
   form { width: 100%; max-width: 360px; display: grid; gap: 1rem; background: #FFFFFF; border: 1px solid #E6E0D5; border-radius: 3px; padding: 2rem; }
   img { border: 1px solid #E6E0D5; border-radius: 3px; }
   h1 { margin: 0; font: 700 1.7rem/1.1 'Bodoni Moda', Georgia, serif; letter-spacing: -.015em; }
@@ -62,14 +63,4 @@ if (Astro.request.method === 'POST') {
   input:focus { outline: 2px solid #B8913A; outline-offset: 0; border-color: #B8913A; }
   button { background: #121212; color: #F5F1EA; border: 0; border-radius: 3px; padding: .7rem; font: 700 1rem 'Quicksand', system-ui, sans-serif; cursor: pointer; }
   .err { color: #B3261E; margin: 0; }
-  @media (prefers-color-scheme: dark) {
-    body { background: #141217; color: #F5F1EA; }
-    form { background: #1D1A22; border-color: #2E2A33; }
-    img { border-color: #2E2A33; }
-    .sub { color: #A39C90; }
-    label { color: #CFC6B6; }
-    input { background: #19171D; color: #F5F1EA; border-color: #3E3944; }
-    button { background: #F5F1EA; color: #121212; }
-    .err { color: #F08A80; }
-  }
 </style>

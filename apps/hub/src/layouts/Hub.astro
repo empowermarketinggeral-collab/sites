@@ -28,8 +28,8 @@ const links = [
     <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#F5F1EA" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#141217" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#F5F1EA" />
     <meta name="apple-mobile-web-app-title" content="Hub" />
     <title>{title} · Empower Hub</title>
   </head>
@@ -58,7 +58,7 @@ const links = [
 <style is:global>
   /* Empower Hub: identidade Empower Boss (papel, preto, dourado; Bodoni Moda e Quicksand; cantos de 3px, sem sombras).
      Cores dos gráficos validadas (daltonismo, contraste) para cada fundo: roxo Empower, dourado e verde Norte;
-     o período anterior é cinza, para o atual se destacar. */
+     o período anterior é cinza, para o atual se destacar. Só tema claro, também com o sistema em modo escuro. */
   :root {
     color-scheme: light;
     --page: #F5F1EA; --surface: #FFFFFF; --surface-2: #FAF8F4; --line: #E6E0D5; --line-strong: #D2CABB;
@@ -69,17 +69,6 @@ const links = [
     --grid: #EEE9E0; --axis: #D2CABB; --good: #1F7A4D; --bad: #B3261E; --warn: #8A5A00;
     --display: 'Bodoni Moda', Didot, Georgia, serif; --sans: 'Quicksand', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --r: 3px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
-      color-scheme: dark;
-      --page: #141217; --surface: #1D1A22; --surface-2: #19171D; --line: #2E2A33; --line-strong: #3E3944;
-      --text: #F5F1EA; --text-2: #CFC6B6; --muted: #A39C90;
-      --side: #17151B; --side-hover: #221F27; --side-active: #2A2630;
-      --accent: #F5F1EA; --on-accent: #121212; --link: #C2A8EA; --gold: #C9A24B; --gold-text: #D9B866;
-      --series-1: #9474CC; --series-prev: #6E6878; --s1: #9474CC; --s2: #B08A35; --s3: #2A9A7A;
-      --grid: #2A2630; --axis: #3E3944; --good: #5BC08A; --bad: #F08A80; --warn: #E7B65C;
-    }
   }
   * { box-sizing: border-box; }
   body {

@@ -28,8 +28,8 @@ Back-office privado, no estilo da Shopify:
 
 ### Design e ícone
 
-Identidade Empower Boss: fundo papel (`#F5F1EA`), folhas brancas com linhas finas e cantos de 3px, tinta preta, ponto dourado (`#B8913A`); Quicksand no texto e nos números, Bodoni Moda só no nome e nos títulos (fontes servidas pelo próprio hub, `@fontsource`). Modo escuro segue o sistema.
-Cores dos gráficos validadas para daltonismo e contraste nos dois modos: roxo Empower (série principal), dourado e verde Norte; o período anterior é cinza. Os valores são sempre legíveis sem cor (rótulos, tabela "Ver tabela").
+Identidade Empower Boss: fundo papel (`#F5F1EA`), folhas brancas com linhas finas e cantos de 3px, tinta preta, ponto dourado (`#B8913A`); Quicksand no texto e nos números, Bodoni Moda só no nome e nos títulos (fontes servidas pelo próprio hub, `@fontsource`). Só tema claro (mesmo com o sistema em modo escuro).
+Cores dos gráficos validadas para daltonismo e contraste no fundo claro: roxo Empower (série principal), dourado e verde Norte; o período anterior é cinza. Os valores são sempre legíveis sem cor (rótulos, tabela "Ver tabela").
 Ícone: monograma "H." em Bodoni com o ponto dourado, a mesma linha do "B." da Empower Boss (preto) e do Big Boss (roxo), aqui em papel. Ficheiros em `public/` (`favicon.svg`, `favicon.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`) e `manifest.webmanifest` para instalar no telemóvel.
 
 ### Como funciona o tracking
