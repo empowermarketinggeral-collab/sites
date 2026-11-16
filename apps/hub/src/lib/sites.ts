@@ -1,4 +1,4 @@
-import { all, get, normalizeDomain, run, type Site } from './db';
+import { all, domainList, get, normalizeDomain, run, type Site } from './db';
 
 export { normalizeDomain };
 
@@ -6,10 +6,11 @@ export function siteFor(id: string): Promise<Site | undefined> {
   return get<Site>('SELECT * FROM hub.sites WHERE id = ?', [id]);
 }
 
-// Aceita o domínio registado e o endereço do site (ex.: o site ainda em …vercel.app), e os seus subdomínios.
+// Aceita os domínios registados (separados por vírgula), o endereço do site (ex.: o site ainda em
+// …vercel.app) e os seus subdomínios.
 export function hostMatches(site: Site, host: string): boolean {
   const h = normalizeDomain(host);
-  return [site.domain, site.url].map(normalizeDomain).some((d) => !!d && (h === d || h.endsWith(`.${d}`)));
+  return [...domainList(site.domain), normalizeDomain(site.url)].some((d) => !!d && (h === d || h.endsWith(`.${d}`)));
 }
 
 // Regista um pedido recusado (para o diagnóstico em Sites). No máximo uma escrita por minuto por motivo
@@ -34,7 +35,8 @@ export async function noteIssue(siteId: string, host: string, reason: string): P
 
 export interface TrackingIssue { site_id: string; host: string; reason: string; count: number; last_ts: number }
 export function issuesOf(siteId: string): Promise<TrackingIssue[]> {
-  return all<TrackingIssue>('SELECT * FROM hub.tracking_issues WHERE site_id = ? AND last_ts > ? ORDER BY last_ts DESC LIMIT 20', [siteId, Date.now() - 30 * 86_400_000]);
+  // "site_desconhecido" é de antes de o site existir no hub: não interessa no cartão do site.
+  return all<TrackingIssue>("SELECT * FROM hub.tracking_issues WHERE site_id = ? AND reason <> 'site_desconhecido' AND last_ts > ? ORDER BY last_ts DESC LIMIT 20", [siteId, Date.now() - 30 * 86_400_000]);
 }
 export function unknownSiteIssues(): Promise<TrackingIssue[]> {
   return all<TrackingIssue>("SELECT * FROM hub.tracking_issues WHERE reason = 'site_desconhecido' AND last_ts > ? ORDER BY last_ts DESC LIMIT 20", [Date.now() - 30 * 86_400_000]);

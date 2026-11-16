@@ -39,7 +39,7 @@ export async function checkInstall(site: Site, hubHost: string): Promise<Check[]
   const finalHost = new URL(res.url || site.url).hostname;
   checks.push(hostMatches(site, finalHost)
     ? { ok: true, label: `O endereço ${finalHost} é aceite pelo hub` }
-    : { ok: false, label: `O site abre em ${finalHost}, que não bate com o domínio registado (${site.domain || '—'})`, detail: 'Muda o Domínio do site para este endereço.' });
+    : { ok: false, label: `O site abre em ${finalHost}, que não está nos domínios registados (${site.domain || '—'})`, detail: `Se ${finalHost} também é deste site (ex.: domínio principal da loja ou de um mercado), acrescenta-o ao campo Domínio, separado por vírgula.` });
 
   const html = (await res.text()).slice(0, 2_000_000);
   const tags = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/t\.js)(?:\?[^"']*)?["'][^>]*>/gi)];

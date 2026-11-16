@@ -39,7 +39,7 @@ Os dados ficam na tua base de dados (Supabase), não em serviços de análise de
 
 - Conversões: acrescenta `data-track="lead"` (ou `contacto`, `agendamento`, `compra`) a um botão ou link. O hub guarda também o título da página e o texto do botão (ou `data-track-detail="E-book"`), para se saber onde e em quê se converteu.
 - Outros eventos: `data-track="nome_do_evento"` ou `window.empowerTrack('nome_do_evento', 'o quê')`.
-- Domínio do site: aceita-se com ou sem `https://`, `www` e barra no fim, e também o endereço em URL (ex.: o site ainda em …vercel.app). O que for recusado aparece em Sites.
+- Domínios do site: um ou vários separados por vírgula (ex.: `astredik.com, astredik.online`, quando a loja abre nos dois), com ou sem `https://`, `www` e barra no fim; o endereço em URL também é aceite (ex.: o site ainda em …vercel.app). O que for recusado aparece em Sites, com o botão "Aceitar também …".
 - País/cidade vêm dos cabeçalhos do CDN/proxy (Cloudflare `cf-ipcountry`/`cf-ipcity`, Vercel, ou `x-country`/`x-city`). Sem CDN aparecem como "Desconhecido".
 - O hub só aceita eventos vindos do domínio registado para o site, ignora bots e limita pedidos por IP.
 
