@@ -9,7 +9,11 @@ const PUBLIC_PATHS = new Set([
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
-  if (!PUBLIC_PATHS.has(pathname) && !isValidSession(context.cookies.get(SESSION_COOKIE)?.value)) {
+  // Sem OAuth: os clientes MCP procuram estes endereços; um 404 diz-lhes que a chave vai no endereço.
+  if (pathname.startsWith('/.well-known/')) return new Response(null, { status: 404 });
+  // O conector dos agentes (/mcp) tem a sua própria chave (HUB_AGENT_TOKEN).
+  const isAgent = pathname === '/mcp' || pathname.startsWith('/mcp/');
+  if (!isAgent && !PUBLIC_PATHS.has(pathname) && !isValidSession(context.cookies.get(SESSION_COOKIE)?.value)) {
     return context.redirect('/login');
   }
 

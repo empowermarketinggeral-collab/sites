@@ -64,6 +64,16 @@ Gravações de sessão e mapas de calor. Cria um projeto por site em clarity.mic
 - Formulário novo num site com o código de tracking: `<form data-hub-form="newsletter">` com campos `name`, `email`, `phone`, `company`, `consent_email`; os restantes campos aparecem como respostas. Opcional: `data-tags`, `data-success`, `data-redirect`, `data-error`. Conta também como conversão (`lead`).
 - O lead fica ligado à visita em que foi enviado (mesmo IP e browser no mesmo dia), por isso o hash da visita passa a estar associado a uma pessoa: refere isto na política de privacidade de cada site. "Apagar lead" remove os dados do hub (o contacto no Big Boss apaga-se lá).
 
+### Agentes do Claude (conector)
+
+Os agentes do Claude leem o hub por um conector MCP **só de leitura** (não alteram nada), com as ferramentas `ver_sites`, `ver_resumo`, `ver_paginas`, `ver_conversoes`, `ver_origens`, `ver_leads`, `ver_clientes`, `ver_vendas` e `ver_comportamento`.
+
+1. Vercel do hub: variável `HUB_AGENT_TOKEN` com uma chave longa (24+ caracteres, ex.: `crypto.randomUUID() + crypto.randomUUID()` na consola do browser), em Production, e Redeploy.
+2. Claude (claude.ai, app ou Cowork): Definições → Conectores → **Adicionar conector personalizado**, nome "Empower Hub", URL `https://<hub>/mcp/<HUB_AGENT_TOKEN>`. Depois liga o conector na conversa, projeto ou tarefa agendada do agente.
+3. Claude Code: `claude mcp add --transport http empower-hub https://<hub>/mcp --header "Authorization: Bearer <HUB_AGENT_TOKEN>"`.
+
+O endereço com a chave dá acesso aos dados (incluindo leads e clientes): trata-o como uma palavra-passe. Para cortar o acesso, muda `HUB_AGENT_TOKEN` no Vercel, faz Redeploy e atualiza o conector.
+
 ### Correr localmente
 
 ```bash
