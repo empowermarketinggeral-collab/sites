@@ -13,13 +13,27 @@ import { trackingHealth } from './diagnostics';
 
 const env = (name: string): string => String(process.env[name] ?? import.meta.env[name] ?? '').trim();
 
-export function agentAuthorized(given: string): boolean {
-  const expected = env('HUB_AGENT_TOKEN');
-  if (expected.length < 24 || !given) return false;
-  const a = Buffer.from(given);
+// Aspas, espaços e %-codificação à volta da chave são ignorados (é fácil copiá-los da consola do browser).
+const clean = (v: string) => {
+  let t = v.trim();
+  try { t = decodeURIComponent(t); } catch { /* fica como veio */ }
+  return t.trim().replace(/^['"`]+|['"`]+$/g, '').trim();
+};
+
+export type AgentTokenState = 'certa' | 'errada' | 'sem_chave' | 'sem_variavel' | 'variavel_curta';
+
+export function agentTokenState(given: string): AgentTokenState {
+  const expected = clean(env('HUB_AGENT_TOKEN'));
+  if (!expected) return 'sem_variavel';
+  if (expected.length < 24) return 'variavel_curta';
+  const g = clean(given);
+  if (!g) return 'sem_chave';
+  const a = Buffer.from(g);
   const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
+  return a.length === b.length && timingSafeEqual(a, b) ? 'certa' : 'errada';
 }
+
+export const agentAuthorized = (given: string) => agentTokenState(given) === 'certa';
 
 const clampDays = (v: unknown) => Math.min(365, Math.max(1, Math.round(Number(v) || 30)));
 const clampLimit = (v: unknown, def = 50) => Math.min(500, Math.max(1, Math.round(Number(v) || def)));
