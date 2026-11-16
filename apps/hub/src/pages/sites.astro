@@ -65,7 +65,7 @@ const times = (n: number) => `${nf.format(n)} ${n === 1 ? 'vez' : 'vezes'}`;
       <label>Domínios (separados por vírgula) <input name="domain" required placeholder="exemplo.pt, exemplo.com" value={editing?.domain ?? (newHost || undefined)} /></label>
       <label>Pasta no repositório <input name="repo" placeholder="apps/..." value={editing?.repo} /></label>
       <input type="hidden" name="client_id" value={editing?.client_id ?? ''} />
-      <label>Id da marca no Big Boss (vendas Hotmart) <input name="bigboss_brand_id" placeholder="00000000-0000-…" pattern="[0-9a-fA-F\-]{36}" value={editing?.bigboss_brand_id} /></label>
+      <label>Marca no Big Boss, para as vendas Hotmart (link ou id) <input name="bigboss_brand_id" placeholder="cola o link da marca no Big Boss" value={editing?.bigboss_brand_id} /></label>
       <label>Id do projeto Microsoft Clarity <input name="clarity_id" placeholder="ex.: abc123xyz" pattern="[a-zA-Z0-9]{4,20}" value={editing?.clarity_id} /></label>
       <button>{editing ? 'Guardar' : 'Adicionar site'}</button>
     </form>

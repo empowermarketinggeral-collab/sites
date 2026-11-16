@@ -89,7 +89,13 @@ export async function upsert(table: Table, form: FormData): Promise<void> {
   // Só guardamos URLs http(s): evita links javascript: no painel.
   if (table === 'sites' && !/^https?:\/\//i.test(values[fields.indexOf('url' as never)])) throw new Error('URL inválido');
   if (table === 'sites') values[fields.indexOf('domain' as never)] = normalizeDomains(values[fields.indexOf('domain' as never)]);
-  if (table === 'sites' && !/^([0-9a-f-]{36})?$/i.test(values[fields.indexOf('bigboss_brand_id' as never)])) throw new Error('Id da marca no Big Boss inválido');
+  if (table === 'sites') {
+    // Aceita o id ou o link da marca no Big Boss (…?marca=<id>…): fica só o id.
+    const i = fields.indexOf('bigboss_brand_id' as never);
+    const uuid = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.exec(values[i]);
+    if (values[i] && !uuid) throw new Error('Marca no Big Boss: cola o link da marca (com marca=…) ou o id');
+    values[i] = uuid ? uuid[0].toLowerCase() : '';
+  }
   if (table === 'sites' && !/^[a-z0-9]{0,20}$/i.test(values[fields.indexOf('clarity_id' as never)])) throw new Error('Id do Clarity inválido');
   const cols = ['id', ...fields].join(', ');
   const marks = ['?', ...fields.map(() => '?')].join(', ');
