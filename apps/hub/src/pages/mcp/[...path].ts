@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { agentAuthorized, agentTools } from '../../lib/agent';
+import { agentAuthorized, agentTokenState, agentTools, type AgentTokenState } from '../../lib/agent';
 import { clientIp, rateLimiter } from '../../lib/sites';
 
 // Conector MCP (Streamable HTTP, sem sessão) para os agentes do Claude, só leitura.
@@ -73,7 +73,27 @@ export const POST: APIRoute = async ({ request, params, clientAddress }) => {
   return out === null ? new Response(null, { status: 202 }) : json(out);
 };
 
-// Sem fluxo SSE nem sessões: só POST.
-const notAllowed: APIRoute = () => new Response(null, { status: 405, headers: { Allow: 'POST' } });
-export const GET = notAllowed;
-export const DELETE = notAllowed;
+// Aberto no browser: página que diz se o endereço e a chave estão certos (sem mostrar a chave).
+const STATE_TEXT: Record<AgentTokenState, [boolean, string]> = {
+  certa: [true, 'A chave está certa. Este é o endereço do conector: copia-o da barra do browser e cola-o no Claude (Definições → Conectores → Adicionar conector personalizado).'],
+  errada: [false, 'A chave no fim deste endereço não é igual à HUB_AGENT_TOKEN do Vercel. Copia outra vez a chave (sem aspas nem espaços) e junta-a a /mcp/.'],
+  sem_chave: [false, 'Falta a chave no fim do endereço: /mcp/ seguido da tua HUB_AGENT_TOKEN.'],
+  sem_variavel: [false, 'O hub não tem a variável HUB_AGENT_TOKEN. Cria-a no projeto do hub no Vercel (Settings → Environment Variables, em Production) e faz Redeploy.'],
+  variavel_curta: [false, 'A HUB_AGENT_TOKEN do Vercel tem menos de 24 caracteres. Usa uma chave mais longa e faz Redeploy.'],
+};
+
+function statusPage(state: AgentTokenState): Response {
+  const [ok, text] = STATE_TEXT[state];
+  const html = `<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Conector · Empower Hub</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F5F1EA;color:#121212;font:500 16px/1.55 system-ui,sans-serif;padding:16px}main{max-width:560px;background:#fff;border:1px solid #E6E0D5;border-radius:3px;padding:2rem}h1{font:700 1.4rem Georgia,serif;margin:0 0 1rem}.s{font-weight:700;color:${ok ? '#1F7A4D' : '#B3261E'}}</style></head>
+<body><main><h1>Conector do Empower Hub</h1><p class="s">${ok ? '✓' : '✗'} ${text}</p><p>Se o Claude disser "não foi possível registar um serviço de login", é porque o hub recusou a chave: corrige o que esta página indicar e volta a ligar o conector.</p></main></body></html>`;
+  return new Response(html, { status: ok ? 200 : 401, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
+// Para os clientes MCP: sem fluxo SSE nem sessões, só POST.
+export const GET: APIRoute = ({ request, params, clientAddress }) => {
+  if (!(request.headers.get('accept') ?? '').includes('text/html')) return new Response(null, { status: 405, headers: { Allow: 'POST' } });
+  if (limited(clientIp(request.headers, clientAddress))) return json({ error: 'too_many' }, 429);
+  return statusPage(agentTokenState(String(params.path ?? '').replace(/\/+$/, '')));
+};
+export const DELETE: APIRoute = () => new Response(null, { status: 405, headers: { Allow: 'POST' } });
