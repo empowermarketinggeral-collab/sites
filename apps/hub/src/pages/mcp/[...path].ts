@@ -54,7 +54,7 @@ async function handle(msg: RpcMessage): Promise<unknown | null> {
 export const POST: APIRoute = async ({ request, params, clientAddress }) => {
   if (limited(clientIp(request.headers, clientAddress))) return json({ error: 'too_many' }, 429);
   const bearer = /^Bearer\s+(.+)$/i.exec(request.headers.get('authorization') ?? '')?.[1]?.trim() ?? '';
-  if (!agentAuthorized(String(params.path ?? '').replace(/\/+$/, '') || bearer)) return json({ error: 'unauthorized' }, 401);
+  if (!(await agentAuthorized(String(params.path ?? '').replace(/\/+$/, '') || bearer))) return json({ error: 'unauthorized' }, 401);
 
   const text = await request.text();
   if (text.length > 100_000) return json(rpcError(null, -32600, 'Pedido demasiado grande'), 413);
@@ -76,9 +76,9 @@ export const POST: APIRoute = async ({ request, params, clientAddress }) => {
 // Aberto no browser: página que diz se o endereço e a chave estão certos (sem mostrar a chave).
 const STATE_TEXT: Record<AgentTokenState, [boolean, string]> = {
   certa: [true, 'A chave está certa. Este é o endereço do conector: copia-o da barra do browser e cola-o no Claude (Definições → Conectores → Adicionar conector personalizado).'],
-  errada: [false, 'A chave no fim deste endereço não é igual à HUB_AGENT_TOKEN do Vercel. Copia outra vez a chave (sem aspas nem espaços) e junta-a a /mcp/.'],
-  sem_chave: [false, 'Falta a chave no fim do endereço: /mcp/ seguido da tua HUB_AGENT_TOKEN.'],
-  sem_variavel: [false, 'O hub não tem a variável HUB_AGENT_TOKEN. Cria-a no projeto do hub no Vercel (Settings → Environment Variables, em Production) e faz Redeploy.'],
+  errada: [false, 'Este endereço não tem a chave certa. Copia o endereço do conector na página Agentes do hub.'],
+  sem_chave: [false, 'Falta a chave no fim do endereço. Copia o endereço completo do conector na página Agentes do hub.'],
+  sem_variavel: [false, 'Ainda não há endereço para os agentes. Entra no hub, abre a página Agentes e carrega em "Criar endereço do conector".'],
   variavel_curta: [false, 'A HUB_AGENT_TOKEN do Vercel tem menos de 24 caracteres. Usa uma chave mais longa e faz Redeploy.'],
 };
 
@@ -91,9 +91,9 @@ function statusPage(state: AgentTokenState): Response {
 }
 
 // Para os clientes MCP: sem fluxo SSE nem sessões, só POST.
-export const GET: APIRoute = ({ request, params, clientAddress }) => {
+export const GET: APIRoute = async ({ request, params, clientAddress }) => {
   if (!(request.headers.get('accept') ?? '').includes('text/html')) return new Response(null, { status: 405, headers: { Allow: 'POST' } });
   if (limited(clientIp(request.headers, clientAddress))) return json({ error: 'too_many' }, 429);
-  return statusPage(agentTokenState(String(params.path ?? '').replace(/\/+$/, '')));
+  return statusPage(await agentTokenState(String(params.path ?? '').replace(/\/+$/, '')));
 };
 export const DELETE: APIRoute = () => new Response(null, { status: 405, headers: { Allow: 'POST' } });

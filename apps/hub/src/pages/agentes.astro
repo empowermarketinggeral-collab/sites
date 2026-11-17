@@ -1,0 +1,72 @@
+---
+import Hub from '../layouts/Hub.astro';
+import { agentDbToken, agentTools, rotateAgentToken } from '../lib/agent';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  if (form.get('_action') === 'create') await rotateAgentToken();
+  return Astro.redirect('/agentes', 303);
+}
+
+const token = await agentDbToken();
+const url = token ? `${Astro.url.origin}/mcp/${token.value}` : '';
+const envToo = !!String(process.env.HUB_AGENT_TOKEN ?? import.meta.env.HUB_AGENT_TOKEN ?? '').trim();
+const tools = await agentTools();
+const when = new Intl.DateTimeFormat('pt-PT', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Lisbon' });
+---
+<Hub title="Agentes">
+  <div class="stack">
+    <section class="card">
+      <h2 class="card-title">Ligar os agentes do Claude ao hub</h2>
+      <p>Os agentes leem o hub por um <strong>conector só de leitura</strong>: veem análises, páginas, conversões, origens, leads, clientes, vendas e Clarity, mas não alteram nada.</p>
+
+      {url ? (
+        <>
+          <label for="connector-url">Endereço do conector</label>
+          <div class="copy-row">
+            <input id="connector-url" readonly value={url} onclick="this.select()" />
+            <button type="button" id="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('connector-url').value).then(() => { this.textContent = 'Copiado'; setTimeout(() => { this.textContent = 'Copiar' }, 2000) })">Copiar</button>
+          </div>
+          <p class="muted small">Criado a {when.format(token!.updated)}. Este endereço dá acesso aos dados (incluindo leads e clientes): trata-o como uma palavra-passe.</p>
+        </>
+      ) : (
+        <form method="post"><button name="_action" value="create">Criar endereço do conector</button></form>
+      )}
+    </section>
+
+    <section class="card">
+      <h2 class="card-title">No Claude (site, app ou Cowork)</h2>
+      <ol class="steps">
+        <li>Definições → <strong>Conectores</strong> → <strong>Adicionar conector personalizado</strong>.</li>
+        <li>Nome: <code>Empower Hub</code>. URL: cola o endereço acima. <strong>Deixa vazios</strong> os campos avançados (OAuth Client ID e Secret).</li>
+        <li>Adiciona. Se já tinhas um "Empower Hub" que dava erro, apaga-o primeiro e cria-o de novo.</li>
+        <li>Em cada conversa, projeto ou tarefa agendada do agente, liga o conector <strong>Empower Hub</strong> no menu de ferramentas.</li>
+        <li>Nas instruções do agente: <em>"Para dados dos sites, usa o conector Empower Hub; começa por ver_sites."</em></li>
+      </ol>
+      <p class="muted small">Claude Code: <code>claude mcp add --transport http empower-hub {url || '<endereço do conector>'}</code></p>
+    </section>
+
+    <section class="card">
+      <h2 class="card-title">O que os agentes podem ver</h2>
+      <ul class="tools">{tools.map((t) => <li><code>{t.name}</code> <span class="muted">{t.description}</span></li>)}</ul>
+    </section>
+
+    {url && (
+      <section class="card">
+        <h2 class="card-title">Cortar o acesso</h2>
+        <p class="muted">Gera um endereço novo se o atual ficar exposto ou se quiseres tirar o acesso a um agente. O antigo deixa de funcionar logo; atualiza o conector no Claude com o novo.</p>
+        <form method="post"><button class="ghost" name="_action" value="create" onclick="return confirm('Gerar um endereço novo? O atual deixa de funcionar e tens de atualizar o conector no Claude.')">Gerar novo endereço</button></form>
+        {envToo && <p class="muted small">A variável HUB_AGENT_TOKEN do Vercel também dá acesso. Se usas este endereço, podes apagá-la no Vercel (e fazer Redeploy).</p>}
+      </section>
+    )}
+  </div>
+</Hub>
+
+<style>
+  .copy-row { display: flex; gap: .5rem; margin: .35rem 0 .5rem; }
+  .copy-row input { flex: 1; min-width: 0; font: 12.5px/1.4 ui-monospace, 'SF Mono', Menlo, monospace; }
+  .steps { display: grid; gap: .45rem; padding-left: 1.2rem; margin: 0 0 .6rem; }
+  .tools { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+  .tools li { display: grid; gap: .1rem; }
+  .small { font-size: .84rem; }
+</style>

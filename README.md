@@ -68,11 +68,11 @@ Gravações de sessão e mapas de calor. Cria um projeto por site em clarity.mic
 
 Os agentes do Claude leem o hub por um conector MCP **só de leitura** (não alteram nada), com as ferramentas `ver_sites`, `ver_resumo`, `ver_paginas`, `ver_conversoes`, `ver_origens`, `ver_leads`, `ver_clientes`, `ver_vendas` e `ver_comportamento`.
 
-1. Vercel do hub: variável `HUB_AGENT_TOKEN` com uma chave longa (24+ caracteres, ex.: `crypto.randomUUID() + crypto.randomUUID()` na consola do browser), em Production, e Redeploy.
-2. Claude (claude.ai, app ou Cowork): Definições → Conectores → **Adicionar conector personalizado**, nome "Empower Hub", URL `https://<hub>/mcp/<HUB_AGENT_TOKEN>`. Depois liga o conector na conversa, projeto ou tarefa agendada do agente.
-3. Claude Code: `claude mcp add --transport http empower-hub https://<hub>/mcp --header "Authorization: Bearer <HUB_AGENT_TOKEN>"`.
+1. No hub, página **Agentes** → "Criar endereço do conector" → Copiar. (A chave fica na base de dados do hub; não é preciso mexer no Vercel. A variável `HUB_AGENT_TOKEN`, se existir, também é aceite.)
+2. Claude (site, app ou Cowork): Definições → Conectores → **Adicionar conector personalizado**, nome "Empower Hub", URL = o endereço copiado, campos avançados de OAuth vazios. Depois liga o conector na conversa, projeto ou tarefa agendada do agente.
+3. Claude Code: `claude mcp add --transport http empower-hub <endereço do conector>`.
 
-O endereço com a chave dá acesso aos dados (incluindo leads e clientes): trata-o como uma palavra-passe. Para cortar o acesso, muda `HUB_AGENT_TOKEN` no Vercel, faz Redeploy e atualiza o conector.
+Aberto no browser, o endereço do conector diz se a chave está certa. O endereço dá acesso aos dados (incluindo leads e clientes): trata-o como uma palavra-passe. Para cortar o acesso, "Gerar novo endereço" na página Agentes (o antigo deixa de funcionar) e atualiza o conector no Claude.
 
 ### Correr localmente
 
