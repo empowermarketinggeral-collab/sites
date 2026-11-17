@@ -1,5 +1,5 @@
-import { timingSafeEqual } from 'node:crypto';
-import { list, type Site } from './db';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { get, list, run, type Site } from './db';
 import { conversionsReport, eventLabel, liveNow, pagesReport, periods, report } from './analytics';
 import { bigBossState, leadStats, listLeads, statusLabel } from './backoffice';
 import { SEGMENTS, listCustomers } from './customers';
@@ -8,8 +8,8 @@ import { clarityInsights, clarityLink } from './clarity';
 import { trackingHealth } from './diagnostics';
 
 // Acesso dos agentes do Claude ao hub: um conector MCP só de leitura.
-// Chave em HUB_AGENT_TOKEN (Vercel); o endereço do conector é /mcp/<chave>
-// (ou /mcp com "Authorization: Bearer <chave>"). Ver README → Agentes do Claude.
+// O endereço do conector (/mcp/<chave>) cria-se na página Agentes; também serve
+// /mcp com "Authorization: Bearer <chave>". Ver README → Agentes do Claude.
 
 const env = (name: string): string => String(process.env[name] ?? import.meta.env[name] ?? '').trim();
 
@@ -22,18 +22,40 @@ const clean = (v: string) => {
 
 export type AgentTokenState = 'certa' | 'errada' | 'sem_chave' | 'sem_variavel' | 'variavel_curta';
 
-export function agentTokenState(given: string): AgentTokenState {
-  const expected = clean(env('HUB_AGENT_TOKEN'));
-  if (!expected) return 'sem_variavel';
-  if (expected.length < 24) return 'variavel_curta';
-  const g = clean(given);
-  if (!g) return 'sem_chave';
-  const a = Buffer.from(g);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b) ? 'certa' : 'errada';
+// A chave do conector cria-se no hub (página Agentes) e fica na base de dados; a variável
+// HUB_AGENT_TOKEN do Vercel, se existir, também serve.
+export async function agentDbToken(): Promise<{ value: string; updated: number } | null> {
+  const row = await get<{ value: string; updated_ts: number }>("SELECT value, updated_ts FROM hub.settings WHERE key = 'agent_token'");
+  return row ? { value: row.value, updated: row.updated_ts } : null;
 }
 
-export const agentAuthorized = (given: string) => agentTokenState(given) === 'certa';
+export async function rotateAgentToken(): Promise<string> {
+  const value = randomBytes(32).toString('base64url');
+  await run(
+    `INSERT INTO hub.settings (key, value, updated_ts) VALUES ('agent_token', ?, ?)
+     ON CONFLICT (key) DO UPDATE SET value = excluded.value, updated_ts = excluded.updated_ts`,
+    [value, Date.now()],
+  );
+  return value;
+}
+
+const same = (a: string, b: string) => {
+  const x = Buffer.from(a);
+  const y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+};
+
+export async function agentTokenState(given: string): Promise<AgentTokenState> {
+  const fromEnv = clean(env('HUB_AGENT_TOKEN'));
+  const fromDb = (await agentDbToken())?.value ?? '';
+  const valid = [fromDb, fromEnv.length >= 24 ? fromEnv : ''].filter(Boolean);
+  if (!valid.length) return fromEnv ? 'variavel_curta' : 'sem_variavel';
+  const g = clean(given);
+  if (!g) return 'sem_chave';
+  return valid.some((v) => same(g, v)) ? 'certa' : 'errada';
+}
+
+export const agentAuthorized = async (given: string) => (await agentTokenState(given)) === 'certa';
 
 const clampDays = (v: unknown) => Math.min(365, Math.max(1, Math.round(Number(v) || 30)));
 const clampLimit = (v: unknown, def = 50) => Math.min(500, Math.max(1, Math.round(Number(v) || def)));

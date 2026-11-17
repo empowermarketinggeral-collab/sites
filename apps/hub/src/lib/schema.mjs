@@ -1,7 +1,7 @@
 // Partilhado entre a app e os scripts (ex.: seed-demo). Uma instrução por item.
 // Tudo fica no schema privado "hub" (a API pública do Supabase só expõe "public"),
 // e com RLS ativo sem políticas: só a ligação direta da app consegue ler/escrever.
-const TABLES = ['sites', 'clients', 'domains', 'events', 'leads', 'sales', 'tracking_issues', 'clarity_cache', 'login_attempts'];
+const TABLES = ['sites', 'clients', 'domains', 'events', 'leads', 'sales', 'tracking_issues', 'clarity_cache', 'settings', 'login_attempts'];
 
 export const SCHEMA = [
   `CREATE SCHEMA IF NOT EXISTS hub`,
@@ -117,6 +117,8 @@ export const SCHEMA = [
     site_id TEXT NOT NULL, kind TEXT NOT NULL, ts DOUBLE PRECISION NOT NULL, body TEXT NOT NULL,
     PRIMARY KEY (site_id, kind)
   )`,
+  // Definições do hub (ex.: a chave do conector dos agentes, criada na página Agentes).
+  `CREATE TABLE IF NOT EXISTS hub.settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_ts DOUBLE PRECISION NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS hub.login_attempts (
     ip TEXT PRIMARY KEY, count INTEGER NOT NULL, until DOUBLE PRECISION NOT NULL
   )`,
