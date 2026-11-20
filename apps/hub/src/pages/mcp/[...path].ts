@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { agentAuthorized, agentTokenState, agentTools, type AgentTokenState } from '../../lib/agent';
 import { clientIp, rateLimiter } from '../../lib/sites';
 
-// Conector MCP (Streamable HTTP, sem sessão) para os agentes do Claude, só leitura.
+// Conector MCP (Streamable HTTP, sem sessão) para os agentes do Claude (leitura; atualizar_lead escreve).
 //   https://<hub>/mcp/<HUB_AGENT_TOKEN>        (conectores personalizados do Claude)
 //   https://<hub>/mcp  + Authorization: Bearer <HUB_AGENT_TOKEN>   (Claude Code, etc.)
 
@@ -26,7 +26,7 @@ async function handle(msg: RpcMessage): Promise<unknown | null> {
           protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0],
           capabilities: { tools: { listChanged: false } },
           serverInfo: { name: 'empower-hub', title: 'Empower Hub', version: '1.0.0' },
-          instructions: 'Back-office dos sites da Empower (só leitura): visitas, páginas, conversões, origens, leads, clientes, vendas Hotmart e Clarity. Começa por ver_sites para saber os ids. Datas em ISO (UTC); percentagens já em %. Leads e clientes têm dados pessoais: usa-os só para o trabalho pedido.',
+          instructions: 'Back-office dos sites da Empower: visitas, páginas, conversões, origens, leads, clientes, vendas Hotmart e Clarity (leitura), e atualizar_lead para marcar o estado e as notas de um lead. Começa por ver_sites para saber os ids. Datas em ISO (UTC); percentagens já em %. Leads e clientes têm dados pessoais: usa-os só para o trabalho pedido.',
         },
       };
     }
@@ -34,7 +34,7 @@ async function handle(msg: RpcMessage): Promise<unknown | null> {
       return { jsonrpc: '2.0', id, result: {} };
     case 'tools/list': {
       const tools = await agentTools();
-      return { jsonrpc: '2.0', id, result: { tools: tools.map(({ run, ...t }) => ({ ...t, annotations: { readOnlyHint: true, openWorldHint: false } })) } };
+      return { jsonrpc: '2.0', id, result: { tools: tools.map(({ run, writes, ...t }) => ({ ...t, annotations: writes ? { readOnlyHint: false, destructiveHint: false, openWorldHint: false } : { readOnlyHint: true, openWorldHint: false } })) } };
     }
     case 'tools/call': {
       const tool = (await agentTools()).find((t) => t.name === params.name);

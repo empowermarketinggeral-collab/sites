@@ -66,7 +66,11 @@ Gravações de sessão e mapas de calor. Cria um projeto por site em clarity.mic
 
 ### Agentes do Claude (conector)
 
-Os agentes do Claude leem o hub por um conector MCP **só de leitura** (não alteram nada), com as ferramentas `ver_sites`, `ver_resumo`, `ver_paginas`, `ver_conversoes`, `ver_origens`, `ver_leads`, `ver_clientes`, `ver_vendas` e `ver_comportamento`.
+Os agentes do Claude leem o hub por um conector MCP, com as ferramentas `ver_sites`, `ver_resumo`, `ver_paginas`, `ver_conversoes`, `ver_origens`, `ver_leads`, `ver_clientes`, `ver_vendas` e `ver_comportamento` (só leitura) e `atualizar_lead` (estado e notas de um lead; não mexe no Big Boss).
+
+**Pelo Painel (recomendado, sem configurar nada):** o Painel (repositório `dasboard-`) entra no hub com uma chave própria e passa estas ferramentas aos agentes como `hub_…`, no mesmo conector que já usam. O hub só guarda o SHA-256 dessa chave, em `PAINEL_KEY_SHA256` (`src/lib/agent.ts`; ou na variável `HUB_PAINEL_KEY_SHA256`). Para cortar o acesso do Painel, tira-o daí e publica.
+
+Ligação direta (sem o Painel):
 
 1. No hub, página **Agentes** → "Criar endereço do conector" → Copiar. (A chave fica na base de dados do hub; não é preciso mexer no Vercel. A variável `HUB_AGENT_TOKEN`, se existir, também é aceite.)
 2. Claude (site, app ou Cowork): Definições → Conectores → **Adicionar conector personalizado**, nome "Empower Hub", URL = o endereço copiado, campos avançados de OAuth vazios. Depois liga o conector na conversa, projeto ou tarefa agendada do agente.

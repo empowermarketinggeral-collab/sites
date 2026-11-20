@@ -1,15 +1,22 @@
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { get, list, run, type Site } from './db';
 import { conversionsReport, eventLabel, liveNow, pagesReport, periods, report } from './analytics';
-import { bigBossState, leadStats, listLeads, statusLabel } from './backoffice';
+import { STATUSES, bigBossState, leadById, leadStats, listLeads, statusLabel, updateLead } from './backoffice';
 import { SEGMENTS, listCustomers } from './customers';
 import { kindOf, listSales, salesConfigured, salesStats, syncSales } from './sales';
 import { clarityInsights, clarityLink } from './clarity';
 import { trackingHealth } from './diagnostics';
 
-// Acesso dos agentes do Claude ao hub: um conector MCP só de leitura.
+// Acesso dos agentes do Claude ao hub: um conector MCP (leitura; só atualizar_lead escreve).
 // O endereço do conector (/mcp/<chave>) cria-se na página Agentes; também serve
 // /mcp com "Authorization: Bearer <chave>". Ver README → Agentes do Claude.
+//
+// O Painel (dashboard dos agentes) entra com a sua própria chave, que deriva do
+// APP_SECRET dele e nunca sai de lá: aqui só fica o SHA-256 ("impressão
+// digital", que o Painel mostra em ver_painel → ligacoes e em /api/health).
+// Para cortar o acesso do Painel, tira a impressão digital daqui (ou de
+// HUB_PAINEL_KEY_SHA256, se usada) e publica.
+const PAINEL_KEY_SHA256 = ['__PAINEL_KEY_SHA256__'];
 
 const env = (name: string): string => String(process.env[name] ?? import.meta.env[name] ?? '').trim();
 
@@ -45,7 +52,19 @@ const same = (a: string, b: string) => {
   return x.length === y.length && timingSafeEqual(x, y);
 };
 
+const painelHashes = () =>
+  [...PAINEL_KEY_SHA256, ...env('HUB_PAINEL_KEY_SHA256').split(',')].map((h) => h.trim().toLowerCase()).filter((h) => /^[0-9a-f]{64}$/.test(h));
+
+/** A chave do Painel (pgw_…): confere o SHA-256 com as impressões digitais conhecidas. */
+export function isPainelKey(given: string): boolean {
+  const g = clean(given);
+  if (!g.startsWith('pgw_') || g.length < 40) return false;
+  const h = createHash('sha256').update(g).digest('hex');
+  return painelHashes().some((x) => same(h, x));
+}
+
 export async function agentTokenState(given: string): Promise<AgentTokenState> {
+  if (isPainelKey(given)) return 'certa';
   const fromEnv = clean(env('HUB_AGENT_TOKEN'));
   const fromDb = (await agentDbToken())?.value ?? '';
   const valid = [fromDb, fromEnv.length >= 24 ? fromEnv : ''].filter(Boolean);
@@ -76,6 +95,7 @@ interface Tool {
   title: string;
   description: string;
   inputSchema: Record<string, unknown>;
+  writes?: boolean;
   run: (args: Record<string, unknown>) => Promise<unknown>;
 }
 
@@ -212,6 +232,34 @@ export async function agentTools(): Promise<Tool[]> {
           aceitou_emails: !!l.consent_email, tags: l.tags, estado: statusLabel(l.status), notas: l.notes, canal: l.channel, origem: l.source,
           campanha: l.utm_campaign, pagina: l.page, cidade: l.city, dispositivo: l.device, big_boss: bigBossState(l).label,
         }));
+      },
+    },
+    {
+      name: 'atualizar_lead',
+      title: 'Atualizar lead',
+      description: 'Muda o estado de um lead do hub (novo, contactado, cliente, descartado) e/ou as notas. O id vem de ver_leads. As notas novas juntam-se às que já existem (com a data), a não ser que substituir_notas seja true. Não mexe no Big Boss.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', description: 'Id do lead (ver_leads).' },
+          estado: { type: 'string', enum: STATUSES.map((s) => s.id) },
+          notas: { type: 'string', description: 'Texto a juntar às notas do lead.' },
+          substituir_notas: { type: 'boolean', description: 'true = as notas passam a ser só este texto.' },
+        },
+        required: ['id'],
+        additionalProperties: false,
+      },
+      writes: true,
+      run: async (a) => {
+        const lead = await leadById(String(a.id ?? '').trim());
+        if (!lead) throw new Error(`Lead não encontrado: ${String(a.id ?? '')}`);
+        const status = a.estado === undefined || a.estado === '' ? lead.status : String(a.estado);
+        if (!STATUSES.some((s) => s.id === status)) throw new Error(`Estado inválido: ${status}. Usa: ${STATUSES.map((s) => s.id).join(', ')}.`);
+        const add = String(a.notas ?? '').trim();
+        const stamp = new Date().toISOString().slice(0, 10);
+        const notes = a.substituir_notas === true ? add : add ? [lead.notes?.trim(), `${stamp}: ${add}`].filter(Boolean).join('\n') : lead.notes ?? '';
+        await updateLead(lead.id, status, notes);
+        return { ok: true, id: lead.id, estado: statusLabel(status), notas: notes.slice(0, 5000) };
       },
     },
     {
