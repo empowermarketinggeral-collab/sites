@@ -16,7 +16,7 @@ import { trackingHealth } from './diagnostics';
 // digital", que o Painel mostra em ver_painel → ligacoes e em /api/health).
 // Para cortar o acesso do Painel, tira a impressão digital daqui (ou de
 // HUB_PAINEL_KEY_SHA256, se usada) e publica.
-const PAINEL_KEY_SHA256 = ['__PAINEL_KEY_SHA256__'];
+const PAINEL_KEY_SHA256 = ['e1c9252fb4c2f4a5dafc6d5afa8aa35f2f61055a2203a1394e19fa3906b5677a'];
 
 const env = (name: string): string => String(process.env[name] ?? import.meta.env[name] ?? '').trim();
 
